@@ -32,3 +32,9 @@ Status: PASSED
 Files changed: supabase/migrations/003_auth_trigger.sql (created)
 Notes: Created link_member_on_login() trigger function (plpgsql, security definer) that fires after INSERT on auth.users. Matches new auth user's email to pre-seeded member row and sets auth_user_id where it's null. Trigger and function verified present in DB after `npx supabase db reset`. Migration applies cleanly after 001 and 002.
 
+## Iteration 5 -- 2026-03-04
+Story: S05 -- Create seed data
+Status: PASSED
+Files changed: supabase/seed.sql (created)
+Notes: Ported all mock data from src/data/*.ts to SQL seed inserts using deterministic UUIDs. Seeded 12 members, 6 polls (20 options, 78 votes, 5 comments), 3 challenges (18 participants), 15 transactions (12 fines + 3 expenses, 12 splits, 12 attendees), 8 events (49 RSVPs), 176 calendar availability entries across 28 date scenarios. All dates use relative SQL expressions (now() - interval, current_date + N) to stay fresh. FK references verified. `npx supabase db reset` loads all seed data without errors (502 on container restart is transient Docker issue).
+

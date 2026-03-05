@@ -83,7 +83,7 @@
         "Foreign key references resolve correctly",
         "Data matches existing mock data values"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "S06",

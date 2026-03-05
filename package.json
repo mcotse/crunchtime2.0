@@ -7,7 +7,8 @@
     "dev": "npx vite",
     "build": "npx vite build",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "preview": "npx vite preview"
+    "preview": "npx vite preview",
+    "test:e2e:ab": "bash e2e/agent-browser/run-all.sh"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
@@ -27,6 +28,7 @@
     "@typescript-eslint/eslint-plugin": "^5.54.0",
     "@typescript-eslint/parser": "^5.54.0",
     "@vitejs/plugin-react": "^4.2.1",
+    "agent-browser": "^0.16.3",
     "autoprefixer": "latest",
     "eslint": "^8.50.0",
     "eslint-plugin-react-hooks": "^4.6.0",

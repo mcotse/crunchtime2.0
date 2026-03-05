@@ -67,7 +67,7 @@
         "Trigger fires on `auth.users` INSERT",
         "Member row with matching email gets `auth_user_id` set"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "S05",

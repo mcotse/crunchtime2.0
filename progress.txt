@@ -26,3 +26,9 @@ Status: PASSED
 Files changed: supabase/migrations/002_rls_policies.sql (created)
 Notes: Created get_member_id() and is_admin() helper functions (security definer, stable). Enabled RLS on all 14 tables. Created 43 policies covering SELECT (authenticated, non-deleted), INSERT, UPDATE, DELETE per BACKEND_SPEC.md permissions matrix. Key policies: admin-only for fines/challenges, member_id = get_member_id() for own-data inserts, owner-or-admin for updates. No hard DELETE policies on soft-deletable tables. `npx supabase db reset` applies both migrations cleanly (502 on container restart is transient Docker issue, not schema error).
 
+## Iteration 4 -- 2026-03-04
+Story: S04 -- Create auth trigger for member linking
+Status: PASSED
+Files changed: supabase/migrations/003_auth_trigger.sql (created)
+Notes: Created link_member_on_login() trigger function (plpgsql, security definer) that fires after INSERT on auth.users. Matches new auth user's email to pre-seeded member row and sets auth_user_id where it's null. Trigger and function verified present in DB after `npx supabase db reset`. Migration applies cleanly after 001 and 002.
+

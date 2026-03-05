@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { XIcon, ChevronRightIcon, SendIcon, LinkIcon } from 'lucide-react';
 import { Challenge, Member, Transaction } from '../data/mockData';
 import { Poll } from '../data/pollsData';
+import { tintRgba } from './tintHelper';
 interface ChallengeDetailSheetProps {
   challenge: Challenge | null;
   isOpen: boolean;

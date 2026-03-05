@@ -384,7 +384,7 @@
         "Auth flow works end-to-end",
         "No mock data imports remain (except as reference files)"
       ],
-      "passes": false
+      "passes": true
     }
   ]
 }

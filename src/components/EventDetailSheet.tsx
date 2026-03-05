@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, Fragment, Component } from 'react';
+import React, { useEffect, useState, useRef, Fragment, Component, ComponentType } from 'react';
 import { motion, AnimatePresence, useDragControls } from 'framer-motion';
 import { X, Pencil, Copy, Trash2, Calendar, Clock, MapPin, ArrowUp, ChevronRight, Receipt, ChevronDown, ChevronUp, ArchiveIcon, ArchiveRestoreIcon, Check, HelpCircle } from 'lucide-react';
 import { GroupEvent } from '../data/eventsData';

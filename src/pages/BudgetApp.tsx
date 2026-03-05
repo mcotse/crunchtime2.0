@@ -15,11 +15,9 @@ import { TabBar } from '../components/TabBar';
 import { HomeTab } from '../components/HomeTab';
 import { FeedTab } from '../components/FeedTab';
 import { SettingsTab } from '../components/SettingsTab';
-import { PollsTab } from '../components/PollsTab';
 import { AddTransactionSheet } from '../components/AddTransactionSheet';
 import { CreatePollSheet } from '../components/CreatePollSheet';
 import { PollDetailSheet } from '../components/PollDetailSheet';
-import { CalendarTab } from '../components/CalendarTab';
 import { EventsTab } from '../components/EventsTab';
 import { DayDetailSheet } from '../components/DayDetailSheet';
 import { EventDetailSheet } from '../components/EventDetailSheet';
@@ -328,7 +326,7 @@ export function CrunchTime() {
   return <div className={`${isDark ? 'dark' : 'light'} min-h-screen font-sans bg-eqx-base text-eqx-primary selection:bg-eqx-raised`}>
       <div className="max-w-md mx-auto min-h-screen relative flex flex-col">
         <main className="flex-1 flex flex-col">
-          {activeTab === 'home' && <HomeTab members={members} transactions={transactions} challenges={challenges} crunchFundBalance={crunchFundBalance} totalFinesCollected={totalFinesCollected} totalChallengeSpend={totalChallengeSpend} pendingFinesCount={pendingFines.length} onAddTransaction={() => setIsSheetOpen(true)} groupName={groupName} onSeeAll={() => setActiveTab('feed')} onOpenNotifications={handleOpenNotifications} hasUnread={hasUnread} onOpenChallenge={handleOpenChallenge} onSwitchToPolls={() => setActiveTab('events')} onOpenTransaction={handleOpenTransaction} events={events} polls={polls} currentUserId={CURRENT_USER_ID} />}
+          {activeTab === 'home' && <HomeTab members={members} transactions={transactions} challenges={challenges} crunchFundBalance={crunchFundBalance} totalFinesCollected={totalFinesCollected} totalChallengeSpend={totalChallengeSpend} pendingFinesCount={pendingFines.length} onAddTransaction={() => setIsSheetOpen(true)} groupName={groupName} onSeeAll={() => setActiveTab('feed')} onOpenNotifications={handleOpenNotifications} hasUnread={hasUnread} onOpenChallenge={handleOpenChallenge} onSwitchToPolls={() => setActiveTab('events')} onOpenTransaction={handleOpenTransaction} />}
           {activeTab === 'feed' && <FeedTab transactions={transactions} members={members} challenges={challenges} events={events} currentUserId={CURRENT_USER_ID} isAdmin={isAdmin} onOpenTransaction={handleOpenTransaction} onOpenEvent={handleOpenEvent} onOpenNotifications={handleOpenNotifications} hasUnread={hasUnread} />}
           {activeTab === 'events' && <EventsTab availability={calendarAvailability} members={members} currentUserId={CURRENT_USER_ID} onDayTap={handleDayTap} onToggleAvailability={handleToggleAvailability} events={events} transactions={transactions} onCreateEvent={() => setIsCreateEventOpen(true)} onOpenEvent={handleOpenEvent} onArchiveEvent={handleArchiveEvent} onUnarchiveEvent={handleUnarchiveEvent} onOpenNotifications={handleOpenNotifications} hasUnread={hasUnread} challenges={challenges} onOpenChallenge={handleOpenChallenge} onProposeChallenge={() => setIsCreatePollOpen(true)} polls={polls} onOpenPoll={handleOpenPoll} onVote={handleVote} onRsvp={handleRsvp} />}
           {activeTab === 'splits' && <SplitsTab />}

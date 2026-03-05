@@ -357,7 +357,7 @@
         "Changes from different users sync correctly",
         "No duplicate subscriptions or memory leaks"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "S22",

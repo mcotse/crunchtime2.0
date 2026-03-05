@@ -128,3 +128,9 @@ Status: PASSED
 Files changed: src/components/ErrorBoundary.tsx (created), src/App.tsx (modified), src/pages/BudgetApp.tsx (modified), src/components/SplitsTab.tsx (modified)
 Notes: Added loading and error handling across the app. Created ErrorBoundary class component (React error boundary) with dark-themed error screen and reload button, wired into App.tsx wrapping AuthGuard+CrunchTime. In BudgetApp.tsx, destructured isLoading and error from all 6 data hooks (useMembers, useTransactions, useChallenges, useEvents, usePolls, useCalendarAvailability), added combined isDataLoading/dataError checks with full-screen loading spinner and error screen before main render. In SplitsTab.tsx (which calls hooks directly), added same isLoading/error destructuring with loading spinner and error display. Loading states use the app's existing spinner style (--eqx-mint border animation). Error states show descriptive messages with retry/reload buttons. Empty states already handled by existing tab components (HomeTab "No transactions yet", PollsTab "No active polls", FeedTab "You're all caught up"). `npm run build` succeeds with 0 errors.
 
+## Iteration 21 -- 2026-03-04
+Story: S21 -- Enable Supabase realtime on all tables
+Status: PASSED
+Files changed: supabase/migrations/004_enable_realtime.sql (created), prd.json (updated)
+Notes: Created migration 004_enable_realtime.sql that drops and recreates the `supabase_realtime` publication with all 13 user-facing tables: transactions, transaction_splits, transaction_attendees, transaction_edit_history, events, event_rsvps, polls, poll_options, poll_votes, poll_comments, challenges, challenge_participants, calendar_availability. Verified via psql that all 13 tables appear in pg_publication_tables. The useRealtimeSync hook (S16) already subscribes to postgres_changes on these tables and invalidates TanStack Query cache. `npx supabase db reset` runs cleanly. `npm run build` succeeds with 0 errors.
+

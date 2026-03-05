@@ -98,3 +98,9 @@ Status: PASSED
 Files changed: src/hooks/useCalendar.ts (created)
 Notes: Created useCalendar hook with two exports: useCalendarAvailability() query (fetches all calendar_availability rows, transforms into Record<dateStr, { memberIds: string[] }> matching CalendarAvailability type), useToggleAvailability() mutation (toggle: checks if row exists for date_str+member_id, deletes if present, inserts if absent). Query key: ['calendar']. Mutation invalidates calendar query on success. `npm run build` succeeds with 0 errors.
 
+## Iteration 16 -- 2026-03-04
+Story: S16 -- Create realtime sync hook
+Status: PASSED
+Files changed: src/hooks/useRealtimeSync.ts (created)
+Notes: Created useRealtimeSync hook that subscribes to postgres_changes on all 13 user-facing tables: transactions, transaction_splits, transaction_attendees, transaction_edit_history, events, event_rsvps, polls, poll_options, poll_votes, poll_comments, challenges, challenge_participants, calendar_availability. Uses a single Supabase channel ('realtime-sync') with a TABLE_QUERY_MAP to map each table to its corresponding TanStack Query key for cache invalidation. Hook is designed to be called once at the app root level. `npm run build` succeeds with 0 errors.
+

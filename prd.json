@@ -265,7 +265,7 @@
         "Hook called once at app root",
         "Changes from other users appear without manual refresh"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "S17",

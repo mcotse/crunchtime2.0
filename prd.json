@@ -114,7 +114,7 @@
         "`src/index.tsx` wraps App in QueryClientProvider",
         "App renders without errors on `npm run dev`"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "S08",
@@ -131,7 +131,7 @@
         "LoginPage matches app's dark theme",
         "Magic link flow works end-to-end with local Supabase"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "S09",

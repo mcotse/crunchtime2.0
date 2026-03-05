@@ -44,3 +44,15 @@ Status: PASSED
 Files changed: package.json (added deps), src/lib/supabase.ts (created), .env.local (created)
 Notes: Installed @supabase/supabase-js@^2.98.0 and @tanstack/react-query@^5.90.21. Created src/lib/supabase.ts exporting a singleton Supabase client using VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY env vars. Created .env.local pointing to local Supabase (port 54331, publishable key). `npm run build` succeeds with 0 errors.
 
+## Iteration 7 -- 2026-03-04
+Story: S07 -- Set up TanStack Query provider
+Status: PASSED
+Files changed: src/lib/queryClient.ts (created), src/index.tsx (modified)
+Notes: Created src/lib/queryClient.ts exporting a configured QueryClient with 1-minute staleTime and retry=1. Wrapped <App /> in <QueryClientProvider> in src/index.tsx. `npm run build` succeeds with 0 errors. Pre-existing TS errors in codebase (unused imports, missing types) are unrelated to this change.
+
+## Iteration 8 -- 2026-03-04
+Story: S08 -- Implement auth hook and login page
+Status: PASSED
+Files changed: src/hooks/useAuth.ts (created), src/pages/LoginPage.tsx (created)
+Notes: Created useAuth hook returning { session, member, isLoading, isAdmin, signIn, signOut }. member is fetched from members table by auth_user_id. signIn calls supabase.auth.signInWithOtp({ email }). Created LoginPage with custom branded dark-theme login screen using app's CSS custom properties (--eqx-base, --eqx-mint, etc.). Features email input, send magic link button, success state showing "check your email", and error state. `npm run build` succeeds with 0 errors. No new TS errors introduced.
+

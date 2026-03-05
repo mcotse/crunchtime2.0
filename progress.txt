@@ -86,3 +86,9 @@ Status: PASSED
 Files changed: src/hooks/useEvents.ts (created)
 Notes: Created useEvents hook with seven exports: useEvents() query (fetches events with joined event_rsvps, maps snake_case DB columns to camelCase GroupEvent interface), useCreateEvent() mutation (inserts event), useUpdateEvent() mutation (partial update), useDeleteEvent() mutation (soft delete via deleted_at), useArchiveEvent() mutation (sets is_archived=true), useUnarchiveEvent() mutation (sets is_archived=false), useRsvp() mutation (upserts event_rsvps on conflict event_id,member_id). Query key: ['events']. All mutations invalidate events query on success. `npm run build` succeeds with 0 errors.
 
+## Iteration 14 -- 2026-03-04
+Story: S14 -- Create usePolls hook
+Status: PASSED
+Files changed: src/hooks/usePolls.ts (created)
+Notes: Created usePolls hook with nine exports: usePolls() query (fetches polls with nested poll_options including poll_votes for voterIds, and poll_comments filtered by deleted_at, maps snake_case to camelCase Poll interface), useCreatePoll() mutation (inserts poll + options), useDeletePoll() mutation (soft delete via deleted_at), useVote() mutation (toggle: checks existing vote, deletes if present, inserts if absent), useAddPollOption() mutation (inserts poll_option), useArchivePoll() mutation (sets is_archived=true, archived_at), useUnarchivePoll() mutation (sets is_archived=false, archived_at=null), useAddComment() mutation (inserts poll_comment), useDeleteComment() mutation (soft delete via deleted_at). Query key: ['polls']. All mutations invalidate polls query on success. `npm run build` succeeds with 0 errors.
+

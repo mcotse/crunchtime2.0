@@ -228,7 +228,7 @@
         "Archive/unarchive works",
         "Data shape matches `src/data/pollsData.ts` Poll interface"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "S15",

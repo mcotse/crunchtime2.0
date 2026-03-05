@@ -180,7 +180,7 @@
         "`useUpdateSplit()` updates splits for a transaction",
         "Data shape matches `src/data/mockData.ts` Transaction interface"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "S12",

@@ -62,3 +62,15 @@ Status: PASSED
 Files changed: src/components/AuthGuard.tsx (created), src/App.tsx (modified), src/pages/BudgetApp.tsx (modified)
 Notes: Created AuthGuard component with three states: loading spinner while checking auth, LoginPage if no session, "Not a member" error screen if session exists but no member match, renders children if authenticated. Updated App.tsx to wrap CrunchTime in AuthGuard. Replaced hardcoded `CURRENT_USER_ID = 'm1'` with `member?.id ?? ''` from useAuth, and `isAdmin = true` with dynamic `isAdmin` from useAuth. `npm run build` succeeds with 0 errors.
 
+## Iteration 10 -- 2026-03-04
+Story: S10 -- Create useMembers hook
+Status: PASSED
+Files changed: src/hooks/useMembers.ts (created)
+Notes: Created useMembers hook using TanStack Query with query key ['members']. Queries all non-deleted members from Supabase, selecting only the fields needed by the Member interface (id, name, initials, phone, email, color, balance). Maps balance to Number to handle numeric type from Postgres. `npm run build` succeeds with 0 errors.
+
+## Iteration 11 -- 2026-03-04
+Story: S11 -- Create useTransactions hook
+Status: PASSED
+Files changed: src/hooks/useTransactions.ts (created)
+Notes: Created useTransactions hook with four exports: useTransactions() query (fetches transactions with joined splits, attendees, and edit history, maps snake_case DB columns to camelCase Transaction interface), useAddTransaction() mutation (inserts transaction + splits + attendees), useUpdateFinePaid() mutation (updates fine_status to 'paid'), useUpdateSplit() mutation (replaces splits and marks split_locked=true). Query key: ['transactions']. All mutations invalidate the transactions query on success. `npm run build` succeeds with 0 errors. No new TS errors introduced.
+

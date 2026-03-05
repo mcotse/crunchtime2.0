@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { LogOutIcon, ChevronRightIcon, ChevronDownIcon, PhoneIcon, MailIcon, PencilIcon, CheckIcon, SunIcon, MoonIcon, SmartphoneIcon, BellIcon, ScrollTextIcon, ShieldIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Member } from '../data/mockData';
+import { CHANGELOG } from '../changelog';
 interface SettingsTabProps {
   members: Member[];
   groupName: string;
@@ -11,19 +12,6 @@ interface SettingsTabProps {
   isAdmin?: boolean;
 }
 const EQX_EASING = [0.2, 0.0, 0.0, 1.0] as const;
-const CHANGELOG = [{
-  version: '1.0.2',
-  date: 'Oct 27',
-  note: 'Light mode contrast improvements'
-}, {
-  version: '1.0.1',
-  date: 'Oct 14',
-  note: 'Calendar availability grid'
-}, {
-  version: '1.0.0',
-  date: 'Sep 30',
-  note: 'Initial release'
-}];
 const INSTALL_STEPS = [{
   n: 1,
   text: 'Open Crunch Time in Safari'
@@ -482,7 +470,7 @@ export function SettingsTab({
               fontSize: '13px',
               color: 'var(--eqx-tertiary)'
             }}>
-                  v1.0.2
+                  v{__APP_VERSION__}
                 </span>
                 <ChevronDownIcon size={14} style={{
               color: 'var(--eqx-tertiary)',
@@ -563,7 +551,7 @@ export function SettingsTab({
         <p className="text-[13px]" style={{
         color: 'var(--eqx-tertiary)'
       }}>
-          Version 1.0.2 · Build 2023.10.27
+          v{__APP_VERSION__} · {__BUILD_HASH__} · {__BUILD_DATE__}
         </p>
       </div>
     </div>;

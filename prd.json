@@ -290,7 +290,7 @@
         "`npm run build` succeeds with 0 errors",
         "App loads data from Supabase on `npm run dev`"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "S18",

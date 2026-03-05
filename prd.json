@@ -306,7 +306,7 @@
         "Balance calculations work correctly with real data",
         "Tab renders correctly on `npm run dev`"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "S19",

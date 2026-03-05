@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRightIcon, PlusIcon, FlameIcon, DollarSignIcon } from 'lucide-react';
 import { TransactionDetailSheet } from './TransactionDetailSheet';
 import { AddTransactionSheet } from './AddTransactionSheet';
 import type { Transaction, Member } from '../data/mockData';
-import { MEMBERS, CHALLENGES, TRANSACTIONS } from '../data/mockData';
+import { useMembers } from '../hooks/useMembers';
+import { useTransactions, useAddTransaction } from '../hooks/useTransactions';
+import { useChallenges } from '../hooks/useChallenges';
 import { tintBg } from './tintHelper';
 const EQX_EASING = [0.2, 0.0, 0.0, 1.0] as const;
 type SubTab = 'transactions' | 'balances';
@@ -27,170 +29,109 @@ interface FundActivityItem {
   amount: number;
   type: 'incoming' | 'outgoing';
 }
-interface BalanceMember {
-  id: string;
-  name: string;
-  avatarColor: string;
-  initial: string;
-  status: 'owes_you' | 'you_owe' | 'settled';
-  amount: number;
+// ── Helpers to derive display data from real data ────────────────────────────
+
+function getDateGroup(dateStr: string): { label: string; order: number } {
+  const txDate = new Date(dateStr);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const txDay = new Date(txDate.getFullYear(), txDate.getMonth(), txDate.getDate());
+
+  if (txDay.getTime() === today.getTime()) return { label: 'Today', order: 0 };
+  if (txDay.getTime() === yesterday.getTime()) return { label: 'Yesterday', order: 1 };
+
+  const label = txDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const daysDiff = Math.floor((today.getTime() - txDay.getTime()) / (1000 * 60 * 60 * 24));
+  return { label, order: daysDiff };
 }
-// ── Data ──────────────────────────────────────────────────────────────────────
-const SPLIT_TRANSACTIONS: SplitTransaction[] = [{
-  id: 't1',
-  description: 'Whole Foods',
-  memberName: 'Alex',
-  amount: 47.3,
-  type: 'expense',
-  avatarColor: '#7F8DE0',
-  initial: 'A',
-  dateGroup: 'Today',
-  dateOrder: 0
-}, {
-  id: 't2',
-  description: 'Dinner at Nobu',
-  memberName: 'Jordan',
-  amount: 124.0,
-  type: 'expense',
-  avatarColor: '#44C2DD',
-  initial: 'J',
-  dateGroup: 'Today',
-  dateOrder: 0
-}, {
-  id: 't3',
-  description: 'Electricity bill',
-  memberName: 'Sam',
-  amount: 89.5,
-  type: 'expense',
-  avatarColor: '#FE9E6D',
-  initial: 'S',
-  dateGroup: 'Yesterday',
-  dateOrder: 1
-}, {
-  id: 't4',
-  description: 'Alex paid back',
-  memberName: 'Alex',
-  amount: 45.0,
-  type: 'payment',
-  avatarColor: '#7F8DE0',
-  initial: 'A',
-  dateGroup: 'Yesterday',
-  dateOrder: 1
-}, {
-  id: 't5',
-  description: 'Uber Eats',
-  memberName: 'Maya',
-  amount: 32.8,
-  type: 'expense',
-  avatarColor: '#84EFB6',
-  initial: 'M',
-  dateGroup: 'Mar 1',
-  dateOrder: 2
-}, {
-  id: 't6',
-  description: 'Sarah reimbursed',
-  memberName: 'Sarah',
-  amount: 67.2,
-  type: 'payment',
-  avatarColor: '#FE9E6D',
-  initial: 'S',
-  dateGroup: 'Mar 1',
-  dateOrder: 2
-}];
-const DATE_GROUPS = ['Today', 'Yesterday', 'Mar 1'];
-const TOTAL_THIS_MONTH = 293.8;
-const FUND_ACTIVITY: FundActivityItem[] = [{
-  id: 'f1',
-  emoji: '⚡',
-  description: 'Late challenge fine — Alex',
-  amount: 25.0,
-  type: 'incoming'
-}, {
-  id: 'f2',
-  emoji: '⚡',
-  description: 'Late challenge fine — Jordan',
-  amount: 25.0,
-  type: 'incoming'
-}, {
-  id: 'f3',
-  emoji: '⚡',
-  description: 'Missed workout — Sam',
-  amount: 10.0,
-  type: 'incoming'
-}, {
-  id: 'f4',
-  emoji: '🍕',
-  description: 'Group dinner — Nobu',
-  amount: 124.0,
-  type: 'outgoing'
-}];
-const BALANCE_MEMBERS: BalanceMember[] = [{
-  id: 'b1',
-  name: 'Alex',
-  avatarColor: '#7F8DE0',
-  initial: 'A',
-  status: 'owes_you',
-  amount: 82.5
-}, {
-  id: 'b2',
-  name: 'Jordan',
-  avatarColor: '#44C2DD',
-  initial: 'J',
-  status: 'owes_you',
-  amount: 34.0
-}, {
-  id: 'b3',
-  name: 'Sam',
-  avatarColor: '#FE9E6D',
-  initial: 'S',
-  status: 'you_owe',
-  amount: 55.0
-}, {
-  id: 'b4',
-  name: 'Maya',
-  avatarColor: '#84EFB6',
-  initial: 'M',
-  status: 'settled',
-  amount: 0
-}];
-const GROUP_FUND_TOTAL = 847.5;
-// ── Helpers for Fund Activity → TransactionDetailSheet ────────────────────────
-function fundActivityToTransaction(item: FundActivityItem): Transaction {
-  // Extract member name from description (after " — ")
-  const parts = item.description.split(' — ');
-  const memberName = parts.length > 1 ? parts[1] : 'Unknown';
-  const balanceMember = BALANCE_MEMBERS.find((m) => m.name.toLowerCase() === memberName.toLowerCase());
-  return {
-    id: item.id,
-    description: parts[0],
-    amount: item.amount,
-    memberId: balanceMember?.id ?? 'unknown',
-    date: new Date().toISOString(),
-    type: item.type === 'incoming' ? 'fine' : 'expense',
-    fineStatus: item.type === 'incoming' ? 'paid' : undefined,
-    fundingSource: item.type === 'outgoing' ? 'challenge' : undefined,
-    category: item.type === 'incoming' ? 'Fine' : 'Food',
-    editHistory: []
-  };
+
+function deriveSplitTransactions(
+  transactions: Transaction[],
+  members: Member[]
+): SplitTransaction[] {
+  const memberMap = new Map(members.map((m) => [m.id, m]));
+  return transactions
+    .filter((t) => t.type === 'expense')
+    .map((t) => {
+      const member = memberMap.get(t.memberId);
+      const { label, order } = getDateGroup(t.date);
+      return {
+        id: t.id,
+        description: t.description,
+        memberName: member?.name ?? 'Unknown',
+        amount: t.amount,
+        type: 'expense' as const,
+        avatarColor: member?.color ?? '#888888',
+        initial: member?.initials?.charAt(0) ?? '?',
+        dateGroup: label,
+        dateOrder: order,
+      };
+    });
 }
-function balanceMembersToMembers(): Member[] {
-  return BALANCE_MEMBERS.map((bm) => ({
-    id: bm.id,
-    name: bm.name,
-    initials: bm.initial,
-    phone: '',
-    email: '',
-    color: bm.avatarColor,
-    balance: bm.amount
-  }));
+
+function deriveFundActivity(
+  transactions: Transaction[],
+  members: Member[]
+): FundActivityItem[] {
+  const memberMap = new Map(members.map((m) => [m.id, m]));
+  const fines = transactions
+    .filter((t) => t.type === 'fine')
+    .map((t) => {
+      const member = memberMap.get(t.memberId);
+      return {
+        id: t.id,
+        emoji: '⚡',
+        description: `${t.description} — ${member?.name ?? 'Unknown'}`,
+        amount: t.amount,
+        type: 'incoming' as const,
+      };
+    });
+  const fundExpenses = transactions
+    .filter((t) => t.type === 'expense' && t.fundingSource === 'challenge')
+    .map((t) => ({
+      id: t.id,
+      emoji: '🍕',
+      description: t.description,
+      amount: t.amount,
+      type: 'outgoing' as const,
+    }));
+  return [...fines, ...fundExpenses];
 }
+
 // ── Main component ────────────────────────────────────────────────────────────
 export function SplitsTab() {
+  const { data: members = [] } = useMembers();
+  const { data: transactions = [] } = useTransactions();
+  const { data: challenges = [] } = useChallenges();
+  const addTransaction = useAddTransaction();
+
+  const splitTransactions = useMemo(() => deriveSplitTransactions(transactions, members), [transactions, members]);
+  const dateGroups = useMemo(() => {
+    const seen = new Map<string, number>();
+    for (const tx of splitTransactions) {
+      if (!seen.has(tx.dateGroup)) seen.set(tx.dateGroup, tx.dateOrder);
+    }
+    return [...seen.entries()].sort((a, b) => a[1] - b[1]).map(([label]) => label);
+  }, [splitTransactions]);
+  const totalThisMonth = useMemo(() => {
+    const now = new Date();
+    return transactions
+      .filter((t) => t.type === 'expense' && new Date(t.date).getMonth() === now.getMonth() && new Date(t.date).getFullYear() === now.getFullYear())
+      .reduce((sum, t) => sum + t.amount, 0);
+  }, [transactions]);
+  const fundActivity = useMemo(() => deriveFundActivity(transactions, members), [transactions, members]);
+  const groupFundTotal = useMemo(() => {
+    const finesIn = transactions.filter((t) => t.type === 'fine' && t.fineStatus === 'paid').reduce((s, t) => s + t.amount, 0);
+    const fundOut = transactions.filter((t) => t.type === 'expense' && t.fundingSource === 'challenge').reduce((s, t) => s + t.amount, 0);
+    return finesIn - fundOut;
+  }, [transactions]);
+
   const [activeSubTab, setActiveSubTab] = useState<SubTab>('transactions');
   const [isAddSheetOpen, setIsAddSheetOpen] = useState(false);
   const handleAddTransaction = (transaction: Transaction) => {
-    // Handle the new transaction (currently a no-op for mock data)
-    console.log('Added transaction:', transaction);
+    addTransaction.mutate({ transaction });
   };
   return <div className="flex-1 flex flex-col min-h-screen pb-24" style={{
     backgroundColor: 'var(--eqx-base)'
@@ -245,7 +186,7 @@ export function SplitsTab() {
           duration: 0.22,
           ease: EQX_EASING
         }}>
-              <TransactionsView />
+              <TransactionsView splitTransactions={splitTransactions} dateGroups={dateGroups} totalThisMonth={totalThisMonth} members={members} transactions={transactions} />
             </motion.div> : <motion.div key="balances" initial={{
           opacity: 0,
           y: 8
@@ -259,13 +200,13 @@ export function SplitsTab() {
           duration: 0.22,
           ease: EQX_EASING
         }}>
-              <BalancesView />
+              <BalancesView fundActivity={fundActivity} groupFundTotal={groupFundTotal} transactions={transactions} members={members} />
             </motion.div>}
         </AnimatePresence>
       </div>
 
       {/* ── Add Transaction Sheet ── */}
-      <AddTransactionSheet isOpen={isAddSheetOpen} onClose={() => setIsAddSheetOpen(false)} members={MEMBERS} challenges={CHALLENGES} transactions={TRANSACTIONS} onAdd={handleAddTransaction} />
+      <AddTransactionSheet isOpen={isAddSheetOpen} onClose={() => setIsAddSheetOpen(false)} members={members} challenges={challenges} transactions={transactions} onAdd={handleAddTransaction} />
     </div>;
 }
 // ── Segment button — full-width style matching Calendar ───────────────────────
@@ -291,8 +232,14 @@ function SegmentButton({
     </button>;
 }
 // ── Transactions view ─────────────────────────────────────────────────────────
-function TransactionsView() {
-  const transactionCount = SPLIT_TRANSACTIONS.length;
+function TransactionsView({ splitTransactions, dateGroups, totalThisMonth, members, transactions }: {
+  splitTransactions: SplitTransaction[];
+  dateGroups: string[];
+  totalThisMonth: number;
+  members: Member[];
+  transactions: Transaction[];
+}) {
+  const transactionCount = splitTransactions.length;
   const [selectedTx, setSelectedTx] = useState<SplitTransaction | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const handleTxTap = (tx: SplitTransaction) => {
@@ -303,35 +250,10 @@ function TransactionsView() {
     setIsDetailOpen(false);
     setTimeout(() => setSelectedTx(null), 320);
   };
-  // Map SplitTransaction → Transaction for the detail sheet
-  const syntheticTransaction: Transaction | null = selectedTx ? {
-    id: selectedTx.id,
-    description: selectedTx.description,
-    amount: selectedTx.amount,
-    memberId: selectedTx.id + '-member',
-    date: new Date().toISOString(),
-    type: 'expense',
-    fundingSource: 'direct',
-    category: selectedTx.type === 'payment' ? 'Income' : 'Food',
-    editHistory: []
-  } : null;
-  // Build unique synthetic members from split transactions
-  const syntheticMembers: Member[] = (() => {
-    const seen = new Set<string>();
-    return SPLIT_TRANSACTIONS.filter((tx) => {
-      if (seen.has(tx.memberName)) return false;
-      seen.add(tx.memberName);
-      return true;
-    }).map((tx) => ({
-      id: tx.id + '-member',
-      name: tx.memberName,
-      initials: tx.initial,
-      phone: '',
-      email: '',
-      color: tx.avatarColor,
-      balance: 0
-    }));
-  })();
+  // Find the real transaction for the detail sheet
+  const realTransaction: Transaction | null = selectedTx
+    ? transactions.find((t) => t.id === selectedTx.id) ?? null
+    : null;
   return <div>
       {/* ── 2-col stat header ── */}
       <div className="flex gap-6 mt-5 mb-5 rounded-[24px]" style={{
@@ -359,7 +281,7 @@ function TransactionsView() {
           lineHeight: 1.1,
           fontWeight: 700
         }}>
-            ${TOTAL_THIS_MONTH.toFixed(2)}
+            ${totalThisMonth.toFixed(2)}
           </span>
         </div>
 
@@ -398,9 +320,9 @@ function TransactionsView() {
       backgroundColor: 'var(--eqx-surface)',
       border: '1px solid var(--eqx-hairline)'
     }}>
-        {DATE_GROUPS.map((group, groupIndex) => {
-        const rows = SPLIT_TRANSACTIONS.filter((t) => t.dateGroup === group);
-        const isLastGroup = groupIndex === DATE_GROUPS.length - 1;
+        {dateGroups.map((group, groupIndex) => {
+        const rows = splitTransactions.filter((t) => t.dateGroup === group);
+        const isLastGroup = groupIndex === dateGroups.length - 1;
         return <div key={group}>
               {/* Date header */}
               <div className="px-4 flex items-center" style={{
@@ -494,11 +416,16 @@ function TransactionsView() {
       </div>
 
       {/* ── Transaction Detail Sheet ── */}
-      <TransactionDetailSheet transaction={syntheticTransaction} isOpen={isDetailOpen} onClose={handleCloseDetail} members={syntheticMembers} events={[]} />
+      <TransactionDetailSheet transaction={realTransaction} isOpen={isDetailOpen} onClose={handleCloseDetail} members={members} events={[]} />
     </div>;
 }
 // ── Balances view ─────────────────────────────────────────────────────────────
-function BalancesView() {
+function BalancesView({ fundActivity, groupFundTotal, transactions, members }: {
+  fundActivity: FundActivityItem[];
+  groupFundTotal: number;
+  transactions: Transaction[];
+  members: Member[];
+}) {
   const [selectedActivity, setSelectedActivity] = useState<FundActivityItem | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const handleActivityTap = (item: FundActivityItem) => {
@@ -509,8 +436,10 @@ function BalancesView() {
     setIsDetailOpen(false);
     setTimeout(() => setSelectedActivity(null), 320);
   };
-  const syntheticTransaction = selectedActivity ? fundActivityToTransaction(selectedActivity) : null;
-  const syntheticMembers = balanceMembersToMembers();
+  // Find the real transaction for the detail sheet
+  const realTransaction: Transaction | null = selectedActivity
+    ? transactions.find((t) => t.id === selectedActivity.id) ?? null
+    : null;
   return <div>
       {/* ── 2-col stat header ── */}
       <div className="flex gap-6 mt-5 mb-5 rounded-[24px]" style={{
@@ -538,7 +467,7 @@ function BalancesView() {
           lineHeight: 1.1,
           fontWeight: 700
         }}>
-            ${GROUP_FUND_TOTAL.toFixed(2)}
+            ${groupFundTotal.toFixed(2)}
           </span>
         </div>
 
@@ -567,7 +496,7 @@ function BalancesView() {
           lineHeight: 1.1,
           fontWeight: 700
         }}>
-            {FUND_ACTIVITY.length}
+            {fundActivity.length}
           </span>
         </div>
       </div>
@@ -590,8 +519,8 @@ function BalancesView() {
         backgroundColor: 'var(--eqx-surface)',
         border: '1px solid var(--eqx-hairline)'
       }}>
-          {FUND_ACTIVITY.map((item, index) => {
-          const isLast = index === FUND_ACTIVITY.length - 1;
+          {fundActivity.map((item, index) => {
+          const isLast = index === fundActivity.length - 1;
           return <motion.button key={item.id} onClick={() => handleActivityTap(item)} initial={{
             opacity: 0,
             y: 4
@@ -664,6 +593,6 @@ function BalancesView() {
       </div>
 
       {/* ── Transaction Detail Sheet ── */}
-      <TransactionDetailSheet transaction={syntheticTransaction} isOpen={isDetailOpen} onClose={handleCloseDetail} members={syntheticMembers} events={[]} />
+      <TransactionDetailSheet transaction={realTransaction} isOpen={isDetailOpen} onClose={handleCloseDetail} members={members} events={[]} />
     </div>;
 }

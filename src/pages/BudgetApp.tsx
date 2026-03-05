@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../hooks/useAuth';
 import { MEMBERS, TRANSACTIONS, CHALLENGES, Transaction, TransactionSplit, Challenge, getCrunchFundBalance, getTotalFinesCollected, getTotalChallengeSpend, getPendingFines } from '../data/mockData';
 import { POLLS, Poll, PollOption, PollComment } from '../data/pollsData';
 import { INITIAL_EVENTS, GroupEvent } from '../data/eventsData';
@@ -52,8 +53,8 @@ export function CrunchTime() {
   const [isChallengeDetailOpen, setIsChallengeDetailOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [notificationsRead, setNotificationsRead] = useState(false);
-  const CURRENT_USER_ID = 'm1';
-  const isAdmin = true;
+  const { member, isAdmin } = useAuth();
+  const CURRENT_USER_ID = member?.id ?? '';
   // ── Crunch Fund derived values ─────────────────────────────────────────────
   const crunchFundBalance = getCrunchFundBalance(transactions);
   const totalFinesCollected = getTotalFinesCollected(transactions);

@@ -148,7 +148,7 @@
         "`CURRENT_USER_ID` replaced with dynamic `member.id`",
         "`isAdmin` replaced with dynamic `member.is_admin`"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "S10",

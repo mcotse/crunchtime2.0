@@ -211,7 +211,7 @@
         "`useRsvp()` upserts RSVP row",
         "Data shape matches `src/data/eventsData.ts` GroupEvent interface"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "S14",

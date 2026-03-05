@@ -56,7 +56,27 @@ export function useToggleAvailability() {
         if (error) throw error
       }
     },
-    onSuccess: () => {
+    onMutate: async ({ dateStr, memberId }) => {
+      await queryClient.cancelQueries({ queryKey: ['calendar'] })
+      const previous = queryClient.getQueryData<CalendarAvailability>(['calendar'])
+      queryClient.setQueryData<CalendarAvailability>(['calendar'], (old) => {
+        const next = { ...(old ?? {}) }
+        const day = next[dateStr] ? { ...next[dateStr], memberIds: [...next[dateStr].memberIds] } : { memberIds: [] }
+        const idx = day.memberIds.indexOf(memberId)
+        if (idx >= 0) {
+          day.memberIds.splice(idx, 1)
+        } else {
+          day.memberIds.push(memberId)
+        }
+        next[dateStr] = day
+        return next
+      })
+      return { previous }
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previous) queryClient.setQueryData(['calendar'], context.previous)
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['calendar'] })
     },
   })

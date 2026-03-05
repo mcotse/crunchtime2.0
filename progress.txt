@@ -116,3 +116,9 @@ Status: PASSED
 Files changed: src/components/SplitsTab.tsx (modified)
 Notes: Removed `import { MEMBERS, CHALLENGES, TRANSACTIONS } from '../data/mockData'` and replaced with useMembers, useTransactions, useChallenges hooks. Replaced all hardcoded local data (SPLIT_TRANSACTIONS, DATE_GROUPS, TOTAL_THIS_MONTH, FUND_ACTIVITY, BALANCE_MEMBERS, GROUP_FUND_TOTAL) with useMemo-derived data from hook queries. Created helper functions (deriveSplitTransactions, deriveFundActivity, getDateGroup) to transform real data into the display format. Wired AddTransactionSheet to use real members/challenges/transactions from hooks. Wired handleAddTransaction to useAddTransaction mutation. Updated TransactionsView and BalancesView to accept derived data as props. Replaced synthetic transaction/member creation for detail sheets with lookups into real data. Only type import from `../data/mockData` remains (erased at compile time, consistent with all hooks). `npm run build` succeeds with 0 errors.
 
+## Iteration 19 -- 2026-03-04
+Story: S19 -- Add optimistic updates for all mutations
+Status: PASSED
+Files changed: src/hooks/usePolls.ts (modified), src/hooks/useEvents.ts (modified), src/hooks/useTransactions.ts (modified), src/hooks/useCalendar.ts (modified)
+Notes: Added TanStack Query optimistic updates (onMutate/onError/onSettled pattern) to 5 key mutations: useVote (instant poll vote toggle by updating voterIds in cache), useRsvp (instant RSVP status change by upserting rsvp in cached events), useAddTransaction (instant appearance via temp ID prepended to cached list), useUpdateFinePaid (instant fine_status='paid' in cache), useToggleAvailability (instant calendar toggle by adding/removing memberId from cached day). All mutations cancel pending queries before optimistic update, snapshot previous data for rollback on error, and invalidate queries on settle to sync with server. `npm run build` succeeds with 0 errors. No new TS errors in hook files.
+

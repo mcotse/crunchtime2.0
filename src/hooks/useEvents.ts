@@ -205,7 +205,29 @@ export function useRsvp() {
 
       if (error) throw error
     },
-    onSuccess: () => {
+    onMutate: async ({ eventId, memberId, status, guestCount }) => {
+      await queryClient.cancelQueries({ queryKey: ['events'] })
+      const previous = queryClient.getQueryData<GroupEvent[]>(['events'])
+      queryClient.setQueryData<GroupEvent[]>(['events'], (old) =>
+        (old ?? []).map((event) => {
+          if (event.id !== eventId) return event
+          const existingIdx = event.rsvps.findIndex((r) => r.memberId === memberId)
+          const newRsvp: EventRSVP = { memberId, status, guestCount }
+          const rsvps = [...event.rsvps]
+          if (existingIdx >= 0) {
+            rsvps[existingIdx] = newRsvp
+          } else {
+            rsvps.push(newRsvp)
+          }
+          return { ...event, rsvps }
+        })
+      )
+      return { previous }
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previous) queryClient.setQueryData(['events'], context.previous)
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['events'] })
     },
   })

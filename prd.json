@@ -324,7 +324,7 @@
         "Calendar availability toggles instantly",
         "Failed mutations roll back to previous state"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "S20",

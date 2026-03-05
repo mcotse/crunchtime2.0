@@ -150,7 +150,30 @@ export function useVote() {
         if (error) throw error
       }
     },
-    onSuccess: () => {
+    onMutate: async ({ optionId, memberId }) => {
+      await queryClient.cancelQueries({ queryKey: ['polls'] })
+      const previous = queryClient.getQueryData<Poll[]>(['polls'])
+      queryClient.setQueryData<Poll[]>(['polls'], (old) =>
+        (old ?? []).map((poll) => ({
+          ...poll,
+          options: poll.options.map((opt) => {
+            if (opt.id !== optionId) return opt
+            const hasVote = opt.voterIds.includes(memberId)
+            return {
+              ...opt,
+              voterIds: hasVote
+                ? opt.voterIds.filter((id) => id !== memberId)
+                : [...opt.voterIds, memberId],
+            }
+          }),
+        }))
+      )
+      return { previous }
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previous) queryClient.setQueryData(['polls'], context.previous)
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['polls'] })
     },
   })

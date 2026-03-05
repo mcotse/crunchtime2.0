@@ -118,7 +118,23 @@ export function useAddTransaction() {
 
       return txId
     },
-    onSuccess: () => {
+    onMutate: async ({ transaction }) => {
+      await queryClient.cancelQueries({ queryKey: ['transactions'] })
+      const previous = queryClient.getQueryData<Transaction[]>(['transactions'])
+      const optimistic: Transaction = {
+        id: `temp-${Date.now()}`,
+        ...transaction,
+        editHistory: [],
+      }
+      queryClient.setQueryData<Transaction[]>(['transactions'], (old) =>
+        [optimistic, ...(old ?? [])]
+      )
+      return { previous }
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previous) queryClient.setQueryData(['transactions'], context.previous)
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['transactions'] })
     },
   })
@@ -136,7 +152,20 @@ export function useUpdateFinePaid() {
 
       if (error) throw error
     },
-    onSuccess: () => {
+    onMutate: async (transactionId) => {
+      await queryClient.cancelQueries({ queryKey: ['transactions'] })
+      const previous = queryClient.getQueryData<Transaction[]>(['transactions'])
+      queryClient.setQueryData<Transaction[]>(['transactions'], (old) =>
+        (old ?? []).map((tx) =>
+          tx.id === transactionId ? { ...tx, fineStatus: 'paid' as Transaction['fineStatus'] } : tx
+        )
+      )
+      return { previous }
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previous) queryClient.setQueryData(['transactions'], context.previous)
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['transactions'] })
     },
   })

@@ -99,7 +99,7 @@
         "`.env.local` has VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY",
         "`npm run build` succeeds with 0 errors"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "S07",

@@ -38,3 +38,9 @@ Status: PASSED
 Files changed: supabase/seed.sql (created)
 Notes: Ported all mock data from src/data/*.ts to SQL seed inserts using deterministic UUIDs. Seeded 12 members, 6 polls (20 options, 78 votes, 5 comments), 3 challenges (18 participants), 15 transactions (12 fines + 3 expenses, 12 splits, 12 attendees), 8 events (49 RSVPs), 176 calendar availability entries across 28 date scenarios. All dates use relative SQL expressions (now() - interval, current_date + N) to stay fresh. FK references verified. `npx supabase db reset` loads all seed data without errors (502 on container restart is transient Docker issue).
 
+## Iteration 6 -- 2026-03-04
+Story: S06 -- Install frontend dependencies and create Supabase client
+Status: PASSED
+Files changed: package.json (added deps), src/lib/supabase.ts (created), .env.local (created)
+Notes: Installed @supabase/supabase-js@^2.98.0 and @tanstack/react-query@^5.90.21. Created src/lib/supabase.ts exporting a singleton Supabase client using VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY env vars. Created .env.local pointing to local Supabase (port 54331, publishable key). `npm run build` succeeds with 0 errors.
+

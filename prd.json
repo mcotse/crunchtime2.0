@@ -1,0 +1,329 @@
+{
+  "project": "Crunch Time",
+  "description": "Wire the completed Crunch Time frontend (Vite + React + Tailwind + Framer Motion) to a live Supabase backend, replacing all hardcoded mock data with real database queries, authentication, and realtime sync.",
+  "stack": {
+    "frontend": "Vite + React 18 + Tailwind CSS + Framer Motion (existing, do not modify visuals)",
+    "backend": "Supabase Postgres (local CLI for dev)",
+    "auth": "Supabase Auth (email magic link)",
+    "state": "TanStack Query + Supabase realtime subscriptions",
+    "client": "@supabase/supabase-js",
+    "hosting": "Vercel (post-completion)"
+  },
+  "stories": [
+    {
+      "id": "S01",
+      "title": "Initialize Supabase project",
+      "description": "Run `supabase init` and `supabase start` to set up the local Supabase environment. Verify Docker is running and Supabase local starts cleanly.",
+      "phase": 1,
+      "depends_on": [],
+      "acceptance": [
+        "`npx supabase start` runs without errors",
+        "`supabase/config.toml` exists",
+        "Local Supabase Studio accessible at localhost:54323"
+      ],
+      "passes": true
+    },
+    {
+      "id": "S02",
+      "title": "Create database schema migration",
+      "description": "Create `supabase/migrations/001_initial_schema.sql` with all 14 tables from BACKEND_SPEC.md: members, challenges, challenge_participants, transactions, transaction_splits, transaction_attendees, transaction_edit_history, events, event_rsvps, polls, poll_options, poll_votes, poll_comments, calendar_availability. Include all constraints, foreign keys, CHECK constraints, and soft-delete columns.",
+      "phase": 1,
+      "depends_on": ["S01"],
+      "acceptance": [
+        "All 14 tables created with correct columns and constraints",
+        "`npx supabase db reset` runs without errors",
+        "Schema matches TypeScript interfaces in src/data/*.ts"
+      ],
+      "passes": false
+    },
+    {
+      "id": "S03",
+      "title": "Create RLS policies and helper functions",
+      "description": "Enable RLS on all tables. Create `get_member_id()` and `is_admin()` helper functions. Create SELECT policies (authenticated users read non-deleted rows), INSERT/UPDATE policies per the permissions matrix: admin-only for fines, any member for expenses/polls/events, owner-or-admin for updates. No hard DELETE policies.",
+      "phase": 1,
+      "depends_on": ["S02"],
+      "acceptance": [
+        "RLS enabled on all 14 tables",
+        "`get_member_id()` and `is_admin()` functions exist",
+        "SELECT, INSERT, UPDATE policies match BACKEND_SPEC.md permissions matrix",
+        "No hard DELETE policies exist"
+      ],
+      "passes": false
+    },
+    {
+      "id": "S04",
+      "title": "Create auth trigger for member linking",
+      "description": "Create the `link_member_on_login()` trigger that fires after INSERT on auth.users. When a new auth user signs up, it matches their email to a pre-seeded member row and links `auth_user_id`.",
+      "phase": 1,
+      "depends_on": ["S02"],
+      "acceptance": [
+        "Trigger function `link_member_on_login` exists",
+        "Trigger fires on `auth.users` INSERT",
+        "Member row with matching email gets `auth_user_id` set"
+      ],
+      "passes": false
+    },
+    {
+      "id": "S05",
+      "title": "Create seed data",
+      "description": "Create `supabase/seed.sql` that ports all mock data from frontend: 12 members (from MEMBERS array), 3 challenges (CHALLENGES), 15 transactions with splits and attendees (TRANSACTIONS), 8 events with RSVPs (INITIAL_EVENTS), 6 polls with options/votes/comments (POLLS), 28 calendar availability entries. Use deterministic UUIDs for foreign key references.",
+      "phase": 1,
+      "depends_on": ["S02"],
+      "acceptance": [
+        "`npx supabase db reset` loads all seed data without errors",
+        "All tables populated with correct row counts",
+        "Foreign key references resolve correctly",
+        "Data matches existing mock data values"
+      ],
+      "passes": false
+    },
+    {
+      "id": "S06",
+      "title": "Install frontend dependencies and create Supabase client",
+      "description": "Install `@supabase/supabase-js` and `@tanstack/react-query`. Create `src/lib/supabase.ts` with client singleton using env vars. Create `.env.local` with local Supabase URLs. Verify `npm run build` still succeeds.",
+      "phase": 1,
+      "depends_on": ["S01"],
+      "acceptance": [
+        "`@supabase/supabase-js` and `@tanstack/react-query` in package.json",
+        "`src/lib/supabase.ts` exports a Supabase client",
+        "`.env.local` has VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY",
+        "`npm run build` succeeds with 0 errors"
+      ],
+      "passes": false
+    },
+    {
+      "id": "S07",
+      "title": "Set up TanStack Query provider",
+      "description": "Create `src/lib/queryClient.ts` with a configured QueryClient. Wrap `<App />` in `<QueryClientProvider>` in `src/index.tsx`. App still renders without errors.",
+      "phase": 2,
+      "depends_on": ["S06"],
+      "acceptance": [
+        "`src/lib/queryClient.ts` exports a QueryClient",
+        "`src/index.tsx` wraps App in QueryClientProvider",
+        "App renders without errors on `npm run dev`"
+      ],
+      "passes": false
+    },
+    {
+      "id": "S08",
+      "title": "Implement auth hook and login page",
+      "description": "Create `src/hooks/useAuth.ts` that manages Supabase auth session state and returns `{ session, member, isLoading, isAdmin, signIn, signOut }`. `member` is fetched from the members table by matching `auth_user_id`. `signIn(email)` calls `supabase.auth.signInWithOtp({ email })`. Create `src/pages/LoginPage.tsx` with a custom branded dark-theme login screen: email input, send magic link button, success/error states.",
+      "phase": 2,
+      "depends_on": ["S06", "S07"],
+      "acceptance": [
+        "`useAuth` hook returns session, member, isLoading, isAdmin, signIn, signOut",
+        "LoginPage renders with email input and send button",
+        "LoginPage matches app's dark theme",
+        "Magic link flow works end-to-end with local Supabase"
+      ],
+      "passes": false
+    },
+    {
+      "id": "S09",
+      "title": "Implement AuthGuard and wire into App",
+      "description": "Create `src/components/AuthGuard.tsx`: shows loading spinner while checking auth, shows LoginPage if no session, shows 'Not a member' error if session exists but no member match, renders children if authenticated. Update `src/App.tsx` to wrap CrunchTime in AuthGuard and QueryClientProvider. Replace `CURRENT_USER_ID = 'm1'` and `isAdmin = true` in BudgetApp.tsx with values from useAuth.",
+      "phase": 2,
+      "depends_on": ["S08"],
+      "acceptance": [
+        "AuthGuard shows login screen for unauthenticated users",
+        "AuthGuard shows main app for authenticated members",
+        "AuthGuard shows error for authenticated non-members",
+        "`CURRENT_USER_ID` replaced with dynamic `member.id`",
+        "`isAdmin` replaced with dynamic `member.is_admin`"
+      ],
+      "passes": false
+    },
+    {
+      "id": "S10",
+      "title": "Create useMembers hook",
+      "description": "Create `src/hooks/useMembers.ts` with `useMembers()` that queries all non-deleted members from Supabase. Returns data in the same shape as the `Member` interface. Query key: `['members']`.",
+      "phase": 3,
+      "depends_on": ["S06"],
+      "acceptance": [
+        "`useMembers()` returns Member[] matching the existing interface",
+        "Query filters out soft-deleted rows",
+        "Data shape matches `src/data/mockData.ts` Member interface"
+      ],
+      "passes": false
+    },
+    {
+      "id": "S11",
+      "title": "Create useTransactions hook",
+      "description": "Create `src/hooks/useTransactions.ts` with: `useTransactions()` (returns all transactions with splits, attendees, and edit history joined), `useAddTransaction()` (mutation to insert transaction + splits + attendees), `useUpdateFinePaid()` (mutation to mark fine as paid), `useUpdateSplit()` (mutation to update transaction splits). Query key: `['transactions']`. Transform Supabase response to match frontend Transaction interface (e.g., attendees as string[] not {member_id}[]).",
+      "phase": 3,
+      "depends_on": ["S06"],
+      "acceptance": [
+        "`useTransactions()` returns Transaction[] with splits, attendees, editHistory",
+        "`useAddTransaction()` inserts transaction + splits + attendees atomically",
+        "`useUpdateFinePaid()` updates fine_status to 'paid'",
+        "`useUpdateSplit()` updates splits for a transaction",
+        "Data shape matches `src/data/mockData.ts` Transaction interface"
+      ],
+      "passes": false
+    },
+    {
+      "id": "S12",
+      "title": "Create useChallenges hook",
+      "description": "Create `src/hooks/useChallenges.ts` with: `useChallenges()` (returns challenges with participantIds array), `useJoinChallenge()` (mutation to add current user to challenge_participants). Query key: `['challenges']`. Transform participant rows into `participantIds: string[]`.",
+      "phase": 3,
+      "depends_on": ["S06"],
+      "acceptance": [
+        "`useChallenges()` returns Challenge[] with participantIds",
+        "`useJoinChallenge()` inserts into challenge_participants",
+        "Data shape matches `src/data/mockData.ts` Challenge interface"
+      ],
+      "passes": false
+    },
+    {
+      "id": "S13",
+      "title": "Create useEvents hook",
+      "description": "Create `src/hooks/useEvents.ts` with: `useEvents()` (returns events with RSVPs joined), `useCreateEvent()`, `useUpdateEvent()`, `useDeleteEvent()` (soft delete), `useArchiveEvent()`, `useUnarchiveEvent()`, `useRsvp()` (upsert RSVP). Query key: `['events']`. Transform RSVP rows into the `EventRSVP[]` shape.",
+      "phase": 3,
+      "depends_on": ["S06"],
+      "acceptance": [
+        "`useEvents()` returns GroupEvent[] with rsvps array",
+        "CRUD mutations work correctly",
+        "`useRsvp()` upserts RSVP row",
+        "Data shape matches `src/data/eventsData.ts` GroupEvent interface"
+      ],
+      "passes": false
+    },
+    {
+      "id": "S14",
+      "title": "Create usePolls hook",
+      "description": "Create `src/hooks/usePolls.ts` with: `usePolls()` (returns polls with options including voterIds, and comments), `useCreatePoll()`, `useDeletePoll()` (soft delete), `useVote()` (insert/delete poll_votes to toggle), `useAddPollOption()`, `useArchivePoll()`, `useUnarchivePoll()`, `useAddComment()`, `useDeleteComment()`. Query key: `['polls']`. Transform vote rows into `voterIds: string[]` on each option.",
+      "phase": 3,
+      "depends_on": ["S06"],
+      "acceptance": [
+        "`usePolls()` returns Poll[] with options.voterIds and comments",
+        "Vote toggle works (insert/delete)",
+        "Comment CRUD works",
+        "Archive/unarchive works",
+        "Data shape matches `src/data/pollsData.ts` Poll interface"
+      ],
+      "passes": false
+    },
+    {
+      "id": "S15",
+      "title": "Create useCalendar hook",
+      "description": "Create `src/hooks/useCalendar.ts` with: `useCalendarAvailability()` (returns CalendarAvailability Record<string, DayAvailability>), `useToggleAvailability()` (mutation that inserts or deletes a calendar_availability row). Query key: `['calendar']`. Transform rows into the Record<dateStr, { memberIds: string[] }> shape.",
+      "phase": 3,
+      "depends_on": ["S06"],
+      "acceptance": [
+        "`useCalendarAvailability()` returns CalendarAvailability matching existing interface",
+        "`useToggleAvailability()` toggles a row (insert if absent, delete if present)",
+        "Data shape matches `src/data/calendarData.ts` CalendarAvailability type"
+      ],
+      "passes": false
+    },
+    {
+      "id": "S16",
+      "title": "Create realtime sync hook",
+      "description": "Create `src/hooks/useRealtimeSync.ts` that subscribes to postgres_changes on all user-facing tables: transactions, transaction_splits, events, event_rsvps, polls, poll_options, poll_votes, poll_comments, challenges, challenge_participants, calendar_availability. On any change, invalidate the relevant TanStack Query cache. Call this hook once at the app root level.",
+      "phase": 4,
+      "depends_on": ["S07", "S10", "S11", "S12", "S13", "S14", "S15"],
+      "acceptance": [
+        "Realtime subscriptions established for all user-facing tables",
+        "TanStack Query cache invalidated on relevant changes",
+        "Hook called once at app root",
+        "Changes from other users appear without manual refresh"
+      ],
+      "passes": false
+    },
+    {
+      "id": "S17",
+      "title": "Wire BudgetApp.tsx - replace mock data with hooks",
+      "description": "Refactor `src/pages/BudgetApp.tsx`: replace all `useState` backed by mock data imports with TanStack Query hooks (useMembers, useTransactions, useChallenges, useEvents, usePolls, useCalendarAvailability). Replace all handler functions (handleAddTransaction, handleVote, handleRsvp, etc.) with Supabase mutations from the hooks. Keep local-only UI state as useState (activeTab, sheet open states, selected items). Add useRealtimeSync call.",
+      "phase": 5,
+      "depends_on": ["S09", "S10", "S11", "S12", "S13", "S14", "S15", "S16"],
+      "acceptance": [
+        "No mock data imports remain in BudgetApp.tsx",
+        "All server state comes from TanStack Query hooks",
+        "All mutations use Supabase mutations from hooks",
+        "Local UI state (sheets, tabs, selections) still works",
+        "`npm run build` succeeds with 0 errors",
+        "App loads data from Supabase on `npm run dev`"
+      ],
+      "passes": false
+    },
+    {
+      "id": "S18",
+      "title": "Wire SplitsTab to use hooks instead of direct mock imports",
+      "description": "Update `src/components/SplitsTab.tsx` which currently imports MEMBERS, CHALLENGES, TRANSACTIONS directly from mock data files. Replace with hook calls or accept data as props from BudgetApp. Ensure splits calculations work with real data.",
+      "phase": 5,
+      "depends_on": ["S17"],
+      "acceptance": [
+        "SplitsTab no longer imports from `src/data/` files",
+        "Splits data comes from hooks or props",
+        "Balance calculations work correctly with real data",
+        "Tab renders correctly on `npm run dev`"
+      ],
+      "passes": false
+    },
+    {
+      "id": "S19",
+      "title": "Add optimistic updates for all mutations",
+      "description": "Add optimistic updates to all user-initiated mutations: vote on poll (instant toggle), RSVP to event (instant status change), add transaction (appears immediately in list), mark fine as paid (instant status change), toggle calendar availability (instant toggle). Use TanStack Query's `onMutate`/`onError`/`onSettled` pattern for rollback on failure.",
+      "phase": 6,
+      "depends_on": ["S17"],
+      "acceptance": [
+        "Poll votes feel instant with optimistic update",
+        "RSVP changes feel instant",
+        "New transactions appear immediately",
+        "Fine status changes instantly",
+        "Calendar availability toggles instantly",
+        "Failed mutations roll back to previous state"
+      ],
+      "passes": false
+    },
+    {
+      "id": "S20",
+      "title": "Add loading states and error handling",
+      "description": "Add loading skeletons/spinners for initial data fetch on each tab. Add error boundaries for failed queries. Handle edge cases: empty states when no data, network errors, stale data indicators.",
+      "phase": 6,
+      "depends_on": ["S17"],
+      "acceptance": [
+        "Loading state shown while data fetches on each tab",
+        "Error state shown when queries fail",
+        "Empty states handled gracefully",
+        "App doesn't crash on network errors"
+      ],
+      "passes": false
+    },
+    {
+      "id": "S21",
+      "title": "Enable Supabase realtime on all tables",
+      "description": "Configure Supabase realtime publication to include all user-facing tables. Verify that changes made in one browser tab appear in another tab without refresh. Test with two different authenticated users.",
+      "phase": 6,
+      "depends_on": ["S16", "S17"],
+      "acceptance": [
+        "Realtime enabled on all user-facing tables in Supabase config",
+        "Changes sync between two browser tabs",
+        "Changes from different users sync correctly",
+        "No duplicate subscriptions or memory leaks"
+      ],
+      "passes": false
+    },
+    {
+      "id": "S22",
+      "title": "Final verification and cleanup",
+      "description": "Run full verification: `npm run build` (0 errors), `npx supabase db reset` (clean), `npm run dev` (all tabs work), `npx tsc --noEmit` (type-safe). Verify all features: navigate all tabs, add transaction, vote on poll, RSVP to event, toggle calendar, mark fine paid. Ensure no TypeScript errors and all components render correctly.",
+      "phase": 7,
+      "depends_on": ["S17", "S18", "S19", "S20", "S21"],
+      "acceptance": [
+        "`npm run build` succeeds with 0 errors",
+        "`npx tsc --noEmit` passes",
+        "`npx supabase db reset` runs cleanly",
+        "All 5 tabs render correctly with real data",
+        "Add transaction persists on refresh",
+        "Poll votes persist and sync",
+        "Event RSVPs persist and sync",
+        "Calendar availability persists and sync",
+        "Fine status changes persist",
+        "Auth flow works end-to-end",
+        "No mock data imports remain (except as reference files)"
+      ],
+      "passes": false
+    }
+  ]
+}

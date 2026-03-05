@@ -195,7 +195,7 @@
         "`useJoinChallenge()` inserts into challenge_participants",
         "Data shape matches `src/data/mockData.ts` Challenge interface"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "S13",

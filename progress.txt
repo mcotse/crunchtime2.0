@@ -74,3 +74,9 @@ Status: PASSED
 Files changed: src/hooks/useTransactions.ts (created)
 Notes: Created useTransactions hook with four exports: useTransactions() query (fetches transactions with joined splits, attendees, and edit history, maps snake_case DB columns to camelCase Transaction interface), useAddTransaction() mutation (inserts transaction + splits + attendees), useUpdateFinePaid() mutation (updates fine_status to 'paid'), useUpdateSplit() mutation (replaces splits and marks split_locked=true). Query key: ['transactions']. All mutations invalidate the transactions query on success. `npm run build` succeeds with 0 errors. No new TS errors introduced.
 
+## Iteration 12 -- 2026-03-04
+Story: S12 -- Create useChallenges hook
+Status: PASSED
+Files changed: src/hooks/useChallenges.ts (created)
+Notes: Created useChallenges hook with two exports: useChallenges() query (fetches challenges with joined challenge_participants, maps snake_case DB columns to camelCase Challenge interface including participantIds array), useJoinChallenge() mutation (inserts into challenge_participants). Query key: ['challenges']. Mutation invalidates challenges query on success. `npm run build` succeeds with 0 errors.
+

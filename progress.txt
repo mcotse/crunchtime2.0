@@ -14,3 +14,9 @@ Status: PASSED
 Files changed: supabase/config.toml (created via `supabase init`, then modified ports)
 Notes: Default ports conflicted with another Supabase project (no-guidelines-2). Changed all ports to 5433x range (API: 54331, DB: 54332, Studio: 54333, Inbucket: 54334, Analytics: 54337). Supabase starts cleanly. Studio at http://127.0.0.1:54333.
 
+## Iteration 2 -- 2026-03-04
+Story: S02 -- Create database schema migration
+Status: PASSED
+Files changed: supabase/migrations/001_initial_schema.sql (created)
+Notes: Created all 14 tables from BACKEND_SPEC.md: members, polls, challenges, challenge_participants, transactions, transaction_splits, transaction_attendees, transaction_edit_history, events, event_rsvps, poll_options, poll_votes, poll_comments, calendar_availability. Polls created before challenges to satisfy linked_poll_id FK. All constraints, CHECK constraints, foreign keys, and soft-delete columns included. `npx supabase db reset` runs cleanly.
+

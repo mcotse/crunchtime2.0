@@ -34,7 +34,7 @@
         "`npx supabase db reset` runs without errors",
         "Schema matches TypeScript interfaces in src/data/*.ts"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "S03",

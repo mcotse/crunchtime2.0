@@ -163,7 +163,7 @@
         "Query filters out soft-deleted rows",
         "Data shape matches `src/data/mockData.ts` Member interface"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "S11",

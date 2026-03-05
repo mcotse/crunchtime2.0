@@ -34,12 +34,15 @@ export function CrunchTime() {
   const CURRENT_USER_ID = member?.id ?? '';
 
   // Server data from hooks
-  const { data: members = [] } = useMembers();
-  const { data: transactions = [] } = useTransactions();
-  const { data: challenges = [] } = useChallenges();
-  const { data: events = [] } = useEvents();
-  const { data: polls = [] } = usePolls();
-  const { data: calendarAvailability = {} } = useCalendarAvailability();
+  const { data: members = [], isLoading: membersLoading, error: membersError } = useMembers();
+  const { data: transactions = [], isLoading: transactionsLoading, error: transactionsError } = useTransactions();
+  const { data: challenges = [], isLoading: challengesLoading, error: challengesError } = useChallenges();
+  const { data: events = [], isLoading: eventsLoading, error: eventsError } = useEvents();
+  const { data: polls = [], isLoading: pollsLoading, error: pollsError } = usePolls();
+  const { data: calendarAvailability = {}, isLoading: calendarLoading, error: calendarError } = useCalendarAvailability();
+
+  const isDataLoading = membersLoading || transactionsLoading || challengesLoading || eventsLoading || pollsLoading || calendarLoading;
+  const dataError = membersError || transactionsError || challengesError || eventsError || pollsError || calendarError;
 
   // Mutations
   const addTransactionMutation = useAddTransaction();
@@ -274,6 +277,54 @@ export function CrunchTime() {
     setSelectedEventId(updatedEvent.id);
   };
   const linkedEventForTx = selectedTransaction ? events.find((ev) => ev.linkedTransactionId === selectedTransaction.id) ?? null : null;
+
+  if (isDataLoading) {
+    return (
+      <div className={`${isDark ? 'dark' : 'light'} min-h-screen font-sans bg-eqx-base text-eqx-primary`}>
+        <div className="max-w-md mx-auto min-h-screen flex items-center justify-center">
+          <div className="flex flex-col items-center gap-3">
+            <div
+              className="w-8 h-8 border-2 rounded-full animate-spin"
+              style={{
+                borderColor: 'var(--eqx-hairline)',
+                borderTopColor: 'var(--eqx-mint)',
+              }}
+            />
+            <p className="text-sm" style={{ color: 'var(--eqx-secondary)' }}>Loading...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (dataError) {
+    return (
+      <div className={`${isDark ? 'dark' : 'light'} min-h-screen font-sans bg-eqx-base text-eqx-primary`}>
+        <div className="max-w-md mx-auto min-h-screen flex flex-col items-center justify-center px-6">
+          <div className="w-full max-w-sm text-center space-y-4">
+            <div className="text-4xl">⚠️</div>
+            <h1 className="text-xl font-bold" style={{ color: 'var(--eqx-primary)' }}>
+              Failed to load data
+            </h1>
+            <p className="text-sm" style={{ color: 'var(--eqx-secondary)' }}>
+              {dataError instanceof Error ? dataError.message : 'Could not connect to the server. Please try again.'}
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 rounded-lg text-sm font-medium"
+              style={{
+                backgroundColor: 'var(--eqx-mint)',
+                color: 'var(--eqx-base)',
+              }}
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return <div className={`${isDark ? 'dark' : 'light'} min-h-screen font-sans bg-eqx-base text-eqx-primary selection:bg-eqx-raised`}>
       <div className="max-w-md mx-auto min-h-screen relative flex flex-col">
         <main className="flex-1 flex flex-col">

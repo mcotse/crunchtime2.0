@@ -102,10 +102,13 @@ function deriveFundActivity(
 
 // ── Main component ────────────────────────────────────────────────────────────
 export function SplitsTab() {
-  const { data: members = [] } = useMembers();
-  const { data: transactions = [] } = useTransactions();
-  const { data: challenges = [] } = useChallenges();
+  const { data: members = [], isLoading: membersLoading, error: membersError } = useMembers();
+  const { data: transactions = [], isLoading: transactionsLoading, error: transactionsError } = useTransactions();
+  const { data: challenges = [], isLoading: challengesLoading, error: challengesError } = useChallenges();
   const addTransaction = useAddTransaction();
+
+  const isLoading = membersLoading || transactionsLoading || challengesLoading;
+  const error = membersError || transactionsError || challengesError;
 
   const splitTransactions = useMemo(() => deriveSplitTransactions(transactions, members), [transactions, members]);
   const dateGroups = useMemo(() => {
@@ -133,6 +136,34 @@ export function SplitsTab() {
   const handleAddTransaction = (transaction: Transaction) => {
     addTransaction.mutate({ transaction });
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex-1 flex items-center justify-center min-h-screen" style={{ backgroundColor: 'var(--eqx-base)' }}>
+        <div className="flex flex-col items-center gap-3">
+          <div
+            className="w-8 h-8 border-2 rounded-full animate-spin"
+            style={{ borderColor: 'var(--eqx-hairline)', borderTopColor: 'var(--eqx-mint)' }}
+          />
+          <p className="text-sm" style={{ color: 'var(--eqx-secondary)' }}>Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center min-h-screen px-6" style={{ backgroundColor: 'var(--eqx-base)' }}>
+        <div className="text-center space-y-3">
+          <div className="text-3xl">⚠️</div>
+          <p className="text-sm" style={{ color: 'var(--eqx-secondary)' }}>
+            {error instanceof Error ? error.message : 'Failed to load data'}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return <div className="flex-1 flex flex-col min-h-screen pb-24" style={{
     backgroundColor: 'var(--eqx-base)'
   }}>

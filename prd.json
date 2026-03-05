@@ -340,7 +340,7 @@
         "Empty states handled gracefully",
         "App doesn't crash on network errors"
       ],
-      "passes": false
+      "passes": true
     },
     {
       "id": "S21",

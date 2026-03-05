@@ -1,10 +1,13 @@
 import React from 'react';
 import { AuthGuard } from './components/AuthGuard';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { CrunchTime } from './pages/BudgetApp';
 export function App() {
   return (
-    <AuthGuard>
-      <CrunchTime />
-    </AuthGuard>
+    <ErrorBoundary>
+      <AuthGuard>
+        <CrunchTime />
+      </AuthGuard>
+    </ErrorBoundary>
   );
 }

@@ -1,9 +1,8 @@
-import React, { useEffect, useState, useRef, Fragment, Component } from 'react';
+import React, { useEffect, useState, useRef, Fragment } from 'react';
 import { motion, AnimatePresence, useDragControls } from 'framer-motion';
 import { X, LockIcon, ArchiveIcon, ArchiveRestoreIcon, Trash2, CalendarIcon, ArrowUp, PlusIcon, BarChart3Icon, TrophyIcon } from 'lucide-react';
 import { Poll } from '../data/pollsData';
 import { Member } from '../data/mockData';
-import { GroupEvent } from '../data/eventsData';
 import { tintRgba } from './tintHelper';
 // ─── Props ────────────────────────────────────────────────────────────────────
 interface PollDetailSheetProps {
@@ -453,7 +452,7 @@ export function PollDetailSheet({
                         setNewOptionText('');
                       }
                     }} placeholder="Option text…" className="flex-1 bg-transparent outline-none" style={{
-                      fontSize: 15,
+                      fontSize: 16,
                       color: 'var(--eqx-primary)'
                     }} />
                             <motion.button whileTap={{

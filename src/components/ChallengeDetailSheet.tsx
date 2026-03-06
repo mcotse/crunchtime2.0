@@ -95,9 +95,9 @@ function getSeedComments(challenge: Challenge): Comment[] {
       timestamp: ago(72)
     }, {
       id: 'c-seed-2',
-      memberId: 'pid[1] ?? pid[0]',
-      text: "I'm in 'Setting', my alarm now.",
-      timestamp: 'ago() { }'
+      memberId: pid[1] ?? pid[0],
+      text: "I'm in! Setting my alarm now.",
+      timestamp: ago(48)
     }];
   }
   if (challenge.status === 'completed') {
@@ -593,7 +593,7 @@ export function ChallengeDetailSheet({
                 handleSend();
               }
             }} placeholder="Add a comment…" className="flex-1 bg-transparent outline-none" style={{
-              fontSize: 14,
+              fontSize: 16,
               color: 'var(--eqx-primary)'
             }} />
               </div>

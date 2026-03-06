@@ -42,7 +42,6 @@ export function CrunchTime() {
 
   const isDataLoading = membersLoading || transactionsLoading || challengesLoading || eventsLoading || pollsLoading || calendarLoading;
   const dataError = membersError || transactionsError || challengesError || eventsError || pollsError || calendarError;
-
   const hasLoadedOnce = useRef(false);
   if (!isDataLoading && !dataError) hasLoadedOnce.current = true;
 

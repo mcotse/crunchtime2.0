@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useImperativeHandle, forwardRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { XIcon, CheckIcon, ChevronDownIcon } from 'lucide-react';
 import { Member, Challenge, Transaction, getCrunchFundBalance } from '../data/mockData';
@@ -370,23 +370,42 @@ function CompactMemberSelector({
       </AnimatePresence>
     </div>;
 }
+// ── Form handle for parent to read child state ──────────────────────────────
+interface FormHandle {
+  getFormData(): Partial<Transaction>;
+}
 // ── Expense Form ──────────────────────────────────────────────────────────────
-function ExpenseForm({
+const ExpenseForm = forwardRef<FormHandle, {members: Member[];challenges: Challenge[];transactions: Transaction[];onScrollToTop?: () => void;}>(function ExpenseForm({
   members,
   challenges,
-  transactions
-
-
-
-
-}: {members: Member[];challenges: Challenge[];transactions: Transaction[];}) {
+  transactions,
+  onScrollToTop
+}, ref) {
   const activeChallenges = challenges.filter((c) => c.status === 'active');
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [paidById, setPaidById] = useState<string | null>(members[0]?.id ?? null);
   const [splitAmong, setSplitAmong] = useState<string[]>([]);
   const [fundingSource, setFundingSource] = useState<'direct' | 'fund'>('direct');
+  const prevFundingSource = useRef(fundingSource);
+  useEffect(() => {
+    if (fundingSource === 'fund' && prevFundingSource.current === 'direct') {
+      onScrollToTop?.();
+    }
+    prevFundingSource.current = fundingSource;
+  }, [fundingSource, onScrollToTop]);
   const [expChallengeId, setExpChallengeId] = useState(activeChallenges[0]?.id ?? '');
+  useImperativeHandle(ref, () => ({
+    getFormData: () => ({
+      type: 'expense' as const,
+      description,
+      amount: parseFloat(amount) || 0,
+      memberId: paidById ?? members[0]?.id ?? '',
+      fundingSource: fundingSource === 'fund' ? 'challenge' as const : 'direct' as const,
+      challengeId: fundingSource === 'fund' && expChallengeId ? expChallengeId : undefined,
+      attendees: splitAmong,
+    }),
+  }), [description, amount, paidById, fundingSource, expChallengeId, splitAmong, members]);
   const challengePoolBalance = expChallengeId ? getCrunchFundBalance(transactions, expChallengeId) : 0;
   const amountNum = parseFloat(amount) || 0;
   const poolCovers = Math.min(amountNum, challengePoolBalance);
@@ -402,7 +421,7 @@ function ExpenseForm({
       {/* 2. Description */}
       <div>
         <SectionLabel>Description</SectionLabel>
-        <input type="text" placeholder="What's it for?" value={description} onChange={(e) => setDescription(e.target.value)} className="w-full bg-transparent outline-none text-[15px] pb-2 placeholder:text-[color:var(--eqx-tertiary)]" style={{
+        <input type="text" placeholder="What's it for?" value={description} onChange={(e) => setDescription(e.target.value)} className="w-full bg-transparent outline-none text-[16px] pb-2 placeholder:text-[color:var(--eqx-tertiary)]" style={{
         borderBottom: '1px solid var(--eqx-hairline)',
         color: 'var(--eqx-primary)',
         caretColor: 'var(--eqx-primary)'
@@ -554,15 +573,12 @@ function ExpenseForm({
           </AnimatePresence>
         </div>}
     </div>;
-}
+});
 // ── Fine Form ─────────────────────────────────────────────────────────────────
-function FineForm({
+const FineForm = forwardRef<FormHandle, {members: Member[];challenges: Challenge[];}>(function FineForm({
   members,
   challenges
-
-
-
-}: {members: Member[];challenges: Challenge[];}) {
+}, ref) {
   const activeChallenges = challenges.filter((c) => c.status === 'active');
   const displayChallenges = activeChallenges.length > 0 ? activeChallenges : challenges;
   const defaultChallenge = displayChallenges[0] ?? null;
@@ -575,6 +591,16 @@ function FineForm({
   const [note, setNote] = useState('');
   const selectedChallenge = challenges.find((c) => c.id === selectedChallengeId);
   const eligibleMembers = selectedChallenge ? members.filter((m) => selectedChallenge.participantIds.includes(m.id)) : members;
+  useImperativeHandle(ref, () => ({
+    getFormData: () => ({
+      type: 'fine' as const,
+      description: note || (selectedChallenge ? `${selectedChallenge.name} fine` : 'Fine'),
+      amount: parseFloat(amount) || 0,
+      memberId: fineMemberId ?? members[0]?.id ?? '',
+      challengeId: selectedChallengeId || undefined,
+      fineStatus: fineStatus === 'paid' ? 'paid' as const : 'pending' as const,
+    }),
+  }), [note, selectedChallenge, amount, fineMemberId, selectedChallengeId, fineStatus, members]);
   useEffect(() => {
     if (selectedChallenge) {
       setAmount(String(selectedChallenge.fineAmount));
@@ -665,7 +691,7 @@ function FineForm({
         }} style={{
           overflow: 'hidden'
         }}>
-              <input type="text" placeholder="Optional note" value={note} onChange={(e) => setNote(e.target.value)} autoFocus className="w-full bg-transparent outline-none text-[15px] pb-2 placeholder:text-[color:var(--eqx-tertiary)]" style={{
+              <input type="text" placeholder="Optional note" value={note} onChange={(e) => setNote(e.target.value)} autoFocus className="w-full bg-transparent outline-none text-[16px] pb-2 placeholder:text-[color:var(--eqx-tertiary)]" style={{
             borderBottom: '1px solid var(--eqx-hairline)',
             color: 'var(--eqx-primary)',
             caretColor: 'var(--eqx-primary)'
@@ -674,7 +700,7 @@ function FineForm({
         </AnimatePresence>
       </div>
     </div>;
-}
+});
 // ── Main sheet ────────────────────────────────────────────────────────────────
 export function AddTransactionSheet({
   isOpen,
@@ -685,10 +711,19 @@ export function AddTransactionSheet({
   onAdd
 }: AddTransactionSheetProps) {
   const [activeTab, setActiveTab] = useState<'expense' | 'fine'>('expense');
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const expenseRef = useRef<FormHandle>(null);
+  const fineRef = useRef<FormHandle>(null);
   useEffect(() => {
     if (!isOpen) setActiveTab('expense');
   }, [isOpen]);
+  const handleScrollToTop = () => {
+    scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  };
   const handleAdd = () => {
+    const formData = activeTab === 'expense'
+      ? expenseRef.current?.getFormData()
+      : fineRef.current?.getFormData();
     onAdd({
       id: Math.random().toString(36).substr(2, 9),
       type: activeTab,
@@ -696,7 +731,8 @@ export function AddTransactionSheet({
       amount: 0,
       memberId: members[0]?.id ?? '',
       date: new Date().toISOString(),
-      editHistory: []
+      editHistory: [],
+      ...formData,
     });
     onClose();
   };
@@ -765,7 +801,7 @@ export function AddTransactionSheet({
             </div>
 
             {/* Scrollable content */}
-            <div className="flex-1 overflow-y-auto px-5 py-4">
+            <div ref={scrollRef} className="flex-1 overflow-y-auto px-5 py-4">
               <AnimatePresence mode="wait" initial={false}>
                 {activeTab === 'expense' ? <motion.div key="expense" initial={{
               opacity: 0,
@@ -780,7 +816,7 @@ export function AddTransactionSheet({
               duration: 0.18,
               ease: EQX_EASE
             }}>
-                    <ExpenseForm members={members} challenges={challenges} transactions={transactions} />
+                    <ExpenseForm ref={expenseRef} members={members} challenges={challenges} transactions={transactions} onScrollToTop={handleScrollToTop} />
                   </motion.div> : <motion.div key="fine" initial={{
               opacity: 0,
               x: 10
@@ -794,7 +830,7 @@ export function AddTransactionSheet({
               duration: 0.18,
               ease: EQX_EASE
             }}>
-                    <FineForm members={members} challenges={challenges} />
+                    <FineForm ref={fineRef} members={members} challenges={challenges} />
                   </motion.div>}
               </AnimatePresence>
             </div>

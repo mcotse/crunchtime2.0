@@ -530,16 +530,17 @@ export function PollDetailSheet({
             </div>
 
             {/* ── Pinned comment input ── */}
-            <div className="flex-shrink-0 px-5 pt-3 pb-6" style={{
+            <div className="flex-shrink-0 px-5 pt-3" style={{
           borderTop: '1px solid var(--eqx-raised)',
-          backgroundColor: 'var(--eqx-surface)'
+          backgroundColor: 'var(--eqx-surface)',
+          paddingBottom: 'max(24px, env(safe-area-inset-bottom))'
         }}>
               <div className="flex items-center gap-2">
                 <Avatar name={currentMember?.name ?? 'Me'} color={currentMember?.color ?? 'var(--eqx-periwinkle)'} initials={currentMember?.initials} size={28} />
                 <input type="text" value={commentText} onChange={(e) => setCommentText(e.target.value)} onKeyDown={(e) => {
               if (e.key === 'Enter') handleSendComment();
             }} placeholder="Add a comment…" className="flex-1 rounded-full px-4 py-2.5 outline-none" style={{
-              fontSize: 14,
+              fontSize: 16,
               backgroundColor: 'var(--eqx-raised)',
               color: 'var(--eqx-primary)',
               border: '1px solid var(--eqx-hairline)'

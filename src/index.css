@@ -53,6 +53,7 @@ body {
     'Helvetica Neue', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
 }
 /* EQX motion system — premium restraint, no bounce */
 *,

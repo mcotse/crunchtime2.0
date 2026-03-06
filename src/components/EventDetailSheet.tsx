@@ -762,9 +762,10 @@ export function EventDetailSheet({
             </div>
 
             {/* ── Pinned comment input ── */}
-            <div className="flex-shrink-0 px-5 pt-3 pb-6" style={{
+            <div className="flex-shrink-0 px-5 pt-3" style={{
           borderTop: '1px solid var(--eqx-hairline)',
-          backgroundColor: 'var(--eqx-surface)'
+          backgroundColor: 'var(--eqx-surface)',
+          paddingBottom: 'max(24px, env(safe-area-inset-bottom))'
         }}>
               <div className="flex items-center gap-2">
                 <Avatar name={currentMember?.name ?? 'Me'} color={currentMember?.color ?? 'var(--eqx-periwinkle)'} initials={currentMember?.initials} size={28} />

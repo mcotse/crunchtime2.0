@@ -263,7 +263,7 @@ export function SplitEditorSheet({
                   }}>
                               $
                             </span>
-                            <input type="number" value={customAmounts[member.id] ?? ''} onChange={(e) => handleAmountChange(member.id, e.target.value)} className="w-16 text-[15px] font-semibold text-right bg-transparent outline-none border-b" style={{
+                            <input type="number" value={customAmounts[member.id] ?? ''} onChange={(e) => handleAmountChange(member.id, e.target.value)} className="w-16 text-[16px] font-semibold text-right bg-transparent outline-none border-b" style={{
                     color: 'var(--eqx-primary)',
                     borderColor: 'var(--eqx-hairline)',
                     caretColor: 'var(--eqx-primary)'
@@ -309,9 +309,10 @@ export function SplitEditorSheet({
             </div>
 
             {/* Pinned save button */}
-            <div className="absolute bottom-0 left-0 right-0 px-5 py-5 border-t" style={{
+            <div className="absolute bottom-0 left-0 right-0 px-5 pt-5 border-t" style={{
           backgroundColor: 'var(--eqx-surface)',
-          borderColor: 'var(--eqx-hairline)'
+          borderColor: 'var(--eqx-hairline)',
+          paddingBottom: 'max(20px, env(safe-area-inset-bottom))'
         }}>
               <Button onClick={handleSave} disabled={!isBalanced || includedCount === 0} className="w-full h-11 text-[15px] font-semibold disabled:opacity-40">
                 Save Split

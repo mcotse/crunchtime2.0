@@ -1,10 +1,11 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query'
 import { supabase } from '../lib/supabase'
 import type { CalendarAvailability } from '../data/calendarData'
 
 export function useCalendarAvailability() {
   return useQuery<CalendarAvailability>({
     queryKey: ['calendar'],
+    placeholderData: keepPreviousData,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('calendar_availability')

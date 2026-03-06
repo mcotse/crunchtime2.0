@@ -64,7 +64,7 @@ export function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
             autoComplete="email"
-            className="w-full rounded-xl px-4 py-3 text-sm outline-none placeholder:opacity-40"
+            className="w-full rounded-xl px-4 py-3 text-base outline-none placeholder:opacity-40"
             style={{
               backgroundColor: 'var(--eqx-surface)',
               color: 'var(--eqx-primary)',
@@ -77,7 +77,7 @@ export function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             autoComplete="current-password"
-            className="w-full rounded-xl px-4 py-3 text-sm outline-none placeholder:opacity-40"
+            className="w-full rounded-xl px-4 py-3 text-base outline-none placeholder:opacity-40"
             style={{
               backgroundColor: 'var(--eqx-surface)',
               color: 'var(--eqx-primary)',

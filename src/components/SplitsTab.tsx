@@ -102,12 +102,11 @@ function deriveFundActivity(
 
 // ── Main component ────────────────────────────────────────────────────────────
 export function SplitsTab() {
-  const { data: members = [], isLoading: membersLoading, error: membersError } = useMembers();
-  const { data: transactions = [], isLoading: transactionsLoading, error: transactionsError } = useTransactions();
-  const { data: challenges = [], isLoading: challengesLoading, error: challengesError } = useChallenges();
+  const { data: members = [], error: membersError } = useMembers();
+  const { data: transactions = [], error: transactionsError } = useTransactions();
+  const { data: challenges = [], error: challengesError } = useChallenges();
   const addTransaction = useAddTransaction();
 
-  const isLoading = membersLoading || transactionsLoading || challengesLoading;
   const error = membersError || transactionsError || challengesError;
 
   const splitTransactions = useMemo(() => deriveSplitTransactions(transactions, members), [transactions, members]);
@@ -136,20 +135,6 @@ export function SplitsTab() {
   const handleAddTransaction = (transaction: Transaction) => {
     addTransaction.mutate({ transaction });
   };
-
-  if (isLoading) {
-    return (
-      <div className="flex-1 flex items-center justify-center min-h-screen" style={{ backgroundColor: 'var(--eqx-base)' }}>
-        <div className="flex flex-col items-center gap-3">
-          <div
-            className="w-8 h-8 border-2 rounded-full animate-spin"
-            style={{ borderColor: 'var(--eqx-hairline)', borderTopColor: 'var(--eqx-mint)' }}
-          />
-          <p className="text-sm" style={{ color: 'var(--eqx-secondary)' }}>Loading...</p>
-        </div>
-      </div>
-    );
-  }
 
   if (error) {
     return (
@@ -203,7 +188,7 @@ export function SplitsTab() {
 
       {/* ── Sub-tab content ── */}
       <div className="px-4 flex-1">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="popLayout">
           {activeSubTab === 'transactions' ? <motion.div key="transactions" initial={{
           opacity: 0,
           y: 8

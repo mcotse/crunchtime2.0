@@ -204,7 +204,7 @@ export function FeedTab({
           flexShrink: 0
         }} />
           <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search activity" className="flex-1 bg-transparent outline-none" style={{
-          fontSize: '14px',
+          fontSize: '16px',
           color: 'var(--eqx-primary)'
         }} />
           <AnimatePresence>

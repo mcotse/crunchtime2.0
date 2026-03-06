@@ -4,6 +4,7 @@ import { X, LockIcon, ArchiveIcon, ArchiveRestoreIcon, Trash2, CalendarIcon, Arr
 import { Poll } from '../data/pollsData';
 import { Member } from '../data/mockData';
 import { tintRgba } from './tintHelper';
+import { useWebHaptics } from 'web-haptics/react';
 // ─── Props ────────────────────────────────────────────────────────────────────
 interface PollDetailSheetProps {
   poll: Poll | null;
@@ -109,6 +110,7 @@ export function PollDetailSheet({
   onDelete,
   onCreateEventFromPoll
 }: PollDetailSheetProps) {
+  const haptic = useWebHaptics();
   const [showOverflow, setShowOverflow] = useState(false);
   const [commentText, setCommentText] = useState('');
   const [showAddOption, setShowAddOption] = useState(false);
@@ -225,6 +227,7 @@ export function PollDetailSheet({
                   {poll.isArchived ? <ArchiveRestoreIcon size={18} strokeWidth={1.5} /> : <ArchiveIcon size={18} strokeWidth={1.5} />}
                 </button>}
               {canDelete && <button onClick={() => {
+            haptic.trigger('warning');
             onDelete?.(poll.id);
             onClose();
           }} className="w-9 h-9 flex items-center justify-center rounded-full active:opacity-[0.92]" style={{
@@ -365,7 +368,10 @@ export function PollDetailSheet({
                     height: 1,
                     backgroundColor: 'var(--eqx-hairline)'
                   }} />}
-                        <button onClick={() => handleVote(option.id)} disabled={!isPollOpen} className="w-full text-left active:opacity-[0.88] transition-colors" style={{
+                        <button onClick={() => {
+                    haptic.trigger('light');
+                    handleVote(option.id);
+                  }} disabled={!isPollOpen} className="w-full text-left active:opacity-[0.88] transition-colors" style={{
                     padding: '12px 16px',
                     cursor: isPollOpen ? 'pointer' : 'default',
                     backgroundColor: highlight ? 'color-mix(in srgb, var(--eqx-primary) 3%, transparent)' : 'transparent'
@@ -514,7 +520,10 @@ export function PollDetailSheet({
                               {comment.text}
                             </p>
                           </div>
-                          {isMyComment && <button onClick={() => onDeleteComment(poll.id, comment.id)} className="flex-shrink-0 p-1.5 active:opacity-[0.92]" style={{
+                          {isMyComment && <button onClick={() => {
+                    haptic.trigger('warning');
+                    onDeleteComment(poll.id, comment.id);
+                  }} className="flex-shrink-0 p-1.5 active:opacity-[0.92]" style={{
                     color: 'var(--eqx-tertiary)'
                   }} aria-label="Delete comment">
                               <X size={12} strokeWidth={2} />
@@ -543,7 +552,10 @@ export function PollDetailSheet({
             }} />
                 <motion.button whileTap={{
               scale: 0.88
-            }} disabled={!commentText.trim()} onClick={handleSendComment} className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-colors duration-150" style={{
+            }} disabled={!commentText.trim()} onClick={() => {
+              haptic.trigger('light');
+              handleSendComment();
+            }} className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-colors duration-150" style={{
               backgroundColor: commentText.trim() ? 'var(--eqx-mint)' : 'var(--eqx-raised)'
             }} aria-label="Send comment">
                   <ArrowUp size={16} color={commentText.trim() ? 'var(--eqx-base)' : 'var(--eqx-tertiary)'} strokeWidth={2} />

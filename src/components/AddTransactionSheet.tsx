@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useImperativeHandle, forwardRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { XIcon, CheckIcon, ChevronDownIcon } from 'lucide-react';
+import { useWebHaptics } from 'web-haptics/react';
 import { Member, Challenge, Transaction, getCrunchFundBalance } from '../data/mockData';
 interface AddTransactionSheetProps {
   isOpen: boolean;
@@ -67,22 +68,18 @@ function PillToggle<T extends string>({
   value,
   onChange,
   getActiveStyle
-
-
-
-
-
-
-
-
 }: {options: {value: T;label: string;}[];value: T;onChange: (v: T) => void;getActiveStyle?: (v: T) => React.CSSProperties;}) {
+  const haptic = useWebHaptics();
   return <div className="flex rounded-full p-1" style={{
     background: 'var(--eqx-raised)'
   }}>
       {options.map((opt) => {
       const isActive = value === opt.value;
       const activeStyle = getActiveStyle?.(opt.value) ?? {};
-      return <button key={opt.value} onClick={() => onChange(opt.value)} className="flex-1 text-center px-4 py-2 rounded-full text-[13px] font-semibold focus:outline-none active:opacity-[0.92]" style={isActive ? {
+      return <button key={opt.value} onClick={() => {
+        haptic.trigger('selection');
+        onChange(opt.value);
+      }} className="flex-1 text-center px-4 py-2 rounded-full text-[13px] font-semibold focus:outline-none active:opacity-[0.92]" style={isActive ? {
         background: 'var(--eqx-primary)',
         color: 'var(--eqx-base)',
         ...activeStyle

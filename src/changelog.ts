@@ -5,6 +5,7 @@ export interface ChangelogEntry {
 }
 
 export const CHANGELOG: ChangelogEntry[] = [
+  { version: '1.2.0', date: 'Mar 6', note: 'Add haptic feedback across the app via web-haptics' },
   { version: '1.1.2', date: 'Mar 5', note: 'Fix flash of not-a-member screen on sign-in, switch to password auth' },
   { version: '1.1.1', date: 'Mar 5', note: 'Wire sign-out button, fix auth config and page title' },
   { version: '1.1.0', date: 'Mar 5', note: 'Auto-versioning in settings page' },

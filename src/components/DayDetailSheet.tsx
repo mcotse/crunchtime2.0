@@ -5,6 +5,7 @@ import { Member } from '../data/mockData';
 import { CalendarAvailability, isPast } from '../data/calendarData';
 import { GroupEvent } from '../data/eventsData';
 import { CoverIcon } from './coverIcons';
+import { useWebHaptics } from 'web-haptics/react';
 interface DayDetailSheetProps {
   dateStr: string | null;
   isOpen: boolean;
@@ -46,6 +47,7 @@ export function DayDetailSheet({
   events = [],
   onOpenEvent
 }: DayDetailSheetProps) {
+  const haptic = useWebHaptics();
   if (!dateStr) return null;
   const dayAvail = availability[dateStr] ?? {
     memberIds: []
@@ -173,7 +175,10 @@ export function DayDetailSheet({
                     </p>
                   </div>
 
-                  {!past ? <button type="button" onClick={() => onToggle(dateStr)} className="relative inline-flex h-7 w-12 items-center rounded-full active:opacity-[0.92]" style={{
+                  {!past ? <button type="button" onClick={() => {
+                  haptic.trigger('light');
+                  onToggle(dateStr);
+                }} className="relative inline-flex h-7 w-12 items-center rounded-full active:opacity-[0.92]" style={{
                 backgroundColor: isAvailable ? 'var(--eqx-orange)' : 'var(--eqx-hairline)'
               }} aria-label="Toggle availability">
                       <motion.span layout transition={{

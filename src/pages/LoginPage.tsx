@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import { DollarSignIcon } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
+import { useWebHaptics } from 'web-haptics/react'
 
 export function LoginPage() {
   const { signInWithPassword } = useAuth()
+  const haptic = useWebHaptics()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [status, setStatus] = useState<'idle' | 'signing-in' | 'success' | 'error'>('idle')
@@ -20,8 +22,10 @@ export function LoginPage() {
     if (error) {
       setStatus('error')
       setErrorMsg(error.message)
+      haptic.trigger('error')
     } else {
       setStatus('success')
+      haptic.trigger('success')
     }
   }
 

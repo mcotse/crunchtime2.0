@@ -4,6 +4,7 @@ import { X, Pencil, Trash2, Calendar, Clock, MapPin, ArrowUp, ChevronRight, Rece
 import { GroupEvent } from '../data/eventsData';
 import { Member, Transaction } from '../data/mockData';
 import { CoverIcon } from './coverIcons';
+import { useWebHaptics } from 'web-haptics/react';
 // ─── Props ────────────────────────────────────────────────────────────────────
 interface EventDetailSheetProps {
   event: GroupEvent | null;
@@ -163,6 +164,7 @@ export function EventDetailSheet({
   onOpenTransaction,
   onAddExpense
 }: EventDetailSheetProps) {
+  const haptic = useWebHaptics();
   const [rsvpStatus, setRsvpStatus] = useState<'going' | 'maybe' | 'not_going' | null>(null);
   const [localGuestCount, setLocalGuestCount] = useState(0);
   const [localProxyFor, setLocalProxyFor] = useState<string[]>([]);
@@ -339,6 +341,7 @@ export function EventDetailSheet({
                   <ArchiveIcon size={18} strokeWidth={1.5} />
                 </button>}
               {canDelete && <button onClick={() => {
+            haptic.trigger('warning');
             onDelete(event.id);
             onClose();
           }} className="w-9 h-9 flex items-center justify-center rounded-full active:opacity-[0.92]" style={{
@@ -436,7 +439,10 @@ export function EventDetailSheet({
                   const pill = selectedPillStyle[opt.status];
                   return <motion.button key={opt.status} whileTap={{
                     scale: 0.96
-                  }} onClick={() => handleRsvp(opt.status)} className="flex-1 rounded-full py-2.5 font-medium transition-all duration-200" style={{
+                  }} onClick={() => {
+                    haptic.trigger('medium');
+                    handleRsvp(opt.status);
+                  }} className="flex-1 rounded-full py-2.5 font-medium transition-all duration-200" style={{
                     fontSize: 14,
                     backgroundColor: selected ? pill.bg : 'transparent',
                     color: selected ? pill.text : 'var(--eqx-tertiary)',
@@ -493,7 +499,10 @@ export function EventDetailSheet({
                                 <div className="flex items-center gap-3">
                                   <motion.button whileTap={{
                             scale: 0.88
-                          }} onClick={() => handleGuestCountChange(-1)} disabled={localGuestCount === 0} className="w-7 h-7 rounded-full flex items-center justify-center transition-opacity" style={{
+                          }} onClick={() => {
+                            haptic.trigger('selection');
+                            handleGuestCountChange(-1);
+                          }} disabled={localGuestCount === 0} className="w-7 h-7 rounded-full flex items-center justify-center transition-opacity" style={{
                             backgroundColor: 'var(--eqx-hairline)',
                             color: localGuestCount === 0 ? 'var(--eqx-hairline)' : 'var(--eqx-tertiary)'
                           }}>
@@ -515,7 +524,10 @@ export function EventDetailSheet({
                                   </span>
                                   <motion.button whileTap={{
                             scale: 0.88
-                          }} onClick={() => handleGuestCountChange(1)} className="w-7 h-7 rounded-full flex items-center justify-center" style={{
+                          }} onClick={() => {
+                            haptic.trigger('selection');
+                            handleGuestCountChange(1);
+                          }} className="w-7 h-7 rounded-full flex items-center justify-center" style={{
                             backgroundColor: 'var(--eqx-hairline)',
                             color: 'var(--eqx-tertiary)'
                           }}>
@@ -542,7 +554,10 @@ export function EventDetailSheet({
                             const isSelected = localProxyFor.includes(m.id);
                             return <motion.button key={m.id} whileTap={{
                               scale: 0.93
-                            }} onClick={() => handleToggleProxy(m.id)} className="flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-colors" style={{
+                            }} onClick={() => {
+                              haptic.trigger('light');
+                              handleToggleProxy(m.id);
+                            }} className="flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-colors" style={{
                               backgroundColor: isSelected ? 'rgba(52, 199, 89, 0.12)' : 'var(--eqx-raised)',
                               border: isSelected ? '1.5px solid rgba(52, 199, 89, 0.6)' : '1px solid var(--eqx-hairline)'
                             }}>
@@ -781,7 +796,10 @@ export function EventDetailSheet({
             }} />
                 <motion.button whileTap={{
               scale: 0.88
-            }} disabled={!commentText.trim()} onClick={handleSendComment} className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-colors duration-150" style={{
+            }} disabled={!commentText.trim()} onClick={() => {
+              haptic.trigger('light');
+              handleSendComment();
+            }} className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 transition-colors duration-150" style={{
               backgroundColor: commentText.trim() ? 'var(--eqx-mint)' : 'var(--eqx-raised)'
             }} aria-label="Send comment">
                   <ArrowUp size={16} color={commentText.trim() ? 'var(--eqx-base)' : 'var(--eqx-tertiary)'} strokeWidth={2} />

@@ -5,6 +5,7 @@ import { Transaction, Member, Challenge } from '../data/mockData';
 import { GroupEvent } from '../data/eventsData';
 import { tintBg } from './tintHelper';
 import { CoverIcon } from './coverIcons';
+import { useWebHaptics } from 'web-haptics/react';
 interface NotificationsSheetProps {
   isOpen: boolean;
   onClose: () => void;
@@ -45,6 +46,7 @@ export function NotificationsSheet({
   isAdmin = false,
   onMarkFinePaid
 }: NotificationsSheetProps) {
+  const haptic = useWebHaptics();
   const todayKey = new Date().toISOString().split('T')[0];
   // Pending fines
   const pendingFines = transactions.filter((t) => t.type === 'fine' && t.fineStatus === 'pending').sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -196,7 +198,7 @@ export function NotificationsSheet({
                           </div>
 
                           {/* Mark as Paid (admin only) */}
-                          {isAdmin && onMarkFinePaid && <button onClick={() => onMarkFinePaid(fine.id)} className="flex-shrink-0 flex items-center gap-1 px-2.5 py-1.5 rounded-full active:opacity-[0.7]" style={{
+                          {isAdmin && onMarkFinePaid && <button onClick={() => { haptic.trigger('success'); onMarkFinePaid(fine.id); }} className="flex-shrink-0 flex items-center gap-1 px-2.5 py-1.5 rounded-full active:opacity-[0.7]" style={{
                     backgroundColor: tintBg('var(--eqx-mint)', 15, 28, 'var(--eqx-surface)'),
                     border: `1px solid ${tintBg('var(--eqx-mint)', 35, 50, 'transparent')}`
                   }}>

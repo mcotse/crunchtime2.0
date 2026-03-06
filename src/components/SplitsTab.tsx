@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRightIcon, PlusIcon, FlameIcon, DollarSignIcon, AlertCircleIcon } from 'lucide-react';
+import { useWebHaptics } from 'web-haptics/react';
 import { TransactionDetailSheet } from './TransactionDetailSheet';
 import { AddTransactionSheet } from './AddTransactionSheet';
 import type { Transaction, Member } from '../data/mockData';
@@ -226,13 +227,14 @@ export function SplitsTab() {
 function SegmentButton({
   label,
   isActive,
-  onClick
+  onClick: onPress
 
 
 
 
 }: {label: string;isActive: boolean;onClick: () => void;}) {
-  return <button role="tab" aria-selected={isActive} onClick={onClick} className="flex-1 py-2 rounded-full font-semibold transition-colors active:opacity-[0.92]" style={{
+  const haptic = useWebHaptics();
+  return <button role="tab" aria-selected={isActive} onClick={() => { haptic.trigger('selection'); onPress(); }} className="flex-1 py-2 rounded-full font-semibold transition-colors active:opacity-[0.92]" style={{
     fontSize: '13px',
     backgroundColor: isActive ? 'var(--eqx-primary)' : 'transparent',
     color: isActive ? 'var(--eqx-base)' : 'var(--eqx-tertiary)',

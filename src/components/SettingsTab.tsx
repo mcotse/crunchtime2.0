@@ -3,6 +3,7 @@ import { LogOutIcon, ChevronRightIcon, ChevronDownIcon, PhoneIcon, MailIcon, Pen
 import { motion, AnimatePresence } from 'framer-motion';
 import { Member } from '../data/mockData';
 import { CHANGELOG } from '../changelog';
+import { useWebHaptics } from 'web-haptics/react';
 interface SettingsTabProps {
   members: Member[];
   groupName: string;
@@ -53,6 +54,7 @@ export function SettingsTab({
   isAdmin = false,
   onSignOut
 }: SettingsTabProps) {
+  const haptic = useWebHaptics();
   const [isEditingName, setIsEditingName] = useState(false);
   const [nameInput, setNameInput] = useState(groupName);
   const [installOpen, setInstallOpen] = useState(false);
@@ -93,7 +95,10 @@ export function SettingsTab({
         backgroundColor: 'var(--eqx-surface)',
         borderColor: 'var(--eqx-hairline)'
       }}>
-          <button onClick={onToggleDark} className="w-full flex items-center justify-between px-4 active:opacity-[0.92]" style={{
+          <button onClick={() => {
+          haptic.trigger('light');
+          onToggleDark();
+        }} className="w-full flex items-center justify-between px-4 active:opacity-[0.92]" style={{
           paddingTop: '12px',
           paddingBottom: '12px'
         }}>
@@ -440,7 +445,10 @@ export function SettingsTab({
                             Sent
                           </motion.span> : <motion.button key="send-btn" exit={{
                     opacity: 0
-                  }} onClick={handleSendNotif} disabled={!broadcastMessage.trim()} className="px-4 py-1.5 rounded-full text-[13px] font-semibold active:opacity-[0.92] disabled:opacity-30 transition-opacity" style={{
+                  }} onClick={() => {
+                  haptic.trigger('success');
+                  handleSendNotif();
+                }} disabled={!broadcastMessage.trim()} className="px-4 py-1.5 rounded-full text-[13px] font-semibold active:opacity-[0.92] disabled:opacity-30 transition-opacity" style={{
                     backgroundColor: 'var(--eqx-primary)',
                     color: 'var(--eqx-base)'
                   }}>
@@ -534,7 +542,10 @@ export function SettingsTab({
       justifyContent: 'center',
       paddingTop: '8px'
     }}>
-        <button onClick={onSignOut} className="flex items-center gap-2 active:opacity-[0.75]" style={{
+        <button onClick={() => {
+        haptic.trigger('warning');
+        onSignOut?.();
+      }} className="flex items-center gap-2 active:opacity-[0.75]" style={{
         background: 'transparent',
         border: '1px solid var(--eqx-coral)',
         color: 'var(--eqx-coral)',

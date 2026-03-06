@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { XIcon, PlusIcon, Trash2Icon, AlertCircleIcon } from 'lucide-react';
 import { Poll, PollOption } from '../data/pollsData';
 import { Button } from './ui/Button';
+import { useWebHaptics } from 'web-haptics/react';
 interface CreatePollSheetProps {
   isOpen: boolean;
   onClose: () => void;
@@ -22,6 +23,7 @@ export function CreatePollSheet({
   currentUserId,
   onCreatePoll
 }: CreatePollSheetProps) {
+  const haptic = useWebHaptics();
   const [title, setTitle] = useState('');
   const [options, setOptions] = useState(['', '']);
   const [allowMembersToAddOptions, setAllowMembersToAddOptions] = useState(true);
@@ -219,7 +221,10 @@ export function CreatePollSheet({
                 }}>
                       Members can add options
                     </p>
-                    <button type="button" onClick={() => setAllowMembersToAddOptions((v) => !v)} className="relative inline-flex h-7 w-12 items-center rounded-full active:opacity-[0.92] flex-shrink-0" style={{
+                    <button type="button" onClick={() => {
+                  haptic.trigger('light');
+                  setAllowMembersToAddOptions((v) => !v);
+                }} className="relative inline-flex h-7 w-12 items-center rounded-full active:opacity-[0.92] flex-shrink-0" style={{
                   backgroundColor: allowMembersToAddOptions ? 'var(--eqx-primary)' : 'var(--eqx-hairline)'
                 }}>
                       <span className="inline-block h-5 w-5 rounded-full shadow" style={{
@@ -236,7 +241,10 @@ export function CreatePollSheet({
                 }}>
                       Allow multiple selections
                     </p>
-                    <button type="button" onClick={() => setAllowMultiSelect((v) => !v)} className="relative inline-flex h-7 w-12 items-center rounded-full active:opacity-[0.92] flex-shrink-0" style={{
+                    <button type="button" onClick={() => {
+                  haptic.trigger('light');
+                  setAllowMultiSelect((v) => !v);
+                }} className="relative inline-flex h-7 w-12 items-center rounded-full active:opacity-[0.92] flex-shrink-0" style={{
                   backgroundColor: allowMultiSelect ? 'var(--eqx-primary)' : 'var(--eqx-hairline)'
                 }}>
                       <span className="inline-block h-5 w-5 rounded-full shadow" style={{
@@ -325,7 +333,10 @@ export function CreatePollSheet({
                     <Button onClick={() => setShowUnsavedWarning(false)} variant="secondary" className="flex-1">
                       Keep editing
                     </Button>
-                    <Button onClick={resetAndClose} variant="danger" className="flex-1">
+                    <Button onClick={() => {
+                  haptic.trigger('warning');
+                  resetAndClose();
+                }} variant="danger" className="flex-1">
                       Discard
                     </Button>
                   </div>

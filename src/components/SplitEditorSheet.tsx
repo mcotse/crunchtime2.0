@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { XIcon, CheckIcon, UsersIcon } from 'lucide-react';
+import { useWebHaptics } from 'web-haptics/react';
 import { Transaction, TransactionSplit, Member } from '../data/mockData';
 import { GroupEvent } from '../data/eventsData';
 import { Button } from './ui/Button';
@@ -28,6 +29,7 @@ export function SplitEditorSheet({
   members,
   onSave
 }: SplitEditorSheetProps) {
+  const haptic = useWebHaptics();
   const [mode, setMode] = useState<'equal' | 'custom'>('equal');
   // Map of memberId → included in split
   const [included, setIncluded] = useState<Record<string, boolean>>({});
@@ -189,13 +191,13 @@ export function SplitEditorSheet({
               <div className="flex p-1 rounded-full" style={{
             backgroundColor: 'var(--eqx-raised)'
           }}>
-                <button onClick={() => setMode('equal')} className="flex-1 py-2 rounded-full text-[13px] font-semibold active:opacity-[0.92]" style={{
+                <button onClick={() => { haptic.trigger('selection'); setMode('equal'); }} className="flex-1 py-2 rounded-full text-[13px] font-semibold active:opacity-[0.92]" style={{
               backgroundColor: mode === 'equal' ? 'var(--eqx-primary)' : 'transparent',
               color: mode === 'equal' ? 'var(--eqx-base)' : 'var(--eqx-tertiary)'
             }}>
                   Equal
                 </button>
-                <button onClick={() => setMode('custom')} className="flex-1 py-2 rounded-full text-[13px] font-semibold active:opacity-[0.92]" style={{
+                <button onClick={() => { haptic.trigger('selection'); setMode('custom'); }} className="flex-1 py-2 rounded-full text-[13px] font-semibold active:opacity-[0.92]" style={{
               backgroundColor: mode === 'custom' ? 'var(--eqx-primary)' : 'transparent',
               color: mode === 'custom' ? 'var(--eqx-base)' : 'var(--eqx-tertiary)'
             }}>

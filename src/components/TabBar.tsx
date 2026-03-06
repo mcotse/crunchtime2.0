@@ -1,6 +1,7 @@
 import React from 'react';
 import { HomeIcon, CreditCardIcon, SettingsIcon, CalendarIcon, ClockIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useWebHaptics } from 'web-haptics/react';
 interface TabBarProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
@@ -10,6 +11,7 @@ export function TabBar({
   activeTab,
   onTabChange
 }: TabBarProps) {
+  const haptic = useWebHaptics();
   const tabs = [{
     id: 'home',
     icon: HomeIcon,
@@ -39,7 +41,10 @@ export function TabBar({
       <div className="max-w-md mx-auto flex justify-between items-stretch h-16 px-1">
         {tabs.map((tab) => {
         const isActive = activeTab === tab.id;
-        return <button key={tab.id} onClick={() => onTabChange(tab.id)} className="relative flex flex-col items-center justify-center flex-1 h-full active:opacity-[0.92]" aria-label={tab.label} aria-current={isActive ? 'page' : undefined}>
+        return <button key={tab.id} onClick={() => {
+          haptic.trigger('selection');
+          onTabChange(tab.id);
+        }} className="relative flex flex-col items-center justify-center flex-1 h-full active:opacity-[0.92]" aria-label={tab.label} aria-current={isActive ? 'page' : undefined}>
               {/* Top indicator — always rendered, opacity-toggled for reliability */}
               <div className="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 rounded-full transition-opacity" style={{
             width: 28,

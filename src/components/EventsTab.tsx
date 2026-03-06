@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { PlusIcon } from 'lucide-react';
+import { useWebHaptics } from 'web-haptics/react';
 import { dateKey, today } from '../data/calendarData';
 import { EQX_EASING } from './events/eventsConstants';
 import { CalendarMode, EventsTabProps } from './events/eventsTypes';
@@ -46,6 +47,7 @@ export function EventsTab({
   onVote,
   onRsvp
 }: EventsTabProps) {
+  const haptic = useWebHaptics();
   const now = today();
   const [viewYear, setViewYear] = useState(now.getFullYear());
   const [viewMonth, setViewMonth] = useState(now.getMonth());
@@ -137,7 +139,10 @@ export function EventsTab({
       }}>
           {SEGMENTS.map((seg) => {
           const isActive = mode === seg.id;
-          return <button key={seg.id} onClick={() => setMode(seg.id)} className="flex-1 py-2 rounded-full text-[13px] font-semibold transition-colors active:opacity-[0.92]" style={{
+          return <button key={seg.id} onClick={() => {
+            haptic.trigger('selection');
+            setMode(seg.id);
+          }} className="flex-1 py-2 rounded-full text-[13px] font-semibold transition-colors active:opacity-[0.92]" style={{
             backgroundColor: isActive ? 'var(--eqx-segment-active)' : 'transparent',
             color: isActive ? 'var(--eqx-segment-text)' : 'var(--eqx-tertiary)'
           }}>

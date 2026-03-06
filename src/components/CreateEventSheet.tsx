@@ -8,6 +8,7 @@ import { SectionLabel } from './ui/SectionLabel';
 import { CalendarPicker } from './CalendarPicker';
 import { EQX_TRANSITION, EQX_EASING, ICON_OPTIONS, autoIcon, generateId, parseTimeInput, to24hr, formatTimeDisplay, getAmpm, formatDateDisplay } from './eventFormHelpers';
 import { CoverIcon } from './coverIcons';
+import { useWebHaptics } from 'web-haptics/react';
 interface CreateEventSheetProps {
   isOpen: boolean;
   onClose: () => void;
@@ -27,6 +28,7 @@ export function CreateEventSheet({
   initialEvent,
   onUpdateEvent
 }: CreateEventSheetProps) {
+  const haptic = useWebHaptics();
   const isEditMode = !!initialEvent;
   const [title, setTitle] = useState('');
   const [icon, setIcon] = useState('calendar');
@@ -282,6 +284,7 @@ export function CreateEventSheet({
                   borderColor: 'var(--eqx-hairline)'
                 }}>
                         {ICON_OPTIONS.map((e) => <button key={e} type="button" onClick={() => {
+                    haptic.trigger('selection');
                     setIcon(e);
                     setIconLocked(true);
                     setShowIconPicker(false);
@@ -372,7 +375,10 @@ export function CreateEventSheet({
                           {time ? formatTimeDisplay(time) : 'Optional'}
                         </button>}
                       {/* Tappable AM/PM — only shown when time is set */}
-                      {time && !timeEditing && <button type="button" onClick={handleToggleAmpm} className="text-[15px] font-medium active:opacity-[0.7]" style={{
+                      {time && !timeEditing && <button type="button" onClick={() => {
+                  haptic.trigger('light');
+                  handleToggleAmpm();
+                }} className="text-[15px] font-medium active:opacity-[0.7]" style={{
                     color: 'var(--eqx-tertiary)'
                   }} aria-label={`Switch to ${timeAmpm === 'AM' ? 'PM' : 'AM'}`}>
                           {timeAmpm}
@@ -383,7 +389,12 @@ export function CreateEventSheet({
                   {/* Location row */}
                   <div className="flex items-center px-4 py-3 gap-3">
                     {/* MapPin: dim when no location, tappable toggle when location exists */}
-                    <button type="button" onClick={() => location.trim() && setLocationMapsEnabled((v) => !v)} className="flex-shrink-0" style={{
+                    <button type="button" onClick={() => {
+                  if (location.trim()) {
+                    haptic.trigger('light');
+                    setLocationMapsEnabled((v) => !v);
+                  }
+                }} className="flex-shrink-0" style={{
                   color: locationMapsEnabled ? 'var(--eqx-primary)' : 'var(--eqx-tertiary)',
                   opacity: location.trim() ? 1 : 0.3,
                   cursor: location.trim() ? 'pointer' : 'default',

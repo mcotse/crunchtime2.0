@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { AvailabilityCellProps } from './eventsTypes';
 import { EQX_EASING } from './eventsConstants';
+import { useWebHaptics } from 'web-haptics/react';
 export function AvailabilityCell({
   dateKey,
   day,
@@ -20,6 +21,7 @@ export function AvailabilityCell({
   onToggle,
   onLongPress
 }: AvailabilityCellProps) {
+  const haptic = useWebHaptics();
   const longPressTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const didLongPress = useRef(false);
   const cancelTimer = () => {
@@ -33,6 +35,7 @@ export function AvailabilityCell({
     didLongPress.current = false;
     longPressTimer.current = setTimeout(() => {
       didLongPress.current = true;
+      haptic.trigger('heavy');
       onLongPress(dateKey);
     }, 500);
   };
@@ -40,6 +43,7 @@ export function AvailabilityCell({
     if (past) return;
     cancelTimer();
     if (!didLongPress.current) {
+      haptic.trigger('light');
       onToggle(dateKey);
     }
   };

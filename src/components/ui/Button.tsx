@@ -1,6 +1,7 @@
 import React from 'react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { useWebHaptics } from 'web-haptics/react';
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -8,12 +9,28 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
   size?: 'sm' | 'md' | 'lg' | 'icon';
 }
+const HAPTIC_MAP = {
+  primary: 'medium',
+  secondary: 'light',
+  outline: 'light',
+  ghost: 'light',
+  danger: 'warning',
+} as const;
+
 export function Button({
   className,
   variant = 'primary',
   size = 'md',
+  onClick,
   ...props
 }: ButtonProps) {
+  const haptic = useWebHaptics();
+
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    haptic.trigger(HAPTIC_MAP[variant]);
+    onClick?.(e);
+  };
+
   const variants = {
     // Filled white pill — EQX primary CTA
     primary: 'bg-eqx-primary text-eqx-base font-semibold active:opacity-[0.92] disabled:bg-eqx-hairline disabled:text-eqx-secondary',
@@ -32,5 +49,5 @@ export function Button({
     lg: 'h-14 px-6 text-base',
     icon: 'h-11 w-11 p-0 flex items-center justify-center'
   };
-  return <button className={cn('inline-flex items-center justify-center rounded-[9999px] transition-opacity', 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-eqx-primary/40', 'disabled:pointer-events-none', variants[variant], sizes[size], className)} {...props} />;
+  return <button onClick={handleClick} className={cn('inline-flex items-center justify-center rounded-[9999px] transition-opacity', 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-eqx-primary/40', 'disabled:pointer-events-none', variants[variant], sizes[size], className)} {...props} />;
 }

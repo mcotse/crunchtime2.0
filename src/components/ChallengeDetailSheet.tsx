@@ -5,6 +5,7 @@ import { CoverIcon } from './coverIcons';
 import { Challenge, Member, Transaction } from '../data/mockData';
 import { Poll } from '../data/pollsData';
 import { tintRgba } from './tintHelper';
+import { useWebHaptics } from 'web-haptics/react';
 interface ChallengeDetailSheetProps {
   challenge: Challenge | null;
   isOpen: boolean;
@@ -132,6 +133,7 @@ export function ChallengeDetailSheet({
   onJoinChallenge,
   currentUserId
 }: ChallengeDetailSheetProps) {
+  const haptic = useWebHaptics();
   const [commentsByChallenge, setCommentsByChallenge] = useState<Record<string, Comment[]>>({});
   const [inputText, setInputText] = useState('');
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -473,7 +475,10 @@ export function ChallengeDetailSheet({
               duration: 0.2,
               delay: 0.12,
               ease: EQX_EASING
-            }} onClick={() => onJoinChallenge(challenge.id)} className="w-full py-3.5 rounded-[16px] font-semibold active:opacity-[0.85]" style={{
+            }} onClick={() => {
+              haptic.trigger('medium');
+              onJoinChallenge(challenge.id);
+            }} className="w-full py-3.5 rounded-[16px] font-semibold active:opacity-[0.85]" style={{
               backgroundColor: tintRgba(254, 158, 109, 0.1, 0.2),
               border: `1px solid ${tintRgba(254, 158, 109, 0.3, 0.45)}`,
               fontSize: 14,
@@ -599,7 +604,10 @@ export function ChallengeDetailSheet({
               </div>
 
               {/* Send button */}
-              <button onClick={handleSend} disabled={!inputText.trim()} className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 active:opacity-[0.8] transition-opacity" style={{
+              <button onClick={() => {
+              haptic.trigger('light');
+              handleSend();
+            }} disabled={!inputText.trim()} className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 active:opacity-[0.8] transition-opacity" style={{
             backgroundColor: inputText.trim() ? 'var(--eqx-orange)' : 'var(--eqx-raised)',
             border: inputText.trim() ? 'none' : '1px solid var(--eqx-hairline)'
           }} aria-label="Send comment">

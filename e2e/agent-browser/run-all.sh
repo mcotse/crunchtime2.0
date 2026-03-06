@@ -24,11 +24,15 @@ if ! command -v npx &>/dev/null; then
   exit 1
 fi
 
-# -- Reset database --
-echo "-> Resetting Supabase database..."
+# -- Reset database (skip in CI where supabase start already gives a fresh DB) --
 cd "$PROJECT_ROOT"
-supabase db reset --linked=false
-echo "  Done"
+if [[ -z "${CI:-}" ]]; then
+  echo "-> Resetting Supabase database..."
+  supabase db reset
+  echo "  Done"
+else
+  echo "-> CI detected — skipping db reset (supabase start already applied migrations and seed)"
+fi
 
 # -- Start dev server if needed --
 DEV_PID=""

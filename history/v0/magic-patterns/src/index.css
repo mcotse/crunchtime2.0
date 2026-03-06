@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+
+/* CRITICAL: THE FOLLOWING TAILWIND IMPORTS MUST NEVER BE DELETED OR REORDERED */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* END TAILWIND IMPORTS */
+
+:root,
+.dark {
+  --eqx-base: #0A0A0A;
+  --eqx-surface: #121212;
+  --eqx-raised: #1A1A1A;
+  --eqx-primary: #F5F6F6;
+  --eqx-secondary: #A8A8A8;
+  --eqx-tertiary: #6E6E6E;
+  --eqx-hairline: #2A2A2A;
+  --eqx-mint: #84EFB6;
+  --eqx-coral: #ED6A67;
+  --eqx-orange: #FE9E6D;
+  --eqx-periwinkle: #7F8DE0;
+  --eqx-cyan: #44C2DD;
+  --eqx-hero-gradient: linear-gradient(180deg, #5B310D 0%, #0A0A0A 55%);
+  --eqx-segment-track: var(--eqx-raised);
+  --eqx-segment-active: var(--eqx-primary);
+  --eqx-segment-text: var(--eqx-base);
+}
+.light {
+  --eqx-base: #FBFBF8;
+  --eqx-surface: #EBE8E1;
+  --eqx-raised: #FFFFFF;
+  --eqx-primary: #0A0A0A;
+  --eqx-secondary: #5C5C5C;
+  --eqx-tertiary: #8A8A8A;
+  --eqx-hairline: #D5D0C6;
+  /* Accessible accent variants for light mode — darker, higher contrast */
+  --eqx-mint: #0E7D5F;
+  --eqx-coral: #C93A39;
+  --eqx-orange: #C95E14;
+  --eqx-periwinkle: #4558C7;
+  --eqx-cyan: #0E87A8;
+  --eqx-hero-gradient: linear-gradient(180deg, rgba(201,94,20,0.32) 0%, #FBFBF8 68%);
+  --eqx-segment-track: var(--eqx-surface);
+  --eqx-segment-active: var(--eqx-raised);
+  --eqx-segment-text: var(--eqx-primary);
+}
+html,
+body {
+  background-color: var(--eqx-base);
+  color: var(--eqx-primary);
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'SF Pro Display',
+    'Helvetica Neue', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+/* EQX motion system — premium restraint, no bounce */
+*,
+*::before,
+*::after {
+  transition-property: color, background-color, border-color, opacity;
+  transition-duration: 200ms;
+  transition-timing-function: cubic-bezier(0.2, 0.0, 0.0, 1.0);
+}
+/* Prevent transition on elements with explicit animation classes */
+[class*='duration-']:not([class*='transition-colors']) {
+  transition-property: revert;
+  transition-duration: revert;
+  transition-timing-function: revert;
+}
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+/* Date/time input color scheme — respects theme */
+.dark input[type='date'],
+.dark input[type='time'],
+:root input[type='date'],
+:root input[type='time'] {
+  color-scheme: dark;
+}
+.light input[type='date'],
+.light input[type='time'] {
+  color-scheme: light;
+}
+@keyframes challengeRowSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

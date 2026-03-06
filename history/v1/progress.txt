@@ -1,0 +1,96 @@
+# Crunch Time 2.0 — v1 Bugfix Polish Progress
+
+Ralph loop started: pending first iteration
+Stories: 14 total (US-001 through US-014)
+Branch: ralph/bugfix-polish
+
+## Iteration 1 — 2026-03-05
+Story: US-001 — Prevent iOS auto-zoom on input focus
+Status: PASSED
+Files changed: index.html, AddTransactionSheet.tsx, ChallengeDetailSheet.tsx, CreateEventSheet.tsx, CreatePollSheet.tsx, FeedTab.tsx, PollDetailSheet.tsx, SettingsTab.tsx, SplitEditorSheet.tsx, LoginPage.tsx
+Notes: Updated viewport meta (maximum-scale=1.0, user-scalable=no, viewport-fit=cover), added PWA meta tags, bumped all input/textarea font sizes to >= 16px
+
+## Iteration 2 — 2026-03-05
+Story: US-002 — Remove copy icon from event detail sheet toolbar
+Status: PASSED
+Files changed: EventDetailSheet.tsx
+Notes: Removed Copy button from toolbar and unused Copy import from lucide-react
+
+## Iteration 3 — 2026-03-05
+Story: US-003 — Scroll event detail sheet to top on open
+Status: PASSED
+Files changed: EventDetailSheet.tsx
+Notes: Added scrollRef to scrollable div, useEffect resets scrollTop=0 when isOpen or event.id changes
+
+## Iteration 4 — 2026-03-05
+Story: US-004 — Improve RSVP on-behalf visual feedback
+Status: PASSED
+Files changed: EventDetailSheet.tsx
+Notes: Selected proxy chips get green border, green bg tint, and Check icon; unselected remain neutral
+
+## Iteration 5 — 2026-03-05
+Story: US-005 — Wire linked poll click to open poll detail
+Status: PASSED
+Files changed: ChallengeDetailSheet.tsx, BudgetApp.tsx
+Notes: Added onOpenPoll to destructured props, wired linked poll row onClick to call onOpenPoll. BudgetApp passes callback that closes challenge sheet then opens PollDetailSheet after 320ms animation delay.
+
+## Iteration 6 — 2026-03-05
+Story: US-006 — Add safe area padding to bottom nav and sheets
+Status: PASSED
+Files changed: TabBar.tsx, EventDetailSheet.tsx, PollDetailSheet.tsx, SplitEditorSheet.tsx
+Notes: Added paddingBottom: env(safe-area-inset-bottom) to TabBar outer div. Added max(Xpx, env(safe-area-inset-bottom)) paddingBottom to EventDetailSheet, PollDetailSheet, and SplitEditorSheet bottom bars.
+
+## Iteration 7 — 2026-03-05
+Story: US-007 — Disable overscroll bounce on all screens
+Status: PASSED
+Files changed: index.css, BudgetApp.tsx
+Notes: Added overscroll-behavior: none to html,body. Changed BudgetApp outer wrapper to h-screen overflow-hidden. Made main the scroll container with overflow-y-auto and overscrollBehavior: none.
+
+## Iteration 8 — 2026-03-05
+Story: US-008 — Fix state transition flash — AnimatePresence on tabs
+Status: PASSED
+Files changed: BudgetApp.tsx, SplitsTab.tsx
+Notes: Used CSS-hidden approach — all tabs render simultaneously but non-active use display:none (active uses display:contents). Removed SplitsTab loading spinner gate and unused isLoading variables.
+
+## Iteration 9 — 2026-03-05
+Story: US-009 — Fix state transition flash — loading gate and query config
+Status: PASSED
+Files changed: BudgetApp.tsx
+Notes: Added useRef hasLoadedOnce so loading spinner only shows on initial load, not subsequent refetches. All query hooks already had placeholderData: keepPreviousData. EventsTab and SplitsTab already had mode='popLayout'.
+
+## Iteration 10 — 2026-03-05
+Story: US-010 — Replace fire emoji with FlameIcon in TransactionDetailSheet
+Status: PASSED
+Files changed: TransactionDetailSheet.tsx
+Notes: Replaced CATEGORY_EMOJI with CATEGORY_ICON (Record<string, string | ReactNode>). Fine entry now renders FlameIcon size=12 instead of fire emoji.
+
+## Iteration 11 — 2026-03-05
+Story: US-011 — Replace all UI chrome emojis with lucide icons
+Status: PASSED
+Files changed: SplitsTab.tsx
+Notes: All UI chrome emoji replacements (LoginPage DollarSignIcon, ErrorBoundary/BudgetApp/SplitsTab AlertCircleIcon, AuthGuard ShieldIcon, PollDetailSheet BarChart3Icon/TrophyIcon, TransactionDetailSheet CATEGORY_ICON) were already done in previous iterations. Cleaned up unused emoji field from FundActivityItem interface and data derivation functions in SplitsTab.
+
+## Iteration 12 — 2026-03-05
+Story: US-012 — Replace event cover emojis with lucide icons
+Status: PASSED
+Files changed: CreateEventSheet.tsx, coverIcons.tsx
+Notes: Fixed CreateEventSheet stale emoji references (setEmoji, emojiInputRef, EMOJI_OPTIONS, showEmojiPicker) with icon equivalents. Icon badge renders CoverIcon, icon picker shows lucide icons from ICON_OPTIONS. Fixed coverIcons.tsx type for size/strokeWidth to accept string|number. Removed unused useRef/Component imports. All other rendering sites already used CoverIcon.
+
+## Iteration 13 — 2026-03-05
+Story: US-013 — Replace challenge emojis and remaining emoji literals
+Status: PASSED
+Files changed: ChallengeDetailSheet.tsx, mockData.ts, EventDetailSheet.tsx
+Notes: Challenge emoji field already had icon identifiers. ChallengeDetailSheet now renders CoverIcon component for challenge header instead of raw text. Removed emojis from 4 mock comment strings in ChallengeDetailSheet, 1 in EventDetailSheet, and 1 fine description in mockData.ts. Verified zero emoji unicode (1F300-1FAFF) remaining in src/.
+
+## Iteration 14 — 2026-03-05
+Story: US-014 — Auto-scroll to top when switching to From Fund
+Status: PASSED
+Files changed: AddTransactionSheet.tsx
+Notes: Added scrollRef to scrollable container. Added onScrollToTop callback prop to ExpenseForm. useEffect with prevFundingSource ref triggers smooth scroll to top only when switching from direct to fund (not the reverse direction).
+
+## Final Summary — 2026-03-05
+All 14 stories (US-001 through US-014) PASSED.
+- npm run build: 0 errors
+- npx tsc --noEmit: 0 errors
+- Zero emoji unicode (1F300-1FAFF) remaining in src/
+Branch: ralph/bugfix-polish (not pushed)

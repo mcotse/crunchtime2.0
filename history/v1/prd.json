@@ -1,0 +1,231 @@
+{
+  "project": "Crunch Time 2.0",
+  "branchName": "ralph/bugfix-polish",
+  "description": "Fix 13 UX bugs: iOS zoom, copy icon removal, sheet scroll, RSVP highlight, poll navigation, safe area, overscroll, state transitions, emoji-to-icon replacement, and auto-scroll",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Prevent iOS auto-zoom on input focus",
+      "description": "iOS Safari zooms in when tapping any input with font-size < 16px. Update the viewport meta tag to include maximum-scale=1.0, user-scalable=no, viewport-fit=cover. Also add PWA meta tags (apple-mobile-web-app-capable, apple-mobile-web-app-status-bar-style, theme-color). Additionally, ensure all input and textarea elements across the app use a minimum font-size of 16px.",
+      "acceptanceCriteria": [
+        "index.html viewport meta includes: width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover",
+        "index.html has meta apple-mobile-web-app-capable=yes, apple-mobile-web-app-status-bar-style=black-translucent, theme-color=#0A0A0A",
+        "FeedTab.tsx search input font-size is 16px (was 14px)",
+        "All input/textarea elements in CreateEventSheet, AddTransactionSheet, SplitEditorSheet, PollDetailSheet, ChallengeDetailSheet, SettingsTab, CreatePollSheet, LoginPage have font-size >= 16px",
+        "npm run build succeeds with 0 errors",
+        "npx tsc --noEmit passes"
+      ],
+      "priority": 1,
+      "passes": true,
+      "notes": "Updated viewport meta tag with maximum-scale=1.0, user-scalable=no, viewport-fit=cover. Added PWA meta tags. Bumped all input/textarea font sizes to >= 16px across 10 component files."
+    },
+    {
+      "id": "US-002",
+      "title": "Remove copy icon from event detail sheet toolbar",
+      "description": "The copy/duplicate icon button in the EventDetailSheet toolbar should be removed entirely. It is at lines 329-333 of EventDetailSheet.tsx. Also remove the unused Copy import from lucide-react.",
+      "acceptanceCriteria": [
+        "EventDetailSheet.tsx no longer renders a copy button in the action toolbar",
+        "Copy is removed from the lucide-react import in EventDetailSheet.tsx",
+        "The remaining toolbar icons (edit, archive, delete, close) still render correctly",
+        "npm run build succeeds with 0 errors",
+        "npx tsc --noEmit passes"
+      ],
+      "priority": 2,
+      "passes": true,
+      "notes": "Removed Copy button and Copy import from EventDetailSheet.tsx"
+    },
+    {
+      "id": "US-003",
+      "title": "Scroll event detail sheet to top on open",
+      "description": "When EventDetailSheet opens (or switches to a different event), the scrollable container retains its previous scroll position. Add a useRef to the scrollable div and a useEffect that resets scrollTop to 0 when the sheet opens or the event changes. Reference ChallengeDetailSheet.tsx scrollRef pattern.",
+      "acceptanceCriteria": [
+        "EventDetailSheet.tsx has a scrollRef attached to the scrollable div (the flex-1 overflow-y-auto container)",
+        "A useEffect resets scrollRef.current.scrollTop = 0 when isOpen becomes true or event.id changes",
+        "Opening any event from the activity feed or events list shows content from the top",
+        "npm run build succeeds with 0 errors",
+        "npx tsc --noEmit passes"
+      ],
+      "priority": 3,
+      "passes": true,
+      "notes": "Added scrollRef to scrollable div and useEffect to reset scrollTop on open/event change"
+    },
+    {
+      "id": "US-004",
+      "title": "Improve RSVP on-behalf visual feedback",
+      "description": "The 'On behalf of' member chips in EventDetailSheet have nearly invisible selection feedback (only text weight/color change). Add strong visual highlight: selected chips should have a green/primary-colored border, background tint, and a checkmark icon. Keep the current immediate-add behavior (no confirm button needed). The chip at lines 540-557 needs distinct selected vs unselected styles.",
+      "acceptanceCriteria": [
+        "Selected proxy member chips have a visually distinct appearance: colored border (using --eqx-accent or green), slight background tint, and a check icon",
+        "Unselected chips remain with the current neutral style (--eqx-raised bg, --eqx-hairline border)",
+        "Tapping a chip toggles it and immediately fires onRsvp (existing behavior preserved)",
+        "The selection state is clearly visible at a glance",
+        "npm run build succeeds with 0 errors",
+        "npx tsc --noEmit passes"
+      ],
+      "priority": 4,
+      "passes": true,
+      "notes": "Selected proxy chips now have green border, green background tint, and Check icon. Unselected remain neutral."
+    },
+    {
+      "id": "US-005",
+      "title": "Wire linked poll click to open poll detail",
+      "description": "In ChallengeDetailSheet, clicking the linked poll row (lines 421-458) currently just switches tabs and closes the sheet. It should instead open the PollDetailSheet for that specific poll. Add an onOpenPoll prop to ChallengeDetailSheet. In BudgetApp.tsx, pass a callback that closes the challenge sheet, waits ~320ms for animation, then calls handleOpenPoll with the linked poll.",
+      "acceptanceCriteria": [
+        "ChallengeDetailSheet interface has an onOpenPoll prop accepting a Poll object",
+        "The linked poll row's onClick calls onOpenPoll with the linkedPoll instead of onSwitchToPolls",
+        "BudgetApp.tsx passes onOpenPoll to ChallengeDetailSheet that closes the challenge sheet, then opens the poll detail after a brief delay",
+        "Clicking a linked poll in any challenge correctly opens its PollDetailSheet",
+        "npm run build succeeds with 0 errors",
+        "npx tsc --noEmit passes"
+      ],
+      "priority": 5,
+      "passes": true,
+      "notes": "Added onOpenPoll to ChallengeDetailSheet destructured props and wired linked poll onClick to call it. BudgetApp passes callback that closes challenge sheet and opens poll detail after 320ms delay."
+    },
+    {
+      "id": "US-006",
+      "title": "Add safe area padding to bottom nav and sheets",
+      "description": "The TabBar has no safe-area-inset-bottom padding, causing it to be obscured by the iPhone home indicator. Add paddingBottom: env(safe-area-inset-bottom, 0px) to the TabBar outer div. Also apply safe area bottom padding to bottom-pinned sheet actions (EventDetailSheet, PollDetailSheet, SplitEditorSheet comment/action bars) using the max(Xpx, env(safe-area-inset-bottom)) pattern already used in ChallengeDetailSheet line 564.",
+      "acceptanceCriteria": [
+        "TabBar.tsx outer div has paddingBottom: env(safe-area-inset-bottom, 0px) in its style",
+        "EventDetailSheet bottom comment bar uses paddingBottom with env(safe-area-inset-bottom)",
+        "PollDetailSheet bottom comment bar uses paddingBottom with env(safe-area-inset-bottom)",
+        "SplitEditorSheet bottom action bar uses paddingBottom with env(safe-area-inset-bottom)",
+        "npm run build succeeds with 0 errors",
+        "npx tsc --noEmit passes"
+      ],
+      "priority": 6,
+      "passes": true,
+      "notes": "Added paddingBottom: env(safe-area-inset-bottom) to TabBar. Added paddingBottom: max(Xpx, env(safe-area-inset-bottom)) to EventDetailSheet, PollDetailSheet, and SplitEditorSheet bottom bars."
+    },
+    {
+      "id": "US-007",
+      "title": "Disable overscroll bounce on all screens",
+      "description": "Add overscroll-behavior: none to the html, body rule in index.css. Also change the BudgetApp.tsx app shell from min-h-screen to h-screen overflow-hidden, and make the main content area the scroll container with overflow-y-auto overscroll-none. This prevents the iOS rubber-band/bounce effect and pull-to-refresh when already at the top.",
+      "acceptanceCriteria": [
+        "index.css html,body rule includes overscroll-behavior: none",
+        "BudgetApp.tsx outer wrapper uses h-screen overflow-hidden instead of min-h-screen",
+        "The main content area is the scroll container with overflow-y-auto and overscroll-behavior: none",
+        "Pulling down when at the top of any screen does not trigger bounce or pull-to-refresh",
+        "All tab content still scrolls normally within its container",
+        "npm run build succeeds with 0 errors",
+        "npx tsc --noEmit passes"
+      ],
+      "priority": 7,
+      "passes": true,
+      "notes": "Added overscroll-behavior: none to html,body in index.css. Changed BudgetApp outer wrapper to h-screen overflow-hidden. Made main content area the scroll container with overflow-y-auto and overscrollBehavior: none."
+    },
+    {
+      "id": "US-008",
+      "title": "Fix state transition flash — AnimatePresence on tabs",
+      "description": "Wrap top-level tab rendering in BudgetApp.tsx (lines 329-333) with AnimatePresence. Use keyed motion.div wrappers around each tab, OR (preferred) render all tabs but hide non-active ones with display:none to avoid unmount/remount and preserve scroll position and local state. Also remove the redundant loading gate in SplitsTab.tsx (lines 140-152) since BudgetApp already ensures data is loaded.",
+      "acceptanceCriteria": [
+        "Top-level tab switching in BudgetApp.tsx does not cause a flash (either uses AnimatePresence with keyed wrappers or CSS-hidden approach)",
+        "SplitsTab.tsx no longer has its own loading spinner gate",
+        "Switching tabs preserves scroll position within each tab",
+        "npm run build succeeds with 0 errors",
+        "npx tsc --noEmit passes"
+      ],
+      "priority": 8,
+      "passes": true,
+      "notes": "Used CSS-hidden approach: all tabs render but non-active use display:none (with display:contents for active). Removed SplitsTab loading spinner gate and unused isLoading vars."
+    },
+    {
+      "id": "US-009",
+      "title": "Fix state transition flash — loading gate and query config",
+      "description": "Make the top-level isDataLoading gate in BudgetApp.tsx (line 279) only apply to the initial load (use a useRef to track first load). After initial data loads, never show the full-page spinner again. Add placeholderData: keepPreviousData to all React Query hooks (useMembers, useTransactions, useChallenges, useEvents, usePolls, useCalendarAvailability) so refetches keep previous data visible. Change AnimatePresence mode='wait' to mode='popLayout' in EventsTab.tsx line 150 and SplitsTab.tsx line 206.",
+      "acceptanceCriteria": [
+        "BudgetApp.tsx loading gate only shows spinner on first load, not on subsequent refetches",
+        "All query hooks in src/hooks/ include placeholderData: keepPreviousData (import from @tanstack/react-query)",
+        "EventsTab.tsx AnimatePresence uses mode='popLayout' instead of mode='wait'",
+        "SplitsTab.tsx AnimatePresence uses mode='popLayout' instead of mode='wait'",
+        "Switching between sub-tabs (Schedule/Events/Polls/Challenges, Transactions/Balances) has no blank gap",
+        "npm run build succeeds with 0 errors",
+        "npx tsc --noEmit passes"
+      ],
+      "priority": 9,
+      "passes": true,
+      "notes": "Added useRef hasLoadedOnce to BudgetApp.tsx so loading spinner only shows on initial load. All query hooks already had placeholderData: keepPreviousData. EventsTab and SplitsTab already had mode='popLayout'."
+    },
+    {
+      "id": "US-010",
+      "title": "Replace fire emoji with FlameIcon in TransactionDetailSheet",
+      "description": "In TransactionDetailSheet.tsx, the CATEGORY_EMOJI map (line 25-34) uses string emojis including Fine: fire emoji. The FlameIcon is already imported but not used for the badge. Replace the emoji string in the Fine category with a rendered <FlameIcon> component. Update the rendering logic at line 158 to handle both string and JSX icon values from the category map.",
+      "acceptanceCriteria": [
+        "TransactionDetailSheet type badge/pill for Fine transactions shows a FlameIcon component instead of the fire emoji",
+        "The FlameIcon matches the style used in HomeTab, FeedTab, SplitsTab (consistent sizing and color)",
+        "npm run build succeeds with 0 errors",
+        "npx tsc --noEmit passes"
+      ],
+      "priority": 10,
+      "passes": true,
+      "notes": "Replaced CATEGORY_EMOJI with CATEGORY_ICON (Record<string, string | ReactNode>). Fine entry now renders FlameIcon size=12 instead of fire emoji. Rendering logic handles both string and JSX values."
+    },
+    {
+      "id": "US-011",
+      "title": "Replace all UI chrome emojis with lucide icons",
+      "description": "Replace emojis used as UI elements throughout the app with lucide-react icons. This includes: (1) CATEGORY_EMOJI map in TransactionDetailSheet — replace all entries with icon components (UtensilsIcon for Food, HomeIcon for Housing, etc.). (2) UI status emojis — replace money bag on LoginPage with DollarSignIcon, warning emojis in ErrorBoundary/BudgetApp/SplitsTab with AlertCircleIcon, blocked emoji in AuthGuard with ShieldIcon, chart emoji in PollDetailSheet with BarChart3Icon, trophy emoji with TrophyIcon. (3) SplitsTab fund activity emojis at lines 85/95 (already rendered as icons but data has emoji strings — clean up the data).",
+      "acceptanceCriteria": [
+        "TransactionDetailSheet CATEGORY_EMOJI map is replaced with icon components for all categories",
+        "LoginPage.tsx uses a lucide icon instead of money bag emoji",
+        "ErrorBoundary.tsx, BudgetApp.tsx error state, SplitsTab.tsx error state use AlertCircleIcon instead of warning emoji",
+        "AuthGuard.tsx uses a lucide icon instead of blocked emoji",
+        "PollDetailSheet.tsx uses BarChart3Icon or similar instead of chart emoji, TrophyIcon instead of trophy emoji",
+        "No emoji literals remain in UI chrome (error states, badges, status indicators, login branding)",
+        "npm run build succeeds with 0 errors",
+        "npx tsc --noEmit passes"
+      ],
+      "priority": 11,
+      "passes": true,
+      "notes": "All UI chrome emojis already replaced with lucide icons in previous iterations. Cleaned up unused emoji field from SplitsTab FundActivityItem interface and data derivation functions."
+    },
+    {
+      "id": "US-012",
+      "title": "Replace event cover emojis with lucide icons",
+      "description": "Convert the event cover emoji system to use lucide icons. (1) Replace EMOJI_OPTIONS in eventFormHelpers.ts with icon component names/identifiers (e.g., 'utensils', 'party-popper', 'dumbbell', 'clapperboard', 'coffee', 'home', 'plane', 'calendar'). (2) Update the auto-detect function to return icon identifiers. (3) Replace coverEmoji values in eventsData.ts mock data with icon identifiers. (4) Update all rendering sites (EventDetailSheet, EventDateChipCard, NotificationsSheet, CreateEventSheet, BudgetApp) to render lucide icon components from the identifier string. (5) Create a small icon-name-to-component lookup map. For emojis with no lucide equivalent (bowling, picnic basket), use the closest match (Target for bowling, Flower for picnic) or CalendarIcon as fallback.",
+      "acceptanceCriteria": [
+        "eventFormHelpers.ts EMOJI_OPTIONS and autoDetectEmoji return lucide icon identifier strings instead of emoji characters",
+        "eventsData.ts mock events use icon identifiers for coverEmoji",
+        "A utility function/map converts icon identifier strings to rendered lucide components",
+        "All event rendering sites (EventDetailSheet header, EventDateChipCard, activity feed, notifications) display lucide icons instead of emoji",
+        "CreateEventSheet emoji picker shows lucide icons instead of emojis",
+        "npm run build succeeds with 0 errors",
+        "npx tsc --noEmit passes"
+      ],
+      "priority": 12,
+      "passes": true,
+      "notes": "Fixed CreateEventSheet.tsx: replaced stale emoji references (setEmoji, emojiInputRef, EMOJI_OPTIONS, showEmojiPicker) with icon equivalents. Icon badge now renders CoverIcon component, icon picker shows lucide icons from ICON_OPTIONS. Fixed coverIcons.tsx type to accept string|number for size/strokeWidth. Removed unused useRef/Component imports. All other rendering sites (EventDetailSheet, EventDateChipCard, EventListItem, NotificationsSheet, DayDetailSheet, TransactionDetailSheet) already used CoverIcon."
+    },
+    {
+      "id": "US-013",
+      "title": "Replace challenge emojis and remaining emoji literals",
+      "description": "Replace challenge emoji fields in mockData.ts (muscle for Six-Pack, sunrise for Early Bird, no-entry for No-Spend) with lucide icon identifiers. Update ChallengeDetailSheet and any rendering sites to use icon components. Remove emojis from mock comment text in ChallengeDetailSheet (lines 69-115) and EventDetailSheet (line 92) — either strip them or leave the comment text without emojis. Remove emojis from fine descriptions in mockData.ts (lines 391, 430, 478). After this story, grep the entire src/ directory for emoji unicode ranges and confirm zero emoji literals remain.",
+      "acceptanceCriteria": [
+        "Challenge objects in mockData.ts use lucide icon identifiers instead of emoji characters",
+        "ChallengeDetailSheet renders lucide icons for challenge headers",
+        "Mock comment text strings have emojis removed (plain text only)",
+        "Fine description strings in mockData.ts have emojis removed",
+        "grep -P '[\\x{1F300}-\\x{1FAFF}]' across src/ returns zero matches (no emoji unicode remaining)",
+        "npm run build succeeds with 0 errors",
+        "npx tsc --noEmit passes"
+      ],
+      "priority": 13,
+      "passes": true,
+      "notes": "Challenge emoji field already had icon identifiers (dumbbell, sunrise, ban). ChallengeDetailSheet now renders CoverIcon component instead of text. Removed emojis from 4 mock comment strings in ChallengeDetailSheet, 1 in EventDetailSheet, and 1 fine description in mockData.ts. Zero emoji unicode remaining in src/."
+    },
+    {
+      "id": "US-014",
+      "title": "Auto-scroll to top when switching to From Fund",
+      "description": "In AddTransactionSheet.tsx, when the user switches from 'Direct' to 'From fund' in the funding source PillToggle, the sheet should auto-scroll to the top. Add a useRef to the scrollable container at line 768. Pass a scroll callback to ExpenseForm. When fundingSource changes to 'fund', call scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' }).",
+      "acceptanceCriteria": [
+        "AddTransactionSheet.tsx has a scrollRef attached to the overflow-y-auto container",
+        "Switching from Direct to From Fund triggers a smooth scroll to the top of the sheet",
+        "Switching from From Fund back to Direct does NOT scroll (only fund direction triggers it)",
+        "npm run build succeeds with 0 errors",
+        "npx tsc --noEmit passes"
+      ],
+      "priority": 14,
+      "passes": true,
+      "notes": "Added scrollRef to scrollable container in AddTransactionSheet. Added onScrollToTop callback prop to ExpenseForm. useEffect with prevFundingSource ref triggers smooth scroll to top only when switching from direct to fund."
+    }
+  ]
+}

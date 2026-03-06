@@ -152,7 +152,7 @@ export function EventsTab({
         </div>
       </div>
 
-      <AnimatePresence mode="popLayout">
+      <AnimatePresence mode="wait">
         {mode === 'upcoming' && <UpcomingModeSection upcomingEvents={upcomingEvents} pastEvents={pastEvents} archivedEvents={archivedEvents} members={members} currentUserId={currentUserId} onOpenEvent={onOpenEvent} onArchiveEvent={onArchiveEvent} onUnarchiveEvent={onUnarchiveEvent} onRsvp={onRsvp} />}
 
         {mode === 'availability' && <AvailabilityModeSection availability={availability} members={members} currentUserId={currentUserId} viewYear={viewYear} viewMonth={viewMonth} onPrevMonth={handlePrevMonth} onNextMonth={handleNextMonth} onToggleAvailability={onToggleAvailability} onDayTap={onDayTap} onCreateEvent={onCreateEvent} />}

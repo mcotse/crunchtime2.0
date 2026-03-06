@@ -17,6 +17,7 @@ interface UseAuthReturn {
   isLoading: boolean
   isAdmin: boolean
   signIn: (email: string) => Promise<{ error: Error | null }>
+  signInWithPassword: (email: string, password: string) => Promise<{ error: Error | null }>
   signOut: () => Promise<void>
 }
 
@@ -57,6 +58,7 @@ export function useAuth(): UseAuthReturn {
       (_event, s) => {
         setSession(s)
         if (s?.user?.id) {
+          setIsLoading(true)
           fetchMember(s.user.id).then(() => setIsLoading(false))
         } else {
           setMember(null)
@@ -73,6 +75,11 @@ export function useAuth(): UseAuthReturn {
     return { error: error ? new Error(error.message) : null }
   }, [])
 
+  const signInWithPassword = useCallback(async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    return { error: error ? new Error(error.message) : null }
+  }, [])
+
   const signOut = useCallback(async () => {
     await supabase.auth.signOut()
     setSession(null)
@@ -85,6 +92,7 @@ export function useAuth(): UseAuthReturn {
     isLoading,
     isAdmin: member?.is_admin ?? false,
     signIn,
+    signInWithPassword,
     signOut,
   }
 }

@@ -2,24 +2,23 @@ import React, { useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
 
 export function LoginPage() {
-  const { signIn } = useAuth()
+  const { signInWithPassword } = useAuth()
   const [email, setEmail] = useState('')
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
+  const [password, setPassword] = useState('')
+  const [status, setStatus] = useState<'idle' | 'signing-in' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!email.trim()) return
+    if (!email.trim() || !password) return
 
-    setStatus('sending')
+    setStatus('signing-in')
     setErrorMsg('')
 
-    const { error } = await signIn(email.trim())
+    const { error } = await signInWithPassword(email.trim(), password)
     if (error) {
       setStatus('error')
       setErrorMsg(error.message)
-    } else {
-      setStatus('sent')
     }
   }
 
@@ -29,7 +28,6 @@ export function LoginPage() {
       style={{ backgroundColor: 'var(--eqx-base)' }}
     >
       <div className="w-full max-w-sm space-y-8">
-        {/* Logo / Title */}
         <div className="text-center space-y-2">
           <div className="text-5xl">💰</div>
           <h1
@@ -46,69 +44,52 @@ export function LoginPage() {
           </p>
         </div>
 
-        {status === 'sent' ? (
-          <div
-            className="rounded-xl p-6 text-center space-y-3"
-            style={{ backgroundColor: 'var(--eqx-surface)' }}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
+            autoComplete="email"
+            className="w-full rounded-xl px-4 py-3 text-sm outline-none placeholder:opacity-40"
+            style={{
+              backgroundColor: 'var(--eqx-surface)',
+              color: 'var(--eqx-primary)',
+              border: '1px solid var(--eqx-hairline)',
+            }}
+          />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            autoComplete="current-password"
+            className="w-full rounded-xl px-4 py-3 text-sm outline-none placeholder:opacity-40"
+            style={{
+              backgroundColor: 'var(--eqx-surface)',
+              color: 'var(--eqx-primary)',
+              border: '1px solid var(--eqx-hairline)',
+            }}
+          />
+
+          {status === 'error' && (
+            <p className="text-sm" style={{ color: 'var(--eqx-coral)' }}>
+              {errorMsg || 'Invalid email or password.'}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={status === 'signing-in' || !email.trim() || !password}
+            className="w-full rounded-xl px-4 py-3 text-sm font-semibold transition-opacity disabled:opacity-50"
+            style={{
+              backgroundColor: 'var(--eqx-mint)',
+              color: 'var(--eqx-base)',
+            }}
           >
-            <div className="text-3xl">📬</div>
-            <p
-              className="font-medium"
-              style={{ color: 'var(--eqx-primary)' }}
-            >
-              Check your email
-            </p>
-            <p
-              className="text-sm"
-              style={{ color: 'var(--eqx-secondary)' }}
-            >
-              We sent a magic link to <strong style={{ color: 'var(--eqx-primary)' }}>{email}</strong>
-            </p>
-            <button
-              onClick={() => { setStatus('idle'); setEmail('') }}
-              className="text-sm mt-2"
-              style={{ color: 'var(--eqx-mint)' }}
-            >
-              Use a different email
-            </button>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                autoComplete="email"
-                className="w-full rounded-xl px-4 py-3 text-sm outline-none placeholder:opacity-40"
-                style={{
-                  backgroundColor: 'var(--eqx-surface)',
-                  color: 'var(--eqx-primary)',
-                  border: '1px solid var(--eqx-hairline)',
-                }}
-              />
-            </div>
-
-            {status === 'error' && (
-              <p className="text-sm" style={{ color: 'var(--eqx-coral)' }}>
-                {errorMsg || 'Something went wrong. Please try again.'}
-              </p>
-            )}
-
-            <button
-              type="submit"
-              disabled={status === 'sending' || !email.trim()}
-              className="w-full rounded-xl px-4 py-3 text-sm font-semibold transition-opacity disabled:opacity-50"
-              style={{
-                backgroundColor: 'var(--eqx-mint)',
-                color: 'var(--eqx-base)',
-              }}
-            >
-              {status === 'sending' ? 'Sending...' : 'Send Magic Link'}
-            </button>
-          </form>
-        )}
+            {status === 'signing-in' ? 'Signing in...' : 'Sign In'}
+          </button>
+        </form>
       </div>
     </div>
   )

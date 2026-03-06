@@ -5,7 +5,7 @@ export function LoginPage() {
   const { signInWithPassword } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [status, setStatus] = useState<'idle' | 'signing-in' | 'error'>('idle')
+  const [status, setStatus] = useState<'idle' | 'signing-in' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -19,6 +19,8 @@ export function LoginPage() {
     if (error) {
       setStatus('error')
       setErrorMsg(error.message)
+    } else {
+      setStatus('success')
     }
   }
 
@@ -44,6 +46,17 @@ export function LoginPage() {
           </p>
         </div>
 
+        {status === 'success' ? (
+          <div className="flex justify-center py-8">
+            <div
+              className="w-8 h-8 border-2 rounded-full animate-spin"
+              style={{
+                borderColor: 'var(--eqx-hairline)',
+                borderTopColor: 'var(--eqx-mint)',
+              }}
+            />
+          </div>
+        ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="email"
@@ -90,6 +103,7 @@ export function LoginPage() {
             {status === 'signing-in' ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
+        )}
       </div>
     </div>
   )

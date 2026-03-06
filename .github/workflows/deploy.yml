@@ -28,7 +28,6 @@ jobs:
           SUPABASE_API: http://127.0.0.1:54321
 
   deploy:
-    needs: [e2e]
     runs-on: ubuntu-latest
     permissions:
       contents: read

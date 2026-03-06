@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Member } from '../data/mockData';
 import { GroupEvent } from '../data/eventsData';
 import { EQX_EASING } from './events/eventsConstants';
+import { CoverIcon } from './coverIcons';
 interface EventDateChipCardProps {
   event: GroupEvent;
   members: Member[];
@@ -110,14 +111,14 @@ export function EventDateChipCard({
         height: 52,
         backgroundColor: 'var(--eqx-raised)'
       }}>
-            <span className="text-[22px] leading-none">{ev.coverEmoji}</span>
+            <CoverIcon name={ev.coverEmoji} size={22} strokeWidth={1.5} style={{ color: 'var(--eqx-periwinkle)' }} />
           </div>}
         <div className="flex-1 min-w-0">
           <p className="font-semibold leading-snug truncate" style={{
           fontSize: '16px',
           color: 'var(--eqx-primary)'
         }}>
-            {ev.coverEmoji && ev.dateStr ? `${ev.coverEmoji} ${ev.title}` : ev.title}
+            {ev.title}
           </p>
           {timeLocation && <p className="mt-1 truncate" style={{
           fontSize: '12px',

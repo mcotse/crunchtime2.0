@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { XIcon, ChevronRightIcon, SendIcon, LinkIcon } from 'lucide-react';
+import { CoverIcon } from './coverIcons';
 import { Challenge, Member, Transaction } from '../data/mockData';
 import { Poll } from '../data/pollsData';
 import { tintRgba } from './tintHelper';
@@ -12,6 +13,7 @@ interface ChallengeDetailSheetProps {
   transactions: Transaction[];
   polls: Poll[];
   onSwitchToPolls?: () => void;
+  onOpenPoll?: (poll: Poll) => void;
   onJoinChallenge?: (challengeId: string) => void;
   currentUserId: string;
 }
@@ -66,12 +68,12 @@ function getSeedComments(challenge: Challenge): Comment[] {
     return [{
       id: 'c-seed-1',
       memberId: pid[1] ?? pid[0],
-      text: 'Day 3 and already struggling 😅 this is harder than I thought',
+      text: 'Day 3 and already struggling, this is harder than I thought',
       timestamp: ago(48)
     }, {
       id: 'c-seed-2',
       memberId: pid[0],
-      text: 'Stay strong! We got this 💪',
+      text: 'Stay strong! We got this',
       timestamp: ago(47)
     }, {
       id: 'c-seed-3',
@@ -81,7 +83,7 @@ function getSeedComments(challenge: Challenge): Comment[] {
     }, {
       id: 'c-seed-4',
       memberId: pid[1] ?? pid[0],
-      text: 'I slipped up yesterday... already paid my fine 🙈',
+      text: 'I slipped up yesterday... already paid my fine',
       timestamp: ago(8)
     }];
   }
@@ -93,9 +95,9 @@ function getSeedComments(challenge: Challenge): Comment[] {
       timestamp: ago(72)
     }, {
       id: 'c-seed-2',
-      memberId: 'pid[1] ?? pid[0]',
-      text: "I'm in 'Setting', my alarm now.",
-      timestamp: 'ago() { }'
+      memberId: pid[1] ?? pid[0],
+      text: "I'm in! Setting my alarm now.",
+      timestamp: ago(48)
     }];
   }
   if (challenge.status === 'completed') {
@@ -107,12 +109,12 @@ function getSeedComments(challenge: Challenge): Comment[] {
     }, {
       id: 'c-seed-2',
       memberId: pid[1] ?? pid[0],
-      text: 'I made it! Barely, but I made it 😅',
+      text: 'I made it! Barely, but I made it',
       timestamp: ago(798)
     }, {
       id: 'c-seed-3',
       memberId: pid[2] ?? pid[0],
-      text: 'Congrats everyone. The fund is looking healthy 💰',
+      text: 'Congrats everyone. The fund is looking healthy',
       timestamp: ago(790)
     }];
   }
@@ -126,6 +128,7 @@ export function ChallengeDetailSheet({
   transactions,
   polls,
   onSwitchToPolls,
+  onOpenPoll,
   onJoinChallenge,
   currentUserId
 }: ChallengeDetailSheetProps) {
@@ -261,10 +264,8 @@ export function ChallengeDetailSheet({
             }}>
                   {/* Top row: emoji + title + pill */}
                   <div className="flex items-start gap-3">
-                    <span className="leading-none flex-shrink-0 mt-0.5" style={{
-                  fontSize: 28
-                }}>
-                      {challenge.emoji}
+                    <span className="leading-none flex-shrink-0 mt-0.5">
+                      <CoverIcon name={challenge.emoji} size={28} strokeWidth={1.5} style={{ color: 'var(--eqx-secondary)' }} />
                     </span>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2">
@@ -430,8 +431,12 @@ export function ChallengeDetailSheet({
               delay: 0.1,
               ease: EQX_EASING
             }} onClick={() => {
-              onSwitchToPolls?.();
-              onClose();
+              if (onOpenPoll && linkedPoll) {
+                onOpenPoll(linkedPoll);
+              } else {
+                onSwitchToPolls?.();
+                onClose();
+              }
             }} className="w-full flex items-center gap-3 px-4 py-3 rounded-[16px] active:opacity-[0.88] text-left" style={{
               backgroundColor: 'var(--eqx-surface)',
               border: '1px solid var(--eqx-hairline)'
@@ -588,7 +593,7 @@ export function ChallengeDetailSheet({
                 handleSend();
               }
             }} placeholder="Add a comment…" className="flex-1 bg-transparent outline-none" style={{
-              fontSize: 14,
+              fontSize: 16,
               color: 'var(--eqx-primary)'
             }} />
               </div>

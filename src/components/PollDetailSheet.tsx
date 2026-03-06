@@ -1,9 +1,8 @@
-import React, { useEffect, useState, useRef, Fragment, Component } from 'react';
+import React, { useEffect, useState, useRef, Fragment } from 'react';
 import { motion, AnimatePresence, useDragControls } from 'framer-motion';
-import { X, LockIcon, ArchiveIcon, ArchiveRestoreIcon, Trash2, CalendarIcon, ArrowUp, PlusIcon } from 'lucide-react';
+import { X, LockIcon, ArchiveIcon, ArchiveRestoreIcon, Trash2, CalendarIcon, ArrowUp, PlusIcon, BarChart3Icon, TrophyIcon } from 'lucide-react';
 import { Poll } from '../data/pollsData';
 import { Member } from '../data/mockData';
-import { GroupEvent } from '../data/eventsData';
 import { tintRgba } from './tintHelper';
 // ─── Props ────────────────────────────────────────────────────────────────────
 interface PollDetailSheetProps {
@@ -245,11 +244,10 @@ export function PollDetailSheet({
               {/* ── Hero ── */}
               <div className="pb-4">
                 <div className="flex items-center gap-2.5 pr-20">
-                  <span className="flex-shrink-0 select-none" style={{
-                fontSize: 28,
+                  <span className="flex-shrink-0 select-none flex items-center justify-center" style={{
                 lineHeight: 1
               }}>
-                    📊
+                    <BarChart3Icon size={28} strokeWidth={1.5} style={{ color: 'var(--eqx-periwinkle)' }} />
                   </span>
                   <h2 className="font-semibold leading-tight" style={{
                 fontSize: 18,
@@ -317,12 +315,10 @@ export function PollDetailSheet({
               }} className="flex items-center gap-2.5 rounded-[14px] px-4 py-3" style={{
                 backgroundColor: 'var(--eqx-primary)'
               }}>
-                      <span style={{
-                  fontSize: 20,
-                  lineHeight: 1,
+                      <span className="flex items-center justify-center" style={{
                   flexShrink: 0
                 }}>
-                        🏆
+                        <TrophyIcon size={20} strokeWidth={1.5} style={{ color: 'var(--eqx-base)' }} />
                       </span>
                       <p className="font-bold flex-1 truncate" style={{
                   fontSize: 14,
@@ -456,7 +452,7 @@ export function PollDetailSheet({
                         setNewOptionText('');
                       }
                     }} placeholder="Option text…" className="flex-1 bg-transparent outline-none" style={{
-                      fontSize: 15,
+                      fontSize: 16,
                       color: 'var(--eqx-primary)'
                     }} />
                             <motion.button whileTap={{
@@ -530,16 +526,17 @@ export function PollDetailSheet({
             </div>
 
             {/* ── Pinned comment input ── */}
-            <div className="flex-shrink-0 px-5 pt-3 pb-6" style={{
+            <div className="flex-shrink-0 px-5 pt-3" style={{
           borderTop: '1px solid var(--eqx-raised)',
-          backgroundColor: 'var(--eqx-surface)'
+          backgroundColor: 'var(--eqx-surface)',
+          paddingBottom: 'max(24px, env(safe-area-inset-bottom))'
         }}>
               <div className="flex items-center gap-2">
                 <Avatar name={currentMember?.name ?? 'Me'} color={currentMember?.color ?? 'var(--eqx-periwinkle)'} initials={currentMember?.initials} size={28} />
                 <input type="text" value={commentText} onChange={(e) => setCommentText(e.target.value)} onKeyDown={(e) => {
               if (e.key === 'Enter') handleSendComment();
             }} placeholder="Add a comment…" className="flex-1 rounded-full px-4 py-2.5 outline-none" style={{
-              fontSize: 14,
+              fontSize: 16,
               backgroundColor: 'var(--eqx-raised)',
               color: 'var(--eqx-primary)',
               border: '1px solid var(--eqx-hairline)'

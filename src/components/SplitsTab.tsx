@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRightIcon, PlusIcon, FlameIcon, DollarSignIcon } from 'lucide-react';
+import { ChevronRightIcon, PlusIcon, FlameIcon, DollarSignIcon, AlertCircleIcon } from 'lucide-react';
 import { TransactionDetailSheet } from './TransactionDetailSheet';
 import { AddTransactionSheet } from './AddTransactionSheet';
 import type { Transaction, Member } from '../data/mockData';
@@ -24,7 +24,6 @@ interface SplitTransaction {
 }
 interface FundActivityItem {
   id: string;
-  emoji: string;
   description: string;
   amount: number;
   type: 'incoming' | 'outgoing';
@@ -82,7 +81,6 @@ function deriveFundActivity(
       const member = memberMap.get(t.memberId);
       return {
         id: t.id,
-        emoji: '⚡',
         description: `${t.description} — ${member?.name ?? 'Unknown'}`,
         amount: t.amount,
         type: 'incoming' as const,
@@ -92,7 +90,6 @@ function deriveFundActivity(
     .filter((t) => t.type === 'expense' && t.fundingSource === 'challenge')
     .map((t) => ({
       id: t.id,
-      emoji: '🍕',
       description: t.description,
       amount: t.amount,
       type: 'outgoing' as const,
@@ -102,12 +99,11 @@ function deriveFundActivity(
 
 // ── Main component ────────────────────────────────────────────────────────────
 export function SplitsTab() {
-  const { data: members = [], isLoading: membersLoading, error: membersError } = useMembers();
-  const { data: transactions = [], isLoading: transactionsLoading, error: transactionsError } = useTransactions();
-  const { data: challenges = [], isLoading: challengesLoading, error: challengesError } = useChallenges();
+  const { data: members = [], error: membersError } = useMembers();
+  const { data: transactions = [], error: transactionsError } = useTransactions();
+  const { data: challenges = [], error: challengesError } = useChallenges();
   const addTransaction = useAddTransaction();
 
-  const isLoading = membersLoading || transactionsLoading || challengesLoading;
   const error = membersError || transactionsError || challengesError;
 
   const splitTransactions = useMemo(() => deriveSplitTransactions(transactions, members), [transactions, members]);
@@ -137,25 +133,11 @@ export function SplitsTab() {
     addTransaction.mutate({ transaction });
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex-1 flex items-center justify-center min-h-screen" style={{ backgroundColor: 'var(--eqx-base)' }}>
-        <div className="flex flex-col items-center gap-3">
-          <div
-            className="w-8 h-8 border-2 rounded-full animate-spin"
-            style={{ borderColor: 'var(--eqx-hairline)', borderTopColor: 'var(--eqx-mint)' }}
-          />
-          <p className="text-sm" style={{ color: 'var(--eqx-secondary)' }}>Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
   if (error) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center min-h-screen px-6" style={{ backgroundColor: 'var(--eqx-base)' }}>
         <div className="text-center space-y-3">
-          <div className="text-3xl">⚠️</div>
+          <div className="flex justify-center"><AlertCircleIcon size={32} strokeWidth={1.5} style={{ color: 'var(--eqx-coral)' }} /></div>
           <p className="text-sm" style={{ color: 'var(--eqx-secondary)' }}>
             {error instanceof Error ? error.message : 'Failed to load data'}
           </p>
@@ -203,7 +185,7 @@ export function SplitsTab() {
 
       {/* ── Sub-tab content ── */}
       <div className="px-4 flex-1">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="popLayout">
           {activeSubTab === 'transactions' ? <motion.div key="transactions" initial={{
           opacity: 0,
           y: 8

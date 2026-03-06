@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { DollarSignIcon } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 
 export function LoginPage() {
@@ -31,7 +32,7 @@ export function LoginPage() {
     >
       <div className="w-full max-w-sm space-y-8">
         <div className="text-center space-y-2">
-          <div className="text-5xl">💰</div>
+          <div className="flex justify-center"><DollarSignIcon size={48} strokeWidth={1.5} style={{ color: 'var(--eqx-mint)' }} /></div>
           <h1
             className="text-2xl font-bold"
             style={{ color: 'var(--eqx-primary)', fontFamily: 'DM Sans, sans-serif' }}
@@ -64,7 +65,7 @@ export function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
             autoComplete="email"
-            className="w-full rounded-xl px-4 py-3 text-sm outline-none placeholder:opacity-40"
+            className="w-full rounded-xl px-4 py-3 text-base outline-none placeholder:opacity-40"
             style={{
               backgroundColor: 'var(--eqx-surface)',
               color: 'var(--eqx-primary)',
@@ -77,7 +78,7 @@ export function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
             autoComplete="current-password"
-            className="w-full rounded-xl px-4 py-3 text-sm outline-none placeholder:opacity-40"
+            className="w-full rounded-xl px-4 py-3 text-base outline-none placeholder:opacity-40"
             style={{
               backgroundColor: 'var(--eqx-surface)',
               color: 'var(--eqx-primary)',

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { XIcon, LinkIcon, ChevronDownIcon, CheckIcon, MapPinIcon, SearchIcon } from 'lucide-react';
 import { GroupEvent } from '../data/eventsData';
@@ -6,7 +6,8 @@ import { Transaction } from '../data/mockData';
 import { Button } from './ui/Button';
 import { SectionLabel } from './ui/SectionLabel';
 import { CalendarPicker } from './CalendarPicker';
-import { EQX_TRANSITION, EQX_EASING, EMOJI_OPTIONS, autoEmoji, generateId, parseTimeInput, to24hr, formatTimeDisplay, getAmpm, formatDateDisplay } from './eventFormHelpers';
+import { EQX_TRANSITION, EQX_EASING, ICON_OPTIONS, autoIcon, generateId, parseTimeInput, to24hr, formatTimeDisplay, getAmpm, formatDateDisplay } from './eventFormHelpers';
+import { CoverIcon } from './coverIcons';
 interface CreateEventSheetProps {
   isOpen: boolean;
   onClose: () => void;
@@ -28,10 +29,9 @@ export function CreateEventSheet({
 }: CreateEventSheetProps) {
   const isEditMode = !!initialEvent;
   const [title, setTitle] = useState('');
-  const [emoji, setEmoji] = useState('📅');
-  const [emojiLocked, setEmojiLocked] = useState(false);
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const emojiInputRef = useRef<HTMLInputElement>(null);
+  const [icon, setIcon] = useState('calendar');
+  const [iconLocked, setIconLocked] = useState(false);
+  const [showIconPicker, setShowIconPicker] = useState(false);
   const [dateStr, setDateStr] = useState('');
   const [showCalendar, setShowCalendar] = useState(false);
   // Time: stored as 24hr HH:MM, displayed as "10:30" + tappable AM/PM
@@ -51,9 +51,9 @@ export function CreateEventSheet({
     if (isOpen) {
       const t = initialEvent?.title ?? '';
       setTitle(t);
-      setEmoji(initialEvent?.coverEmoji ?? (t ? autoEmoji(t) : '📅'));
-      setEmojiLocked(!!initialEvent);
-      setShowEmojiPicker(false);
+      setIcon(initialEvent?.coverEmoji ?? (t ? autoIcon(t) : 'calendar'));
+      setIconLocked(!!initialEvent);
+      setShowIconPicker(false);
       setDateStr(initialEvent?.dateStr ?? '');
       setShowCalendar(false);
       const initTime = initialEvent?.time ?? '';
@@ -70,14 +70,14 @@ export function CreateEventSheet({
       setShowErrors(false);
     }
   }, [isOpen, initialEvent?.id]);
-  // Auto-assign emoji as user types
+  // Auto-assign icon as user types
   useEffect(() => {
-    if (!emojiLocked && title) setEmoji(autoEmoji(title));
+    if (!iconLocked && title) setIcon(autoIcon(title));
     if (!title) {
-      setEmojiLocked(false);
-      setEmoji('📅');
+      setIconLocked(false);
+      setIcon('calendar');
     }
-  }, [title, emojiLocked]);
+  }, [title, iconLocked]);
   // Disable maps if location cleared
   useEffect(() => {
     if (!location) setLocationMapsEnabled(false);
@@ -113,9 +113,9 @@ export function CreateEventSheet({
   const isValid = title.trim() !== '' && dateStr !== '';
   const reset = () => {
     setTitle('');
-    setEmoji('📅');
-    setEmojiLocked(false);
-    setShowEmojiPicker(false);
+    setIcon('calendar');
+    setIconLocked(false);
+    setShowIconPicker(false);
     setDateStr('');
     setShowCalendar(false);
     setTime('');
@@ -150,7 +150,7 @@ export function CreateEventSheet({
         location: location.trim() || undefined,
         locationMapsQuery,
         linkedTransactionId: linkedTxId || undefined,
-        coverEmoji: emoji
+        coverEmoji: icon
       });
     } else {
       onCreateEvent({
@@ -168,7 +168,7 @@ export function CreateEventSheet({
           memberId: currentUserId,
           status: 'going'
         }],
-        coverEmoji: emoji
+        coverEmoji: icon
       });
     }
     if (!isEditMode) reset();
@@ -234,39 +234,15 @@ export function CreateEventSheet({
               {/* ── Hero: Emoji + Name ── */}
               <div className="space-y-2">
                 <div className="flex items-start gap-3">
-                  {/* Emoji badge — tapping opens OS emoji keyboard */}
-                  <div className="flex-shrink-0 relative">
-                    {/* Hidden input to trigger emoji keyboard */}
-                    <input ref={emojiInputRef} type="text" className="absolute inset-0 opacity-0 w-full h-full cursor-pointer" style={{
-                  fontSize: '16px'
-                }} // prevents iOS zoom
-                onChange={(e) => {
-                  const val = e.target.value;
-                  // Extract first emoji character
-                  const emojiRegex = /\p{Emoji_Presentation}|\p{Emoji}\uFE0F/gu;
-                  const match = val.match(emojiRegex);
-                  if (match && match[0]) {
-                    setEmoji(match[0]);
-                    setEmojiLocked(true);
-                    setShowEmojiPicker(false);
-                    e.target.value = '';
-                  } else if (val.length > 0) {
-                    e.target.value = '';
-                  }
-                }} aria-label="Pick emoji from keyboard" />
-                    <button type="button" onClick={() => {
-                  setShowEmojiPicker((v) => !v);
-                  emojiInputRef.current?.focus();
-                }} className="flex items-center justify-center rounded-[16px] active:opacity-[0.7] relative pointer-events-none" style={{
+                  {/* Icon badge */}
+                  <button type="button" onClick={() => setShowIconPicker((v) => !v)} className="flex-shrink-0 flex items-center justify-center rounded-[16px] active:opacity-[0.7]" style={{
                   width: '52px',
                   height: '52px',
-                  fontSize: '28px',
                   backgroundColor: 'var(--eqx-raised)',
-                  border: `1px solid ${showEmojiPicker ? 'var(--eqx-primary)' : 'var(--eqx-hairline)'}`
-                }} tabIndex={-1} aria-hidden="true">
-                      {emoji}
-                    </button>
-                  </div>
+                  border: `1px solid ${showIconPicker ? 'var(--eqx-primary)' : 'var(--eqx-hairline)'}`
+                }} aria-label="Pick icon">
+                    <CoverIcon name={icon} size={28} strokeWidth={1.5} style={{ color: 'var(--eqx-periwinkle)' }} />
+                  </button>
 
                   {/* Name input */}
                   <div className="flex-1 pt-1">
@@ -286,9 +262,9 @@ export function CreateEventSheet({
                   </div>
                 </div>
 
-                {/* Quick-pick emoji row */}
+                {/* Quick-pick icon row */}
                 <AnimatePresence>
-                  {showEmojiPicker && <motion.div initial={{
+                  {showIconPicker && <motion.div initial={{
                 opacity: 0,
                 height: 0
               }} animate={{
@@ -305,15 +281,15 @@ export function CreateEventSheet({
                   backgroundColor: 'var(--eqx-raised)',
                   borderColor: 'var(--eqx-hairline)'
                 }}>
-                        {EMOJI_OPTIONS.map((e) => <button key={e} type="button" onClick={() => {
-                    setEmoji(e);
-                    setEmojiLocked(true);
-                    setShowEmojiPicker(false);
-                  }} className="flex-1 h-10 flex items-center justify-center rounded-[12px] text-[22px] active:opacity-[0.7]" style={{
-                    backgroundColor: emoji === e ? 'var(--eqx-primary)' : 'var(--eqx-surface)',
-                    border: `1px solid ${emoji === e ? 'var(--eqx-primary)' : 'var(--eqx-hairline)'}`
-                  }} aria-pressed={emoji === e}>
-                            {e}
+                        {ICON_OPTIONS.map((e) => <button key={e} type="button" onClick={() => {
+                    setIcon(e);
+                    setIconLocked(true);
+                    setShowIconPicker(false);
+                  }} className="flex-1 h-10 flex items-center justify-center rounded-[12px] active:opacity-[0.7]" style={{
+                    backgroundColor: icon === e ? 'var(--eqx-primary)' : 'var(--eqx-surface)',
+                    border: `1px solid ${icon === e ? 'var(--eqx-primary)' : 'var(--eqx-hairline)'}`
+                  }} aria-pressed={icon === e}>
+                            <CoverIcon name={e} size={20} strokeWidth={1.5} style={{ color: icon === e ? 'var(--eqx-base)' : 'var(--eqx-periwinkle)' }} />
                           </button>)}
                       </div>
                     </motion.div>}
@@ -384,7 +360,7 @@ export function CreateEventSheet({
                       ;
                       (e.target as HTMLInputElement).blur();
                     }
-                  }} placeholder="e.g. 7pm" className="text-[15px] font-medium bg-transparent outline-none text-right w-24" style={{
+                  }} placeholder="e.g. 7pm" className="text-[16px] font-medium bg-transparent outline-none text-right w-24" style={{
                     color: 'var(--eqx-primary)',
                     caretColor: 'var(--eqx-primary)'
                   }} /> : <button type="button" onClick={() => {
@@ -415,7 +391,7 @@ export function CreateEventSheet({
                 }} aria-label={locationMapsEnabled ? 'Disable maps link' : 'Enable maps link'} aria-pressed={locationMapsEnabled} tabIndex={location.trim() ? 0 : -1}>
                       <MapPinIcon size={15} strokeWidth={locationMapsEnabled ? 2.5 : 1.5} />
                     </button>
-                    <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" className="flex-1 text-[15px] bg-transparent outline-none" style={{
+                    <input type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Location" className="flex-1 text-[16px] bg-transparent outline-none" style={{
                   color: 'var(--eqx-primary)',
                   caretColor: 'var(--eqx-primary)'
                 }} />
@@ -438,7 +414,7 @@ export function CreateEventSheet({
               borderColor: 'var(--eqx-hairline)'
             }}>
                   <div className="px-4 py-3.5">
-                    <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Add details…" rows={2} className="w-full text-[15px] bg-transparent outline-none resize-none leading-relaxed" style={{
+                    <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Add details…" rows={2} className="w-full text-[16px] bg-transparent outline-none resize-none leading-relaxed" style={{
                   color: 'var(--eqx-primary)',
                   caretColor: 'var(--eqx-primary)'
                 }} />
@@ -511,7 +487,7 @@ export function CreateEventSheet({
                       color: 'var(--eqx-tertiary)',
                       flexShrink: 0
                     }} />
-                            <input autoFocus value={txSearch} onChange={(e) => setTxSearch(e.target.value)} placeholder="Search transactions…" className="flex-1 text-[14px] bg-transparent outline-none" style={{
+                            <input autoFocus value={txSearch} onChange={(e) => setTxSearch(e.target.value)} placeholder="Search transactions…" className="flex-1 text-[16px] bg-transparent outline-none" style={{
                       color: 'var(--eqx-primary)',
                       caretColor: 'var(--eqx-primary)'
                     }} />

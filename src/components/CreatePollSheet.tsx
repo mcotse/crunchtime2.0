@@ -168,7 +168,7 @@ export function CreatePollSheet({
                           {index + 1}
                         </span>
                         <div className="flex-1">
-                          <input value={option} onChange={(e) => handleOptionChange(index, e.target.value)} placeholder={`Option ${index + 1}`} className="w-full text-[15px] bg-transparent outline-none border-b pb-1.5" style={{
+                          <input value={option} onChange={(e) => handleOptionChange(index, e.target.value)} placeholder={`Option ${index + 1}`} className="w-full text-[16px] bg-transparent outline-none border-b pb-1.5" style={{
                       color: 'var(--eqx-primary)',
                       borderColor: isDuplicate || isEmpty ? 'var(--eqx-coral)' : 'var(--eqx-hairline)',
                       caretColor: 'var(--eqx-primary)'
@@ -260,7 +260,7 @@ export function CreatePollSheet({
                     (optional)
                   </span>
                 </label>
-                <input type="date" value={expiresAt} onChange={(e) => setExpiresAt(e.target.value)} min={new Date().toISOString().split('T')[0]} className="w-full text-[15px] bg-transparent outline-none border-b pb-2" style={{
+                <input type="date" value={expiresAt} onChange={(e) => setExpiresAt(e.target.value)} min={new Date().toISOString().split('T')[0]} className="w-full text-[16px] bg-transparent outline-none border-b pb-2" style={{
               color: 'var(--eqx-primary)',
               borderColor: 'var(--eqx-hairline)'
             }} />

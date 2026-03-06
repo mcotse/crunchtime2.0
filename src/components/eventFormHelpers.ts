@@ -6,7 +6,7 @@ export const EQX_TRANSITION = {
 
 export const EQX_EASING = [0.2, 0.0, 0.0, 1.0] as const;
 
-export const EMOJI_OPTIONS = ['🍽️', '🎉', '🏋️', '🎬', '☕', '🏠', '✈️'];
+export const ICON_OPTIONS = ['utensils', 'party-popper', 'dumbbell', 'clapperboard', 'coffee', 'home', 'plane'];
 
 export const MONTH_NAMES = [
 'January',
@@ -26,16 +26,16 @@ export const MONTH_NAMES = [
 export const DAY_LABELS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
 // ─── Utility functions ────────────────────────────────────────────────────────
-export function autoEmoji(name: string): string {
+export function autoIcon(name: string): string {
   const n = name.toLowerCase();
-  if (/dinner|food|eat|meal|restaurant|lunch/.test(n)) return '🍽️';
-  if (/party|celebrat|birthday/.test(n)) return '🎉';
-  if (/gym|workout|fitness|sport|run|yoga/.test(n)) return '🏋️';
-  if (/movie|film|cinema|watch|netflix/.test(n)) return '🎬';
-  if (/coffee|cafe|brunch|breakfast/.test(n)) return '☕';
-  if (/home|house|apartment|place/.test(n)) return '🏠';
-  if (/travel|trip|flight|vacation/.test(n)) return '✈️';
-  return '📅';
+  if (/dinner|food|eat|meal|restaurant|lunch/.test(n)) return 'utensils';
+  if (/party|celebrat|birthday/.test(n)) return 'party-popper';
+  if (/gym|workout|fitness|sport|run|yoga/.test(n)) return 'dumbbell';
+  if (/movie|film|cinema|watch|netflix/.test(n)) return 'clapperboard';
+  if (/coffee|cafe|brunch|breakfast/.test(n)) return 'coffee';
+  if (/home|house|apartment|place/.test(n)) return 'home';
+  if (/travel|trip|flight|vacation/.test(n)) return 'plane';
+  return 'calendar';
 }
 
 export function generateId() {

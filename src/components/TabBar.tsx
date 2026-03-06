@@ -33,7 +33,8 @@ export function TabBar({
   }];
   return <div className="fixed bottom-0 left-0 right-0 z-40 border-t" style={{
     backgroundColor: 'var(--eqx-base)',
-    borderColor: 'var(--eqx-hairline)'
+    borderColor: 'var(--eqx-hairline)',
+    paddingBottom: 'env(safe-area-inset-bottom, 0px)'
   }}>
       <div className="max-w-md mx-auto flex justify-between items-stretch h-16 px-1">
         {tabs.map((tab) => {

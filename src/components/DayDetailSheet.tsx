@@ -4,6 +4,7 @@ import { XIcon } from 'lucide-react';
 import { Member } from '../data/mockData';
 import { CalendarAvailability, isPast } from '../data/calendarData';
 import { GroupEvent } from '../data/eventsData';
+import { CoverIcon } from './coverIcons';
 interface DayDetailSheetProps {
   dateStr: string | null;
   isOpen: boolean;
@@ -124,8 +125,8 @@ export function DayDetailSheet({
                 backgroundColor: 'var(--eqx-raised)',
                 borderColor: 'var(--eqx-hairline)'
               }}>
-                        <span className="text-2xl leading-none flex-shrink-0">
-                          {ev.coverEmoji}
+                        <span className="leading-none flex-shrink-0 flex items-center justify-center">
+                          <CoverIcon name={ev.coverEmoji} size={24} strokeWidth={1.5} style={{ color: 'var(--eqx-periwinkle)' }} />
                         </span>
                         <div className="flex-1 min-w-0">
                           <p className="text-[15px] font-semibold truncate" style={{

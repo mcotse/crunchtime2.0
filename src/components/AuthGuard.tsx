@@ -1,4 +1,5 @@
 import React from 'react'
+import { ShieldIcon } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 import { LoginPage } from '../pages/LoginPage'
 
@@ -33,7 +34,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
         style={{ backgroundColor: 'var(--eqx-base)' }}
       >
         <div className="w-full max-w-sm text-center space-y-4">
-          <div className="text-4xl">🚫</div>
+          <div className="flex justify-center"><ShieldIcon size={40} strokeWidth={1.5} style={{ color: 'var(--eqx-coral)' }} /></div>
           <h1
             className="text-xl font-bold"
             style={{ color: 'var(--eqx-primary)' }}

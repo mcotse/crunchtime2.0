@@ -344,7 +344,7 @@ export function SettingsTab({
                   <input autoFocus value={nameInput} onChange={(e) => setNameInput(e.target.value)} onKeyDown={(e) => {
               if (e.key === 'Enter') handleSaveName();
               if (e.key === 'Escape') setIsEditingName(false);
-            }} className="text-[13px] font-medium text-right bg-transparent outline-none border-b pb-0.5" style={{
+            }} className="text-[16px] font-medium text-right bg-transparent outline-none border-b pb-0.5" style={{
               color: 'var(--eqx-primary)',
               borderColor: 'var(--eqx-hairline)',
               maxWidth: 120
@@ -418,7 +418,7 @@ export function SettingsTab({
               }}>
                       Message all
                     </p>
-                    <textarea value={broadcastMessage} onChange={(e) => setBroadcastMessage(e.target.value)} placeholder="Write a message…" rows={3} className="w-full text-[14px] bg-transparent outline-none resize-none placeholder:opacity-40" style={{
+                    <textarea value={broadcastMessage} onChange={(e) => setBroadcastMessage(e.target.value)} placeholder="Write a message…" rows={3} className="w-full text-[16px] bg-transparent outline-none resize-none placeholder:opacity-40" style={{
                 color: 'var(--eqx-primary)',
                 caretColor: 'var(--eqx-primary)'
               }} />

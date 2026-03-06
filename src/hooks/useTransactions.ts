@@ -1,10 +1,11 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query'
 import { supabase } from '../lib/supabase'
 import type { Transaction, TransactionSplit } from '../data/mockData'
 
 export function useTransactions() {
   return useQuery<Transaction[]>({
     queryKey: ['transactions'],
+    placeholderData: keepPreviousData,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('transactions')

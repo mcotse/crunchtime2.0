@@ -1,10 +1,11 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from '@tanstack/react-query'
 import { supabase } from '../lib/supabase'
 import type { GroupEvent, EventRSVP } from '../data/eventsData'
 
 export function useEvents() {
   return useQuery<GroupEvent[]>({
     queryKey: ['events'],
+    placeholderData: keepPreviousData,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('events')

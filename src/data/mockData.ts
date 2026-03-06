@@ -260,7 +260,7 @@ export const CHALLENGES: Challenge[] = [
 {
   id: 'c1',
   name: 'Six-Pack Challenge',
-  emoji: '💪',
+  emoji: 'dumbbell',
   description:
   'No alcohol for 30 days. Miss a day, pay $40 into the Crunch Fund.',
   participantIds: ['m1', 'm2', 'm3', 'm4', 'm5', 'm6'],
@@ -274,7 +274,7 @@ export const CHALLENGES: Challenge[] = [
 {
   id: 'c2',
   name: 'Early Bird Challenge',
-  emoji: '🌅',
+  emoji: 'sunrise',
   description: 'Wake up before 7am every day. Sleep in? $25 fine.',
   participantIds: ['m1', 'm3', 'm7', 'm9'],
   startDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
@@ -285,7 +285,7 @@ export const CHALLENGES: Challenge[] = [
 {
   id: 'c3',
   name: 'No-Spend November',
-  emoji: '🚫',
+  emoji: 'ban',
   description: 'No unnecessary purchases for 30 days. Each slip costs $30.',
   participantIds: ['m1', 'm2', 'm4', 'm5', 'm7', 'm8', 'm10', 'm11'],
   startDate: new Date(Date.now() - 65 * 24 * 60 * 60 * 1000).toISOString(),
@@ -388,7 +388,7 @@ export const TRANSACTIONS: Transaction[] = [
   type: 'fine',
   challengeId: 'c1',
   fineStatus: 'paid',
-  description: 'Birthday drinks — twice 🙈',
+  description: 'Birthday drinks — twice',
   amount: 80,
   memberId: 'm6',
   date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
@@ -427,7 +427,7 @@ export const TRANSACTIONS: Transaction[] = [
   type: 'fine',
   challengeId: 'c3',
   fineStatus: 'paid',
-  description: 'Bought new shoes 👟',
+  description: 'Bought new shoes',
   amount: 30,
   memberId: 'm2',
   date: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
@@ -475,7 +475,7 @@ export const TRANSACTIONS: Transaction[] = [
   type: 'fine',
   challengeId: 'c3',
   fineStatus: 'paid',
-  description: 'Steam sale 🎮',
+  description: 'Steam sale',
   amount: 30,
   memberId: 'm7',
   date: new Date(Date.now() - 48 * 24 * 60 * 60 * 1000).toISOString(),

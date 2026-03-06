@@ -48,7 +48,7 @@ export const INITIAL_EVENTS: GroupEvent[] = [
   creatorId: 'm1',
   createdAt: NOW,
   linkedTransactionId: 't6',
-  coverEmoji: '🍽️',
+  coverEmoji: 'utensils',
   rsvps: [
   { memberId: 'm1', status: 'going' },
   { memberId: 'm2', status: 'going' },
@@ -69,7 +69,7 @@ export const INITIAL_EVENTS: GroupEvent[] = [
   creatorId: 'm2',
   createdAt: NOW,
   linkedTransactionId: 't4',
-  coverEmoji: '🎬',
+  coverEmoji: 'clapperboard',
   rsvps: [
   { memberId: 'm1', status: 'going' },
   { memberId: 'm2', status: 'going' },
@@ -89,7 +89,7 @@ export const INITIAL_EVENTS: GroupEvent[] = [
   creatorId: 'm3',
   createdAt: NOW,
   linkedTransactionId: 't1',
-  coverEmoji: '🛒',
+  coverEmoji: 'shopping-cart',
   rsvps: [
   { memberId: 'm1', status: 'maybe' },
   { memberId: 'm3', status: 'going' },
@@ -106,7 +106,7 @@ export const INITIAL_EVENTS: GroupEvent[] = [
   location: "Sarah's place",
   creatorId: 'm2',
   createdAt: NOW,
-  coverEmoji: '🎉',
+  coverEmoji: 'party-popper',
   rsvps: [
   { memberId: 'm1', status: 'going' },
   { memberId: 'm2', status: 'going' },
@@ -127,7 +127,7 @@ export const INITIAL_EVENTS: GroupEvent[] = [
   location: 'Video call',
   creatorId: 'm1',
   createdAt: NOW,
-  coverEmoji: '📊',
+  coverEmoji: 'bar-chart-3',
   rsvps: [
   { memberId: 'm1', status: 'going' },
   { memberId: 'm2', status: 'going' },
@@ -146,7 +146,7 @@ export const INITIAL_EVENTS: GroupEvent[] = [
   locationMapsQuery: 'The Rooftop 88 Spring St',
   creatorId: 'm2',
   createdAt: NOW,
-  coverEmoji: '🌇',
+  coverEmoji: 'sunset',
   rsvps: [
   { memberId: 'm1', status: 'going' },
   { memberId: 'm2', status: 'going' },
@@ -166,7 +166,7 @@ export const INITIAL_EVENTS: GroupEvent[] = [
   locationMapsQuery: 'Lucky Strike Lanes New York',
   creatorId: 'm3',
   createdAt: NOW,
-  coverEmoji: '🎳',
+  coverEmoji: 'target',
   rsvps: [
   { memberId: 'm1', status: 'going' },
   { memberId: 'm2', status: 'going' },
@@ -186,7 +186,7 @@ export const INITIAL_EVENTS: GroupEvent[] = [
   locationMapsQuery: 'Prospect Park Brooklyn',
   creatorId: 'm1',
   createdAt: NOW,
-  coverEmoji: '🧺',
+  coverEmoji: 'flower-2',
   rsvps: [
   { memberId: 'm1', status: 'going' },
   { memberId: 'm2', status: 'going' },

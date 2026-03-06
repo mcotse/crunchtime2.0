@@ -7,6 +7,7 @@ import { EQX_EASING, formatEventDate } from './eventsConstants';
 import { AvatarStack } from './AvatarStack';
 import { EventOverflowMenu } from './EventOverflowMenu';
 import { tintBg } from '../tintHelper';
+import { CoverIcon } from '../coverIcons';
 interface EventListItemProps {
   event: GroupEvent;
   members: Member[];
@@ -49,8 +50,8 @@ export function EventListItem({
   }}>
       <button onClick={() => onOpen(ev)} className="w-full text-left px-5 pt-4 pb-3 active:opacity-[0.92]">
         <div className="flex items-start gap-3">
-          <span className="text-2xl leading-none flex-shrink-0 mt-0.5">
-            {ev.coverEmoji}
+          <span className="leading-none flex-shrink-0 mt-0.5 flex items-center justify-center">
+            <CoverIcon name={ev.coverEmoji} size={24} strokeWidth={1.5} style={{ color: 'var(--eqx-periwinkle)' }} />
           </span>
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between gap-2">

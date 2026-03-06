@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { XIcon, ChevronRightIcon, SendIcon, LinkIcon } from 'lucide-react';
+import { CoverIcon } from './coverIcons';
 import { Challenge, Member, Transaction } from '../data/mockData';
 import { Poll } from '../data/pollsData';
 import { tintRgba } from './tintHelper';
@@ -67,12 +68,12 @@ function getSeedComments(challenge: Challenge): Comment[] {
     return [{
       id: 'c-seed-1',
       memberId: pid[1] ?? pid[0],
-      text: 'Day 3 and already struggling 😅 this is harder than I thought',
+      text: 'Day 3 and already struggling, this is harder than I thought',
       timestamp: ago(48)
     }, {
       id: 'c-seed-2',
       memberId: pid[0],
-      text: 'Stay strong! We got this 💪',
+      text: 'Stay strong! We got this',
       timestamp: ago(47)
     }, {
       id: 'c-seed-3',
@@ -82,7 +83,7 @@ function getSeedComments(challenge: Challenge): Comment[] {
     }, {
       id: 'c-seed-4',
       memberId: pid[1] ?? pid[0],
-      text: 'I slipped up yesterday... already paid my fine 🙈',
+      text: 'I slipped up yesterday... already paid my fine',
       timestamp: ago(8)
     }];
   }
@@ -108,12 +109,12 @@ function getSeedComments(challenge: Challenge): Comment[] {
     }, {
       id: 'c-seed-2',
       memberId: pid[1] ?? pid[0],
-      text: 'I made it! Barely, but I made it 😅',
+      text: 'I made it! Barely, but I made it',
       timestamp: ago(798)
     }, {
       id: 'c-seed-3',
       memberId: pid[2] ?? pid[0],
-      text: 'Congrats everyone. The fund is looking healthy 💰',
+      text: 'Congrats everyone. The fund is looking healthy',
       timestamp: ago(790)
     }];
   }
@@ -263,10 +264,8 @@ export function ChallengeDetailSheet({
             }}>
                   {/* Top row: emoji + title + pill */}
                   <div className="flex items-start gap-3">
-                    <span className="leading-none flex-shrink-0 mt-0.5" style={{
-                  fontSize: 28
-                }}>
-                      {challenge.emoji}
+                    <span className="leading-none flex-shrink-0 mt-0.5">
+                      <CoverIcon name={challenge.emoji} size={28} strokeWidth={1.5} style={{ color: 'var(--eqx-secondary)' }} />
                     </span>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2">

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { DollarSignIcon } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 
 export function LoginPage() {
@@ -31,7 +32,7 @@ export function LoginPage() {
     >
       <div className="w-full max-w-sm space-y-8">
         <div className="text-center space-y-2">
-          <div className="text-5xl">💰</div>
+          <div className="flex justify-center"><DollarSignIcon size={48} strokeWidth={1.5} style={{ color: 'var(--eqx-mint)' }} /></div>
           <h1
             className="text-2xl font-bold"
             style={{ color: 'var(--eqx-primary)', fontFamily: 'DM Sans, sans-serif' }}

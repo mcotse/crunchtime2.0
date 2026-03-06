@@ -3,6 +3,7 @@ import { motion, AnimatePresence, useDragControls } from 'framer-motion';
 import { X, Pencil, Trash2, Calendar, Clock, MapPin, ArrowUp, ChevronRight, Receipt, ChevronDown, ChevronUp, ArchiveIcon, ArchiveRestoreIcon, Check, HelpCircle } from 'lucide-react';
 import { GroupEvent } from '../data/eventsData';
 import { Member, Transaction } from '../data/mockData';
+import { CoverIcon } from './coverIcons';
 // ─── Props ────────────────────────────────────────────────────────────────────
 interface EventDetailSheetProps {
   event: GroupEvent | null;
@@ -89,7 +90,7 @@ const SAMPLE_COMMENTS = [{
   user: 'Jordan K.',
   color: 'var(--eqx-periwinkle)',
   time: '45m ago',
-  message: "I'll bring drinks 🍹"
+  message: "I'll bring drinks"
 }];
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function SectionLabel({
@@ -357,11 +358,10 @@ export function EventDetailSheet({
               {/* ── Header ── */}
               <div className="pb-4">
                 <div className="flex items-center gap-2.5 pr-20">
-                  <span className="flex-shrink-0 select-none" style={{
-                fontSize: 28,
+                  <span className="flex-shrink-0 select-none flex items-center justify-center" style={{
                 lineHeight: 1
               }}>
-                    {event.coverEmoji}
+                    <CoverIcon name={event.coverEmoji} size={28} strokeWidth={1.5} style={{ color: 'var(--eqx-periwinkle)' }} />
                   </span>
                   <h2 className="font-semibold leading-tight" style={{
                 fontSize: 22,

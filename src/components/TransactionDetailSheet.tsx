@@ -1,8 +1,9 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { XIcon, Edit2Icon, CalendarIcon, PencilIcon, FlameIcon, CheckCircleIcon, ClockIcon, UtensilsIcon } from 'lucide-react';
+import { XIcon, Edit2Icon, CalendarIcon, PencilIcon, FlameIcon, CheckCircleIcon, ClockIcon, UtensilsIcon, HomeIcon, ZapIcon, ClapperboardIcon, BanknoteIcon, CarIcon, HeartPulseIcon, CreditCardIcon } from 'lucide-react';
 import { Transaction, Member, Challenge, getCrunchFundBalance } from '../data/mockData';
 import { GroupEvent } from '../data/eventsData';
+import { CoverIcon } from './coverIcons';
 interface TransactionDetailSheetProps {
   transaction: Transaction | null;
   isOpen: boolean;
@@ -22,15 +23,15 @@ const EQX_TRANSITION = {
   ease: [0.2, 0.0, 0.0, 1.0] as const
 };
 const EQX_EASING = [0.2, 0.0, 0.0, 1.0] as const;
-const CATEGORY_EMOJI: Record<string, string> = {
-  Food: '🍽️',
-  Housing: '🏠',
-  Utilities: '💡',
-  Entertainment: '🎬',
-  Income: '💰',
-  Transport: '🚗',
-  Health: '💪',
-  Fine: '🔥'
+const CATEGORY_ICON: Record<string, React.ReactNode> = {
+  Food: <UtensilsIcon size={12} strokeWidth={2.5} />,
+  Housing: <HomeIcon size={12} strokeWidth={2.5} />,
+  Utilities: <ZapIcon size={12} strokeWidth={2.5} />,
+  Entertainment: <ClapperboardIcon size={12} strokeWidth={2.5} />,
+  Income: <BanknoteIcon size={12} strokeWidth={2.5} />,
+  Transport: <CarIcon size={12} strokeWidth={2.5} />,
+  Health: <HeartPulseIcon size={12} strokeWidth={2.5} />,
+  Fine: <FlameIcon size={12} strokeWidth={2.5} />
 };
 /** Auto-generate splits from event going RSVPs */
 function autoSplits(tx: Transaction, event: GroupEvent) {
@@ -74,7 +75,7 @@ export function TransactionDetailSheet({
   // Amount display
   const amountColor = isFine ? isPending ? 'var(--eqx-tertiary)' : 'var(--eqx-mint)' : 'var(--eqx-primary)';
   const amountSign = isFine && !isPending ? '+' : '−';
-  const categoryEmoji = CATEGORY_EMOJI[transaction.category ?? ''] ?? '💳';
+  const categoryIcon = CATEGORY_ICON[transaction.category ?? ''] ?? <CreditCardIcon size={12} strokeWidth={2.5} />;
   const formattedDate = new Date(transaction.date).toLocaleDateString('en-US', {
     weekday: 'long',
     month: 'long',
@@ -155,7 +156,7 @@ export function TransactionDetailSheet({
               border: '1px solid var(--eqx-hairline)',
               color: isFine ? 'var(--eqx-coral)' : 'var(--eqx-tertiary)'
             }}>
-                  {categoryEmoji}{' '}
+                  {categoryIcon}{' '}
                   {isFine ? 'Fine' : isChallengeFunded ? 'Pool Expense' : 'Direct Split'}
                 </span>
 
@@ -299,8 +300,8 @@ export function TransactionDetailSheet({
                       Event
                     </span>
                     <div className="flex items-center gap-2 flex-1">
-                      <span className="text-[16px] leading-none">
-                        {linkedEvent.coverEmoji}
+                      <span className="leading-none flex items-center justify-center">
+                        <CoverIcon name={linkedEvent.coverEmoji} size={16} strokeWidth={1.5} style={{ color: 'var(--eqx-periwinkle)' }} />
                       </span>
                       <span className="text-[15px] font-medium truncate" style={{
                   color: 'var(--eqx-primary)'

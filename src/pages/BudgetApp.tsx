@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { AlertCircleIcon } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useMembers } from '../hooks/useMembers';
 import { useTransactions, useAddTransaction, useUpdateFinePaid, useUpdateSplit } from '../hooks/useTransactions';
@@ -170,7 +171,7 @@ export function CrunchTime() {
       title: prefill.title,
       creatorId: CURRENT_USER_ID,
       createdAt: new Date().toISOString(),
-      coverEmoji: '📊',
+      coverEmoji: 'bar-chart-3',
       rsvps: []
     };
     setEditingEvent(stub);
@@ -303,7 +304,7 @@ export function CrunchTime() {
       <div className={`${isDark ? 'dark' : 'light'} min-h-screen font-sans bg-eqx-base text-eqx-primary`}>
         <div className="max-w-md mx-auto min-h-screen flex flex-col items-center justify-center px-6">
           <div className="w-full max-w-sm text-center space-y-4">
-            <div className="text-4xl">⚠️</div>
+            <div className="flex justify-center"><AlertCircleIcon size={40} strokeWidth={1.5} style={{ color: 'var(--eqx-coral)' }} /></div>
             <h1 className="text-xl font-bold" style={{ color: 'var(--eqx-primary)' }}>
               Failed to load data
             </h1>

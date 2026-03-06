@@ -4,6 +4,7 @@ import { XIcon, BellIcon, FlameIcon, CheckCircleIcon, CalendarIcon, MapPinIcon }
 import { Transaction, Member, Challenge } from '../data/mockData';
 import { GroupEvent } from '../data/eventsData';
 import { tintBg } from './tintHelper';
+import { CoverIcon } from './coverIcons';
 interface NotificationsSheetProps {
   isOpen: boolean;
   onClose: () => void;
@@ -251,9 +252,9 @@ export function NotificationsSheet({
                 }} className="flex items-center gap-3 px-4 py-3.5" style={{
                   borderBottom: isLast ? 'none' : '1px solid var(--eqx-hairline)'
                 }}>
-                          {/* Emoji */}
-                          <span className="text-[22px] leading-none flex-shrink-0">
-                            {ev.coverEmoji}
+                          {/* Icon */}
+                          <span className="leading-none flex-shrink-0 flex items-center justify-center">
+                            <CoverIcon name={ev.coverEmoji} size={22} strokeWidth={1.5} style={{ color: 'var(--eqx-periwinkle)' }} />
                           </span>
 
                           {/* Info */}

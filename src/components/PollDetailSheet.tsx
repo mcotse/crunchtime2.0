@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, Fragment, Component } from 'react';
 import { motion, AnimatePresence, useDragControls } from 'framer-motion';
-import { X, LockIcon, ArchiveIcon, ArchiveRestoreIcon, Trash2, CalendarIcon, ArrowUp, PlusIcon } from 'lucide-react';
+import { X, LockIcon, ArchiveIcon, ArchiveRestoreIcon, Trash2, CalendarIcon, ArrowUp, PlusIcon, BarChart3Icon, TrophyIcon } from 'lucide-react';
 import { Poll } from '../data/pollsData';
 import { Member } from '../data/mockData';
 import { GroupEvent } from '../data/eventsData';
@@ -245,11 +245,10 @@ export function PollDetailSheet({
               {/* ── Hero ── */}
               <div className="pb-4">
                 <div className="flex items-center gap-2.5 pr-20">
-                  <span className="flex-shrink-0 select-none" style={{
-                fontSize: 28,
+                  <span className="flex-shrink-0 select-none flex items-center justify-center" style={{
                 lineHeight: 1
               }}>
-                    📊
+                    <BarChart3Icon size={28} strokeWidth={1.5} style={{ color: 'var(--eqx-periwinkle)' }} />
                   </span>
                   <h2 className="font-semibold leading-tight" style={{
                 fontSize: 18,
@@ -317,12 +316,10 @@ export function PollDetailSheet({
               }} className="flex items-center gap-2.5 rounded-[14px] px-4 py-3" style={{
                 backgroundColor: 'var(--eqx-primary)'
               }}>
-                      <span style={{
-                  fontSize: 20,
-                  lineHeight: 1,
+                      <span className="flex items-center justify-center" style={{
                   flexShrink: 0
                 }}>
-                        🏆
+                        <TrophyIcon size={20} strokeWidth={1.5} style={{ color: 'var(--eqx-base)' }} />
                       </span>
                       <p className="font-bold flex-1 truncate" style={{
                   fontSize: 14,

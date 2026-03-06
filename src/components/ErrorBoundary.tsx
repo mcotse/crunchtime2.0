@@ -1,4 +1,5 @@
 import React from 'react'
+import { AlertCircleIcon } from 'lucide-react'
 
 interface Props {
   children: React.ReactNode
@@ -27,7 +28,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
           style={{ backgroundColor: 'var(--eqx-base)' }}
         >
           <div className="w-full max-w-sm text-center space-y-4">
-            <div className="text-4xl">⚠️</div>
+            <div className="flex justify-center"><AlertCircleIcon size={40} strokeWidth={1.5} style={{ color: 'var(--eqx-coral)' }} /></div>
             <h1
               className="text-xl font-bold"
               style={{ color: 'var(--eqx-primary)' }}

@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRightIcon, PlusIcon, FlameIcon, DollarSignIcon } from 'lucide-react';
+import { ChevronRightIcon, PlusIcon, FlameIcon, DollarSignIcon, AlertCircleIcon } from 'lucide-react';
 import { TransactionDetailSheet } from './TransactionDetailSheet';
 import { AddTransactionSheet } from './AddTransactionSheet';
 import type { Transaction, Member } from '../data/mockData';
@@ -24,7 +24,6 @@ interface SplitTransaction {
 }
 interface FundActivityItem {
   id: string;
-  emoji: string;
   description: string;
   amount: number;
   type: 'incoming' | 'outgoing';
@@ -82,7 +81,6 @@ function deriveFundActivity(
       const member = memberMap.get(t.memberId);
       return {
         id: t.id,
-        emoji: '⚡',
         description: `${t.description} — ${member?.name ?? 'Unknown'}`,
         amount: t.amount,
         type: 'incoming' as const,
@@ -92,7 +90,6 @@ function deriveFundActivity(
     .filter((t) => t.type === 'expense' && t.fundingSource === 'challenge')
     .map((t) => ({
       id: t.id,
-      emoji: '🍕',
       description: t.description,
       amount: t.amount,
       type: 'outgoing' as const,
@@ -140,7 +137,7 @@ export function SplitsTab() {
     return (
       <div className="flex-1 flex flex-col items-center justify-center min-h-screen px-6" style={{ backgroundColor: 'var(--eqx-base)' }}>
         <div className="text-center space-y-3">
-          <div className="text-3xl">⚠️</div>
+          <div className="flex justify-center"><AlertCircleIcon size={32} strokeWidth={1.5} style={{ color: 'var(--eqx-coral)' }} /></div>
           <p className="text-sm" style={{ color: 'var(--eqx-secondary)' }}>
             {error instanceof Error ? error.message : 'Failed to load data'}
           </p>

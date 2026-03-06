@@ -10,6 +10,7 @@ interface SettingsTabProps {
   isDark: boolean;
   onToggleDark: () => void;
   isAdmin?: boolean;
+  onSignOut?: () => void;
 }
 const EQX_EASING = [0.2, 0.0, 0.0, 1.0] as const;
 const INSTALL_STEPS = [{
@@ -49,7 +50,8 @@ export function SettingsTab({
   onGroupNameChange,
   isDark,
   onToggleDark,
-  isAdmin = false
+  isAdmin = false,
+  onSignOut
 }: SettingsTabProps) {
   const [isEditingName, setIsEditingName] = useState(false);
   const [nameInput, setNameInput] = useState(groupName);
@@ -532,7 +534,7 @@ export function SettingsTab({
       justifyContent: 'center',
       paddingTop: '8px'
     }}>
-        <button className="flex items-center gap-2 active:opacity-[0.75]" style={{
+        <button onClick={onSignOut} className="flex items-center gap-2 active:opacity-[0.75]" style={{
         background: 'transparent',
         border: '1px solid var(--eqx-coral)',
         color: 'var(--eqx-coral)',

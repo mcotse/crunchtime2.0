@@ -19,6 +19,10 @@ dist/
 .DS_Store
 Thumbs.db
 
+# Supabase local
+supabase/.branches/
+supabase/.temp/
+
 # Environment
 .env
 .env.*

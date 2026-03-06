@@ -28,7 +28,7 @@ import { ChallengeDetailSheet } from '../components/ChallengeDetailSheet';
 import { NotificationsSheet } from '../components/NotificationsSheet';
 import { SplitsTab } from '../components/SplitsTab';
 export function CrunchTime() {
-  const { member, isAdmin } = useAuth();
+  const { member, isAdmin, signOut } = useAuth();
   const CURRENT_USER_ID = member?.id ?? '';
 
   // Server data from hooks
@@ -330,7 +330,7 @@ export function CrunchTime() {
           {activeTab === 'feed' && <FeedTab transactions={transactions} members={members} challenges={challenges} events={events} currentUserId={CURRENT_USER_ID} isAdmin={isAdmin} onOpenTransaction={handleOpenTransaction} onOpenEvent={handleOpenEvent} onOpenNotifications={handleOpenNotifications} hasUnread={hasUnread} />}
           {activeTab === 'events' && <EventsTab availability={calendarAvailability} members={members} currentUserId={CURRENT_USER_ID} onDayTap={handleDayTap} onToggleAvailability={handleToggleAvailability} events={events} transactions={transactions} onCreateEvent={() => setIsCreateEventOpen(true)} onOpenEvent={handleOpenEvent} onArchiveEvent={handleArchiveEvent} onUnarchiveEvent={handleUnarchiveEvent} onOpenNotifications={handleOpenNotifications} hasUnread={hasUnread} challenges={challenges} onOpenChallenge={handleOpenChallenge} onProposeChallenge={() => setIsCreatePollOpen(true)} polls={polls} onOpenPoll={handleOpenPoll} onVote={handleVote} onRsvp={handleRsvp} />}
           {activeTab === 'splits' && <SplitsTab />}
-          {activeTab === 'settings' && <SettingsTab members={members} groupName={groupName} onGroupNameChange={setGroupName} isDark={isDark} onToggleDark={() => setIsDark((d) => !d)} isAdmin={isAdmin} />}
+          {activeTab === 'settings' && <SettingsTab members={members} groupName={groupName} onGroupNameChange={setGroupName} isDark={isDark} onToggleDark={() => setIsDark((d) => !d)} isAdmin={isAdmin} onSignOut={signOut} />}
         </main>
 
         <TabBar activeTab={activeTab} onTabChange={setActiveTab} />

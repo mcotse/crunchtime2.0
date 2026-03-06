@@ -12,6 +12,7 @@ interface ChallengeDetailSheetProps {
   transactions: Transaction[];
   polls: Poll[];
   onSwitchToPolls?: () => void;
+  onOpenPoll?: (poll: Poll) => void;
   onJoinChallenge?: (challengeId: string) => void;
   currentUserId: string;
 }
@@ -126,6 +127,7 @@ export function ChallengeDetailSheet({
   transactions,
   polls,
   onSwitchToPolls,
+  onOpenPoll,
   onJoinChallenge,
   currentUserId
 }: ChallengeDetailSheetProps) {
@@ -430,8 +432,12 @@ export function ChallengeDetailSheet({
               delay: 0.1,
               ease: EQX_EASING
             }} onClick={() => {
-              onSwitchToPolls?.();
-              onClose();
+              if (onOpenPoll && linkedPoll) {
+                onOpenPoll(linkedPoll);
+              } else {
+                onSwitchToPolls?.();
+                onClose();
+              }
             }} className="w-full flex items-center gap-3 px-4 py-3 rounded-[16px] active:opacity-[0.88] text-left" style={{
               backgroundColor: 'var(--eqx-surface)',
               border: '1px solid var(--eqx-hairline)'

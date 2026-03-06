@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, Fragment, Component, ComponentType } from 'react';
 import { motion, AnimatePresence, useDragControls } from 'framer-motion';
-import { X, Pencil, Copy, Trash2, Calendar, Clock, MapPin, ArrowUp, ChevronRight, Receipt, ChevronDown, ChevronUp, ArchiveIcon, ArchiveRestoreIcon, Check, HelpCircle } from 'lucide-react';
+import { X, Pencil, Trash2, Calendar, Clock, MapPin, ArrowUp, ChevronRight, Receipt, ChevronDown, ChevronUp, ArchiveIcon, ArchiveRestoreIcon, Check, HelpCircle } from 'lucide-react';
 import { GroupEvent } from '../data/eventsData';
 import { Member, Transaction } from '../data/mockData';
 // ─── Props ────────────────────────────────────────────────────────────────────
@@ -169,7 +169,13 @@ export function EventDetailSheet({
   const [commentText, setCommentText] = useState('');
   const [comments, setComments] = useState(SAMPLE_COMMENTS);
   const [moreRsvpOpen, setMoreRsvpOpen] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
   const dragControls = useDragControls();
+  useEffect(() => {
+    if (isOpen && scrollRef.current) {
+      scrollRef.current.scrollTop = 0;
+    }
+  }, [isOpen, event?.id]);
   useEffect(() => {
     if (event) {
       const myRsvp = event.rsvps.find((r) => r.memberId === currentUserId);
@@ -326,11 +332,6 @@ export function EventDetailSheet({
           }} aria-label="Edit event">
                   <Pencil size={18} strokeWidth={1.5} />
                 </button>}
-              <button onClick={() => navigator.clipboard?.writeText(`${event.title} — ${formatDate(event.dateStr) ?? ''} ${formatTime(event.time) ?? ''}`)} className="w-9 h-9 flex items-center justify-center rounded-full active:opacity-[0.92]" style={{
-            color: 'var(--eqx-tertiary)'
-          }} aria-label="Copy event details">
-                <Copy size={18} strokeWidth={1.5} />
-              </button>
               {canEdit && <button onClick={() => onArchive(event.id)} className="w-9 h-9 flex items-center justify-center rounded-full active:opacity-[0.92]" style={{
             color: 'var(--eqx-tertiary)'
           }} aria-label="Archive event">
@@ -352,7 +353,7 @@ export function EventDetailSheet({
             </div>
 
             {/* Scrollable body */}
-            <div className="flex-1 overflow-y-auto overscroll-contain px-5 py-4">
+            <div ref={scrollRef} className="flex-1 overflow-y-auto overscroll-contain px-5 py-4">
               {/* ── Header ── */}
               <div className="pb-4">
                 <div className="flex items-center gap-2.5 pr-20">
@@ -542,8 +543,8 @@ export function EventDetailSheet({
                             return <motion.button key={m.id} whileTap={{
                               scale: 0.93
                             }} onClick={() => handleToggleProxy(m.id)} className="flex items-center gap-1.5 rounded-full px-3 py-1.5 transition-colors" style={{
-                              backgroundColor: 'var(--eqx-raised)',
-                              border: '1px solid var(--eqx-hairline)'
+                              backgroundColor: isSelected ? 'rgba(52, 199, 89, 0.12)' : 'var(--eqx-raised)',
+                              border: isSelected ? '1.5px solid rgba(52, 199, 89, 0.6)' : '1px solid var(--eqx-hairline)'
                             }}>
                                           <Avatar name={m.name} color={m.color} initials={m.initials} size={20} />
                                           <span style={{
@@ -553,6 +554,7 @@ export function EventDetailSheet({
                               }}>
                                             {m.name.split(' ')[0]}
                                           </span>
+                                          {isSelected && <Check size={14} strokeWidth={2.5} style={{ color: 'rgb(52, 199, 89)' }} />}
                                         </motion.button>;
                           })}
                                   </div>

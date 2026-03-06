@@ -376,6 +376,9 @@ export function CrunchTime() {
         <ChallengeDetailSheet challenge={selectedChallenge} isOpen={isChallengeDetailOpen} onClose={() => setIsChallengeDetailOpen(false)} members={members} transactions={transactions} polls={polls} onSwitchToPolls={() => {
         setIsChallengeDetailOpen(false);
         setActiveTab('events');
+      }} onOpenPoll={(poll) => {
+        setIsChallengeDetailOpen(false);
+        setTimeout(() => handleOpenPoll(poll), 320);
       }} onJoinChallenge={handleJoinChallenge} currentUserId={CURRENT_USER_ID} />
 
         <NotificationsSheet isOpen={isNotificationsOpen} onClose={() => setIsNotificationsOpen(false)} transactions={transactions} members={members} challenges={challenges} events={events} currentUserId={CURRENT_USER_ID} isAdmin={isAdmin} onMarkFinePaid={handleMarkFinePaid} />

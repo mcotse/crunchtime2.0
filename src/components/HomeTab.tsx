@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
+import { useMotionValue, animate } from 'framer-motion';
 import { FlameIcon, DollarSignIcon, TrophyIcon } from 'lucide-react';
 import { Member, Transaction, Challenge } from '../data/mockData';
 import { tintBg } from './tintHelper';
@@ -20,7 +20,6 @@ interface HomeTabProps {
   onSwitchToPolls: () => void;
   onOpenTransaction?: (tx: Transaction) => void;
 }
-const EQX_EASE = [0.2, 0.0, 0.0, 1.0] as const;
 function formatCurrencyWhole(n: number): string {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -115,17 +114,7 @@ export function HomeTab({
       zIndex: 1
     }}>
         {/* Group label */}
-        <motion.p initial={{
-        opacity: 0,
-        y: 12
-      }} animate={{
-        opacity: 1,
-        y: 0
-      }} transition={{
-        duration: 0.5,
-        ease: EQX_EASE,
-        delay: 0
-      }} style={{
+        <p style={{
         fontSize: '11px',
         fontWeight: 600,
         letterSpacing: '0.08em',
@@ -134,37 +123,17 @@ export function HomeTab({
         marginBottom: '12px'
       }}>
           {groupName.toUpperCase()}
-        </motion.p>
+        </p>
 
         {/* Balance */}
-        <motion.div initial={{
-        opacity: 0,
-        y: 12
-      }} animate={{
-        opacity: 1,
-        y: 0
-      }} transition={{
-        duration: 0.5,
-        ease: EQX_EASE,
-        delay: 0
-      }} style={{
+        <div style={{
         marginBottom: '28px'
       }}>
           <CountingBalance target={crunchFundBalance} />
-        </motion.div>
+        </div>
 
         {/* CTA Button */}
-        <motion.button initial={{
-        opacity: 0,
-        y: 12
-      }} animate={{
-        opacity: 1,
-        y: 0
-      }} transition={{
-        duration: 0.5,
-        ease: EQX_EASE,
-        delay: 0.3
-      }} onClick={onAddTransaction} className="rounded-full font-semibold active:opacity-[0.88]" style={{
+        <button onClick={onAddTransaction} className="rounded-full font-semibold active:opacity-[0.88]" style={{
         backgroundColor: 'var(--eqx-primary)',
         color: 'var(--eqx-base)',
         fontSize: '15px',
@@ -174,7 +143,7 @@ export function HomeTab({
         paddingBottom: '12px'
       }}>
           Add Transaction
-        </motion.button>
+        </button>
       </div>
 
       {/* ── Stat Cards ── */}
@@ -183,17 +152,7 @@ export function HomeTab({
       zIndex: 1
     }}>
         {/* Raised */}
-        <motion.div initial={{
-        opacity: 0,
-        y: 10
-      }} animate={{
-        opacity: 1,
-        y: 0
-      }} transition={{
-        duration: 0.4,
-        ease: EQX_EASE,
-        delay: 0.42
-      }} className="flex-1 rounded-[24px] p-4 text-center" style={{
+        <div className="flex-1 rounded-[24px] p-4 text-center" style={{
         backgroundColor: 'var(--eqx-surface)',
         border: '1px solid var(--eqx-hairline)'
       }}>
@@ -216,20 +175,10 @@ export function HomeTab({
         }}>
             {formatCompact(totalFinesCollected)}
           </p>
-        </motion.div>
+        </div>
 
         {/* Spent */}
-        <motion.div initial={{
-        opacity: 0,
-        y: 10
-      }} animate={{
-        opacity: 1,
-        y: 0
-      }} transition={{
-        duration: 0.4,
-        ease: EQX_EASE,
-        delay: 0.48
-      }} className="flex-1 rounded-[24px] p-4 text-center" style={{
+        <div className="flex-1 rounded-[24px] p-4 text-center" style={{
         backgroundColor: 'var(--eqx-surface)',
         border: '1px solid var(--eqx-hairline)'
       }}>
@@ -252,21 +201,11 @@ export function HomeTab({
         }}>
             {formatCompact(totalChallengeSpend)}
           </p>
-        </motion.div>
+        </div>
       </div>
 
       {/* ── Recent Transactions Card ── */}
-      {recentTransactions.length > 0 ? <motion.div initial={{
-      opacity: 0,
-      y: 10
-    }} animate={{
-      opacity: 1,
-      y: 0
-    }} transition={{
-      duration: 0.4,
-      ease: EQX_EASE,
-      delay: 0.56
-    }} className="mx-4 rounded-[24px] overflow-hidden relative" style={{
+      {recentTransactions.length > 0 ? <div className="mx-4 rounded-[24px] overflow-hidden relative" style={{
       backgroundColor: 'var(--eqx-surface)',
       border: '1px solid var(--eqx-hairline)',
       marginTop: '20px',
@@ -318,15 +257,7 @@ export function HomeTab({
                 </span>
               </button>;
       })}
-        </motion.div> : <motion.div initial={{
-      opacity: 0
-    }} animate={{
-      opacity: 1
-    }} transition={{
-      duration: 0.4,
-      ease: EQX_EASE,
-      delay: 0.5
-    }} className="flex flex-col items-center relative" style={{
+        </div> : <div className="flex flex-col items-center relative" style={{
       marginTop: '20px',
       zIndex: 1
     }}>
@@ -336,18 +267,10 @@ export function HomeTab({
       }}>
             No transactions yet
           </p>
-        </motion.div>}
+        </div>}
 
       {/* ── View all activity link ── */}
-      <motion.div initial={{
-      opacity: 0
-    }} animate={{
-      opacity: 1
-    }} transition={{
-      duration: 0.4,
-      ease: EQX_EASE,
-      delay: 0.64
-    }} className="flex justify-center relative" style={{
+      <div className="flex justify-center relative" style={{
       marginTop: '28px',
       zIndex: 1
     }}>
@@ -360,7 +283,7 @@ export function HomeTab({
       }}>
           View all activity
         </button>
-      </motion.div>
+      </div>
     </div>;
 }
 // ── Transaction Icon Chip ─────────────────────────────────────────────────────

@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { PlusIcon } from 'lucide-react';
 import { useWebHaptics } from 'web-haptics/react';
 import { dateKey, today } from '../data/calendarData';
-import { EQX_EASING } from './events/eventsConstants';
 import { CalendarMode, EventsTabProps } from './events/eventsTypes';
 import { UpcomingModeSection } from './events/UpcomingModeSection';
 import { AvailabilityModeSection } from './events/AvailabilityModeSection';
@@ -88,19 +87,7 @@ export function EventsTab({
       }}>
           Events
         </h2>
-        {mode === 'upcoming' && <motion.button initial={{
-        opacity: 0,
-        scale: 0.9
-      }} animate={{
-        opacity: 1,
-        scale: 1
-      }} exit={{
-        opacity: 0,
-        scale: 0.9
-      }} transition={{
-        duration: 0.15,
-        ease: EQX_EASING
-      }} onClick={onCreateEvent} className="flex items-center gap-1.5 rounded-full px-3 font-semibold active:opacity-[0.88]" style={{
+        {mode === 'upcoming' && <button onClick={onCreateEvent} className="flex items-center gap-1.5 rounded-full px-3 font-semibold active:opacity-[0.88]" style={{
         height: 36,
         fontSize: 13,
         backgroundColor: 'transparent',
@@ -109,20 +96,8 @@ export function EventsTab({
       }}>
             <PlusIcon size={13} strokeWidth={2.5} />
             New Event
-          </motion.button>}
-        {mode === 'polls' && <motion.button initial={{
-        opacity: 0,
-        scale: 0.9
-      }} animate={{
-        opacity: 1,
-        scale: 1
-      }} exit={{
-        opacity: 0,
-        scale: 0.9
-      }} transition={{
-        duration: 0.15,
-        ease: EQX_EASING
-      }} onClick={onProposeChallenge} className="flex items-center gap-1.5 rounded-full px-3 font-semibold active:opacity-[0.88]" style={{
+          </button>}
+        {mode === 'polls' && <button onClick={onProposeChallenge} className="flex items-center gap-1.5 rounded-full px-3 font-semibold active:opacity-[0.88]" style={{
         height: 36,
         fontSize: 13,
         backgroundColor: 'transparent',
@@ -131,7 +106,7 @@ export function EventsTab({
       }}>
             <PlusIcon size={13} strokeWidth={2.5} />
             New Poll
-          </motion.button>}
+          </button>}
       </div>
 
       {/* 4-segment control */}
@@ -155,7 +130,7 @@ export function EventsTab({
       </div>
       </div>
 
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="wait" initial={false}>
         {mode === 'upcoming' && <UpcomingModeSection upcomingEvents={upcomingEvents} pastEvents={pastEvents} archivedEvents={archivedEvents} members={members} currentUserId={currentUserId} onOpenEvent={onOpenEvent} onArchiveEvent={onArchiveEvent} onUnarchiveEvent={onUnarchiveEvent} onRsvp={onRsvp} />}
 
         {mode === 'availability' && <AvailabilityModeSection availability={availability} members={members} currentUserId={currentUserId} viewYear={viewYear} viewMonth={viewMonth} onPrevMonth={handlePrevMonth} onNextMonth={handleNextMonth} onToggleAvailability={onToggleAvailability} onDayTap={onDayTap} onCreateEvent={onCreateEvent} />}

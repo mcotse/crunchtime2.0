@@ -5,6 +5,7 @@ export interface ChangelogEntry {
 }
 
 export const CHANGELOG: ChangelogEntry[] = [
+  { version: '1.2.5', date: 'Mar 8', note: 'Fix tab transition flicker with AnimatePresence' },
   { version: '1.2.4', date: 'Mar 8', note: 'Fix PWA scroll overflow and add sticky headers with safe-area support' },
   { version: '1.2.3', date: 'Mar 8', note: 'Fix layout shift when switching between Events sub-tabs' },
   { version: '1.2.2', date: 'Mar 8', note: 'Add scroll fade hint to group members section' },

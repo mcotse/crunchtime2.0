@@ -78,7 +78,7 @@ export function EventsTab({
     backgroundColor: 'var(--eqx-base)'
   }}>
       {/* Title bar */}
-      <div className="px-4 pt-5 pb-2 flex items-center justify-between">
+      <div className="px-4 pt-5 pb-2 flex items-center justify-between" style={{ minHeight: 36 }}>
         <h2 className="font-semibold" style={{
         fontSize: '24px',
         lineHeight: '28px',

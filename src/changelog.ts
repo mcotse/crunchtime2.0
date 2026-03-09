@@ -5,6 +5,7 @@ export interface ChangelogEntry {
 }
 
 export const CHANGELOG: ChangelogEntry[] = [
+  { version: '1.2.3', date: 'Mar 8', note: 'Fix layout shift when switching between Events sub-tabs' },
   { version: '1.2.2', date: 'Mar 8', note: 'Add scroll fade hint to group members section' },
   { version: '1.2.1', date: 'Mar 6', note: 'Fix tab animations and count-up regression from iOS polish commit' },
   { version: '1.2.0', date: 'Mar 6', note: 'Add haptic feedback across the app via web-haptics' },

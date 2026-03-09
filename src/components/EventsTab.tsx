@@ -74,11 +74,13 @@ export function EventsTab({
   });
   const pastEvents = events.filter((ev) => !ev.isArchived && ev.dateStr && ev.dateStr < todayKey).sort((a, b) => b.dateStr!.localeCompare(a.dateStr!));
   const archivedEvents = events.filter((ev) => ev.isArchived).sort((a, b) => (b.dateStr ?? '').localeCompare(a.dateStr ?? ''));
-  return <div className="flex-1 flex flex-col pb-24 min-h-screen" style={{
+  return <div className="flex-1 flex flex-col pb-24" style={{
     backgroundColor: 'var(--eqx-base)'
   }}>
+      {/* Sticky header */}
+      <div className="sticky top-0 z-10" style={{ backgroundColor: 'var(--eqx-base)', paddingTop: 'calc(env(safe-area-inset-top, 0px) + 20px)' }}>
       {/* Title bar */}
-      <div data-testid="events-title-bar" className="px-4 pt-5 pb-2 flex items-center justify-between" style={{ minHeight: 64 }}>
+      <div data-testid="events-title-bar" className="px-4 pb-2 flex items-center justify-between" style={{ minHeight: 44 }}>
         <h2 className="font-semibold" style={{
         fontSize: '24px',
         lineHeight: '28px',
@@ -150,6 +152,7 @@ export function EventsTab({
               </button>;
         })}
         </div>
+      </div>
       </div>
 
       <AnimatePresence mode="wait">

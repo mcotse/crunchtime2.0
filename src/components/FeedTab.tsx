@@ -179,11 +179,13 @@ export function FeedTab({
     return map;
   }, [searchResults]);
   const searchBuckets = BUCKET_ORDER.filter((b) => searchGrouped[b]?.length > 0);
-  return <div className="pb-24 min-h-screen" style={{
+  return <div className="pb-24 flex-1 flex flex-col" style={{
     backgroundColor: 'var(--eqx-base)'
   }}>
+      {/* Sticky header + search */}
+      <div className="sticky top-0 z-10" style={{ backgroundColor: 'var(--eqx-base)', paddingTop: 'calc(env(safe-area-inset-top, 0px) + 20px)' }}>
       {/* Header */}
-      <div className="px-4 pt-5 pb-6">
+      <div className="px-4 pb-6">
         <h2 className="font-semibold" style={{
         fontSize: '24px',
         lineHeight: '28px',
@@ -227,6 +229,7 @@ export function FeedTab({
               </motion.button>}
           </AnimatePresence>
         </div>
+      </div>
       </div>
 
       {/* Feed content */}

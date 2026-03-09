@@ -136,7 +136,7 @@ export function SplitsTab() {
 
   if (error) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center min-h-screen px-6" style={{ backgroundColor: 'var(--eqx-base)' }}>
+      <div className="flex-1 flex flex-col items-center justify-center px-6" style={{ backgroundColor: 'var(--eqx-base)' }}>
         <div className="text-center space-y-3">
           <div className="flex justify-center"><AlertCircleIcon size={32} strokeWidth={1.5} style={{ color: 'var(--eqx-coral)' }} /></div>
           <p className="text-sm" style={{ color: 'var(--eqx-secondary)' }}>
@@ -147,11 +147,13 @@ export function SplitsTab() {
     );
   }
 
-  return <div className="flex-1 flex flex-col min-h-screen pb-24" style={{
+  return <div className="flex-1 flex flex-col pb-24" style={{
     backgroundColor: 'var(--eqx-base)'
   }}>
+      {/* ── Sticky header ── */}
+      <div className="sticky top-0 z-10" style={{ backgroundColor: 'var(--eqx-base)', paddingTop: 'calc(env(safe-area-inset-top, 0px) + 20px)' }}>
       {/* ── Header ── */}
-      <div className="flex items-center justify-between px-4 pt-5 pb-4">
+      <div className="flex items-center justify-between px-4 pb-4">
         <h2 className="font-semibold" style={{
         fontSize: '24px',
         lineHeight: '28px',
@@ -182,6 +184,7 @@ export function SplitsTab() {
           <SegmentButton label="Transactions" isActive={activeSubTab === 'transactions'} onClick={() => setActiveSubTab('transactions')} />
           <SegmentButton label="Balances" isActive={activeSubTab === 'balances'} onClick={() => setActiveSubTab('balances')} />
         </div>
+      </div>
       </div>
 
       {/* ── Sub-tab content ── */}

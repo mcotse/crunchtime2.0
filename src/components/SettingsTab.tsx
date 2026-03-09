@@ -74,20 +74,21 @@ export function SettingsTab({
     setTimeout(() => setBroadcastSent(false), 2500);
   };
   const selectedMember = members.find((m) => m.id === selectedMemberId) ?? null;
-  return <div className="px-4 pb-24 pt-6 min-h-screen" style={{
-    backgroundColor: 'var(--eqx-base)',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '24px'
+  return <div className="pb-24 flex-1 flex flex-col" style={{
+    backgroundColor: 'var(--eqx-base)'
   }}>
-      <h2 className="font-semibold px-1" style={{
-      fontSize: '24px',
-      lineHeight: '28px',
-      color: 'var(--eqx-primary)'
-    }}>
-        Settings
-      </h2>
+      {/* Sticky header */}
+      <div className="sticky top-0 z-10 px-5" style={{ backgroundColor: 'var(--eqx-base)', paddingTop: 'calc(env(safe-area-inset-top, 0px) + 24px)', paddingBottom: '8px' }}>
+        <h2 className="font-semibold" style={{
+        fontSize: '24px',
+        lineHeight: '28px',
+        color: 'var(--eqx-primary)'
+      }}>
+          Settings
+        </h2>
+      </div>
 
+      <div className="px-4 flex-1 flex flex-col" style={{ gap: '24px' }}>
       {/* ── Appearance ── */}
       <div>
         <SectionLabel>Appearance</SectionLabel>
@@ -571,6 +572,7 @@ export function SettingsTab({
       }}>
           v{__APP_VERSION__} · {__BUILD_HASH__} · {__BUILD_DATE__}
         </p>
+      </div>
       </div>
     </div>;
 }

@@ -95,7 +95,7 @@ export function HomeTab({
     if (tx.type === 'fine' && tx.fineStatus === 'paid') return '+';
     return '−';
   };
-  return <div className="min-h-screen w-full flex flex-col justify-center pb-28 relative" style={{
+  return <div className="flex-1 w-full flex flex-col justify-center pb-28 relative" style={{
     backgroundColor: 'var(--eqx-base)'
   }}>
       {/* ── Full-bleed hero gradient — fixed to viewport top, bleeds to all edges ── */}

@@ -329,21 +329,11 @@ export function CrunchTime() {
   return <div className={`${isDark ? 'dark' : 'light'} h-screen overflow-hidden font-sans bg-eqx-base text-eqx-primary selection:bg-eqx-raised`}>
       <div className="max-w-md mx-auto h-screen relative flex flex-col">
         <main className="flex-1 flex flex-col overflow-y-auto" style={{ overscrollBehavior: 'none' }}>
-          <div className={`flex-1 flex flex-col ${activeTab !== 'home' ? 'hidden' : ''}`}>
-            <HomeTab members={members} transactions={transactions} challenges={challenges} crunchFundBalance={crunchFundBalance} totalFinesCollected={totalFinesCollected} totalChallengeSpend={totalChallengeSpend} pendingFinesCount={pendingFines.length} onAddTransaction={() => setIsSheetOpen(true)} groupName={groupName} onSeeAll={() => setActiveTab('feed')} onOpenNotifications={handleOpenNotifications} hasUnread={hasUnread} onOpenChallenge={handleOpenChallenge} onSwitchToPolls={() => setActiveTab('events')} onOpenTransaction={handleOpenTransaction} />
-          </div>
-          <div className={`flex-1 flex flex-col ${activeTab !== 'feed' ? 'hidden' : ''}`}>
-            <FeedTab transactions={transactions} members={members} challenges={challenges} events={events} currentUserId={CURRENT_USER_ID} isAdmin={isAdmin} onOpenTransaction={handleOpenTransaction} onOpenEvent={handleOpenEvent} onOpenNotifications={handleOpenNotifications} hasUnread={hasUnread} />
-          </div>
-          <div className={`flex-1 flex flex-col ${activeTab !== 'events' ? 'hidden' : ''}`}>
-            <EventsTab availability={calendarAvailability} members={members} currentUserId={CURRENT_USER_ID} onDayTap={handleDayTap} onToggleAvailability={handleToggleAvailability} events={events} transactions={transactions} onCreateEvent={() => setIsCreateEventOpen(true)} onOpenEvent={handleOpenEvent} onArchiveEvent={handleArchiveEvent} onUnarchiveEvent={handleUnarchiveEvent} onOpenNotifications={handleOpenNotifications} hasUnread={hasUnread} challenges={challenges} onOpenChallenge={handleOpenChallenge} onProposeChallenge={() => setIsCreatePollOpen(true)} polls={polls} onOpenPoll={handleOpenPoll} onVote={handleVote} onRsvp={handleRsvp} />
-          </div>
-          <div className={`flex-1 flex flex-col ${activeTab !== 'splits' ? 'hidden' : ''}`}>
-            <SplitsTab />
-          </div>
-          <div className={`flex-1 flex flex-col ${activeTab !== 'settings' ? 'hidden' : ''}`}>
-            <SettingsTab members={members} groupName={groupName} onGroupNameChange={setGroupName} isDark={isDark} onToggleDark={() => setIsDark((d) => !d)} isAdmin={isAdmin} onSignOut={signOut} />
-          </div>
+          {activeTab === 'home' && <HomeTab members={members} transactions={transactions} challenges={challenges} crunchFundBalance={crunchFundBalance} totalFinesCollected={totalFinesCollected} totalChallengeSpend={totalChallengeSpend} pendingFinesCount={pendingFines.length} onAddTransaction={() => setIsSheetOpen(true)} groupName={groupName} onSeeAll={() => setActiveTab('feed')} onOpenNotifications={handleOpenNotifications} hasUnread={hasUnread} onOpenChallenge={handleOpenChallenge} onSwitchToPolls={() => setActiveTab('events')} onOpenTransaction={handleOpenTransaction} />}
+          {activeTab === 'feed' && <FeedTab transactions={transactions} members={members} challenges={challenges} events={events} currentUserId={CURRENT_USER_ID} isAdmin={isAdmin} onOpenTransaction={handleOpenTransaction} onOpenEvent={handleOpenEvent} onOpenNotifications={handleOpenNotifications} hasUnread={hasUnread} />}
+          {activeTab === 'events' && <EventsTab availability={calendarAvailability} members={members} currentUserId={CURRENT_USER_ID} onDayTap={handleDayTap} onToggleAvailability={handleToggleAvailability} events={events} transactions={transactions} onCreateEvent={() => setIsCreateEventOpen(true)} onOpenEvent={handleOpenEvent} onArchiveEvent={handleArchiveEvent} onUnarchiveEvent={handleUnarchiveEvent} onOpenNotifications={handleOpenNotifications} hasUnread={hasUnread} challenges={challenges} onOpenChallenge={handleOpenChallenge} onProposeChallenge={() => setIsCreatePollOpen(true)} polls={polls} onOpenPoll={handleOpenPoll} onVote={handleVote} onRsvp={handleRsvp} />}
+          {activeTab === 'splits' && <SplitsTab />}
+          {activeTab === 'settings' && <SettingsTab members={members} groupName={groupName} onGroupNameChange={setGroupName} isDark={isDark} onToggleDark={() => setIsDark((d) => !d)} isAdmin={isAdmin} onSignOut={signOut} />}
         </main>
 
         <TabBar activeTab={activeTab} onTabChange={setActiveTab} />

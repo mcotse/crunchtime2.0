@@ -5,6 +5,7 @@ export interface ChangelogEntry {
 }
 
 export const CHANGELOG: ChangelogEntry[] = [
+  { version: '1.2.6', date: 'Mar 8', note: 'Fix phantom scroll and header bleed on iOS PWA — lock viewport and reset scroll on tab switch' },
   { version: '1.2.5', date: 'Mar 8', note: 'Fix Events tab sticky header and remove min-h-screen for PWA scroll containment' },
   { version: '1.2.4', date: 'Mar 8', note: 'Restore staggered row animations on Activity and Splits tabs' },
   { version: '1.2.3', date: 'Mar 8', note: 'Fix layout shift when switching between Events sub-tabs' },

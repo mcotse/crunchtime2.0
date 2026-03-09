@@ -137,6 +137,10 @@ export function SettingsTab({
         borderColor: 'var(--eqx-hairline)'
       }}>
           {/* Horizontal avatar scroll */}
+          <div style={{
+          maskImage: 'linear-gradient(to right, black 0%, black 80%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to right, black 0%, black 80%, transparent 100%)',
+        }}>
           <div className="flex gap-3 px-4 overflow-x-auto" style={{
           paddingTop: '14px',
           paddingBottom: '14px',
@@ -180,6 +184,7 @@ export function SettingsTab({
                   {member.name.split(' ')[0]}
                 </span>
               </button>)}
+          </div>
           </div>
 
           {/* Expanded member detail */}

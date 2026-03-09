@@ -189,7 +189,7 @@ export function SplitsTab() {
 
       {/* ── Sub-tab content ── */}
       <div className="px-4 flex-1">
-        <AnimatePresence mode="wait" initial={false}>
+        <AnimatePresence mode="wait">
           {activeSubTab === 'transactions' ? <motion.div key="transactions" initial={{
           opacity: 0,
           y: 8
@@ -363,7 +363,17 @@ function TransactionsView({ splitTransactions, dateGroups, totalThisMonth, membe
               {rows.map((tx, rowIndex) => {
             const isLastInGroup = rowIndex === rows.length - 1;
             const isAbsoluteLast = isLastGroup && isLastInGroup;
-            return <button key={tx.id} onClick={() => handleTxTap(tx)} className="w-full flex items-center px-4 active:opacity-[0.92]" style={{
+            return <motion.button key={tx.id} onClick={() => handleTxTap(tx)} initial={{
+              opacity: 0,
+              y: 4
+            }} animate={{
+              opacity: 1,
+              y: 0
+            }} transition={{
+              duration: 0.18,
+              delay: Math.min(groupIndex * 0.05 + rowIndex * 0.03, 0.25),
+              ease: EQX_EASING
+            }} className="w-full flex items-center px-4 active:opacity-[0.92]" style={{
               height: '56px',
               background: 'none',
               borderBottom: isAbsoluteLast ? 'none' : '1px solid var(--eqx-hairline)',
@@ -417,7 +427,7 @@ function TransactionsView({ splitTransactions, dateGroups, totalThisMonth, membe
               }}>
                       {tx.type === 'payment' ? '+' : ''}${tx.amount.toFixed(2)}
                     </span>
-                  </button>;
+                  </motion.button>;
           })}
             </div>;
       })}
@@ -529,7 +539,17 @@ function BalancesView({ fundActivity, groupFundTotal, transactions, members }: {
       }}>
           {fundActivity.map((item, index) => {
           const isLast = index === fundActivity.length - 1;
-          return <button key={item.id} onClick={() => handleActivityTap(item)} className="w-full flex items-center px-4 active:opacity-[0.92]" style={{
+          return <motion.button key={item.id} onClick={() => handleActivityTap(item)} initial={{
+            opacity: 0,
+            y: 4
+          }} animate={{
+            opacity: 1,
+            y: 0
+          }} transition={{
+            duration: 0.18,
+            delay: Math.min(index * 0.04, 0.2),
+            ease: EQX_EASING
+          }} className="w-full flex items-center px-4 active:opacity-[0.92]" style={{
             height: '56px',
             background: 'none',
             borderBottom: isLast ? 'none' : '1px solid var(--eqx-hairline)',
@@ -585,7 +605,7 @@ function BalancesView({ fundActivity, groupFundTotal, transactions, members }: {
               color: 'var(--eqx-tertiary)',
               flexShrink: 0
             }} aria-hidden="true" />
-              </button>;
+              </motion.button>;
         })}
         </div>
       </div>

@@ -11,6 +11,11 @@
   </head>
   <body>
     <div id="root"></div>
+    <script type="module">
+      if (import.meta.env.DEV) {
+        import("react-grab");
+      }
+    </script>
     <script type="module" src="/src/index.tsx"></script>
   </body>
 </html>

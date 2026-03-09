@@ -234,7 +234,7 @@ export function FeedTab({
 
       {/* Feed content */}
       <div className="px-4">
-        <AnimatePresence mode="wait" initial={false}>
+        <AnimatePresence mode="wait">
           {/* ── Search results ── */}
           {isSearching ? <motion.div key="search" initial={{
           opacity: 0
@@ -256,7 +256,7 @@ export function FeedTab({
                     <div className="pt-4 pb-2">
                       <span style={SECTION_LABEL_STYLE}>{bucket}</span>
                     </div>
-                    {searchGrouped[bucket].map((entry, index) => <FeedEntryRow key={entry.id} entry={entry} members={members} isLast={index === searchGrouped[bucket].length - 1} onOpenTransaction={onOpenTransaction} onOpenEvent={onOpenEvent} />)}
+                    {searchGrouped[bucket].map((entry, index) => <FeedEntryRow key={entry.id} entry={entry} members={members} isLast={index === searchGrouped[bucket].length - 1} index={index} onOpenTransaction={onOpenTransaction} onOpenEvent={onOpenEvent} />)}
                   </div>)}
             </motion.div> /* ── Normal two-section view ── */ : <motion.div key="sections" initial={{
           opacity: 0
@@ -273,7 +273,16 @@ export function FeedTab({
                 <span style={SECTION_LABEL_STYLE}>Needs Attention</span>
               </div>
 
-              {needsAttentionEntries.length === 0 ? <div className="flex items-center gap-2.5 py-4" style={{
+              {needsAttentionEntries.length === 0 ? <motion.div initial={{
+            opacity: 0,
+            y: 4
+          }} animate={{
+            opacity: 1,
+            y: 0
+          }} transition={{
+            duration: 0.2,
+            ease: EQX_EASING
+          }} className="flex items-center gap-2.5 py-4" style={{
             borderBottom: '1px solid var(--eqx-hairline)'
           }}>
                   <div className="rounded-full flex items-center justify-center flex-shrink-0" style={{
@@ -290,7 +299,7 @@ export function FeedTab({
             }}>
                     You're all caught up
                   </p>
-                </div> : needsAttentionEntries.map((entry, index) => <FeedEntryRow key={entry.id} entry={entry} members={members} isLast={index === needsAttentionEntries.length - 1} onOpenTransaction={onOpenTransaction} onOpenEvent={onOpenEvent} />)}
+                </motion.div> : needsAttentionEntries.map((entry, index) => <FeedEntryRow key={entry.id} entry={entry} members={members} isLast={index === needsAttentionEntries.length - 1} index={index} onOpenTransaction={onOpenTransaction} onOpenEvent={onOpenEvent} />)}
 
               {/* ── Recent ── */}
               {recentEntries.length > 0 && <div>
@@ -300,7 +309,7 @@ export function FeedTab({
                           {bucket === activeBuckets[0] ? `Recent · ${bucket}` : bucket}
                         </span>
                       </div>
-                      {recentGrouped[bucket].map((entry, index) => <FeedEntryRow key={entry.id} entry={entry} members={members} isLast={index === recentGrouped[bucket].length - 1} onOpenTransaction={onOpenTransaction} onOpenEvent={onOpenEvent} />)}
+                      {recentGrouped[bucket].map((entry, index) => <FeedEntryRow key={entry.id} entry={entry} members={members} isLast={index === recentGrouped[bucket].length - 1} index={index} onOpenTransaction={onOpenTransaction} onOpenEvent={onOpenEvent} />)}
                     </div>)}
                 </div>}
             </motion.div>}
@@ -313,6 +322,7 @@ function FeedEntryRow({
   entry,
   members,
   isLast,
+  index,
   onOpenTransaction,
   onOpenEvent
 
@@ -322,11 +332,21 @@ function FeedEntryRow({
 
 
 
-}: {entry: FeedEntry;members: Member[];isLast: boolean;onOpenTransaction?: (tx: Transaction) => void;onOpenEvent?: (event: GroupEvent) => void;}) {
+}: {entry: FeedEntry;members: Member[];isLast: boolean;index: number;onOpenTransaction?: (tx: Transaction) => void;onOpenEvent?: (event: GroupEvent) => void;}) {
   const handlePress = () => {
     if (entry.transaction) onOpenTransaction?.(entry.transaction);else if (entry.event) onOpenEvent?.(entry.event);
   };
-  return <button onClick={handlePress} className="w-full flex items-center text-left active:opacity-[0.92]" style={{
+  return <motion.button initial={{
+    opacity: 0,
+    y: 6
+  }} animate={{
+    opacity: 1,
+    y: 0
+  }} transition={{
+    duration: 0.2,
+    delay: Math.min(index * 0.03, 0.25),
+    ease: EQX_EASING
+  }} onClick={handlePress} className="w-full flex items-center text-left active:opacity-[0.92]" style={{
     padding: '14px 0',
     borderBottom: isLast ? 'none' : '1px solid var(--eqx-hairline)'
   }}>
@@ -346,7 +366,7 @@ function FeedEntryRow({
           {relativeTime(entry.date)}
         </span>
       </div>
-    </button>;
+    </motion.button>;
 }
 // ── TypeIconChip ──────────────────────────────────────────────────────────────
 function TypeIconChip({

@@ -79,7 +79,7 @@ export function EventsTab({
       {/* Sticky header */}
       <div className="sticky top-0 z-10" style={{ backgroundColor: 'var(--eqx-base)', paddingTop: 'calc(env(safe-area-inset-top, 0px) + 20px)' }}>
       {/* Title bar */}
-      <div className="px-4 pb-2 flex items-center justify-between">
+      <div data-testid="events-title-bar" className="px-4 pb-2 flex items-center justify-between" style={{ minHeight: 44 }}>
         <h2 className="font-semibold" style={{
         fontSize: '24px',
         lineHeight: '28px',

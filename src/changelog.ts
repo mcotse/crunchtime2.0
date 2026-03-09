@@ -5,7 +5,7 @@ export interface ChangelogEntry {
 }
 
 export const CHANGELOG: ChangelogEntry[] = [
-  { version: '1.2.5', date: 'Mar 8', note: 'Fix tab-switch flicker — remove outer AnimatePresence double-fade' },
+  { version: '1.2.5', date: 'Mar 8', note: 'Fix layout shift in Events header and keep all tabs mounted to prevent flicker' },
   { version: '1.2.4', date: 'Mar 8', note: 'Fix PWA scroll overflow and add sticky headers with safe-area support' },
   { version: '1.2.3', date: 'Mar 8', note: 'Fix layout shift when switching between Events sub-tabs' },
   { version: '1.2.2', date: 'Mar 8', note: 'Add scroll fade hint to group members section' },

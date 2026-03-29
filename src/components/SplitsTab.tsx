@@ -189,7 +189,7 @@ export function SplitsTab() {
 
       {/* ── Sub-tab content ── */}
       <div className="px-4 flex-1">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="popLayout">
           {activeSubTab === 'transactions' ? <motion.div key="transactions" initial={{
           opacity: 0,
           y: 8

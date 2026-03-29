@@ -234,7 +234,7 @@ export function FeedTab({
 
       {/* Feed content */}
       <div className="px-4">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="popLayout">
           {/* ── Search results ── */}
           {isSearching ? <motion.div key="search" initial={{
           opacity: 0

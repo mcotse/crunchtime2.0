@@ -110,8 +110,9 @@ export function HomeTab({
     }} />
 
       {/* ── Hero Section ── */}
-      <div className="relative flex flex-col items-center justify-center px-6 text-center pt-24 pb-10" style={{
-      zIndex: 1
+      <div className="relative flex flex-col items-center justify-center px-6 text-center pb-10" style={{
+      zIndex: 1,
+      paddingTop: 'calc(env(safe-area-inset-top, 0px) + 56px)'
     }}>
         {/* Group label */}
         <p style={{

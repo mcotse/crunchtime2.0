@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { AlertCircleIcon } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { useMembers } from '../hooks/useMembers';
@@ -339,21 +340,23 @@ export function CrunchTime() {
   return <div className={`${isDark ? 'dark' : 'light'} fixed inset-0 overflow-hidden font-sans bg-eqx-base text-eqx-primary selection:bg-eqx-raised`}>
       <div className="max-w-md mx-auto h-full relative flex flex-col">
         <main ref={mainRef} className="flex-1 flex flex-col overflow-y-auto" style={{ overscrollBehavior: 'none' }}>
-          <div style={{ display: activeTab === 'home' ? 'contents' : 'none' }}>
-            <HomeTab members={members} transactions={transactions} challenges={challenges} crunchFundBalance={crunchFundBalance} totalFinesCollected={totalFinesCollected} totalChallengeSpend={totalChallengeSpend} pendingFinesCount={pendingFines.length} onAddTransaction={() => setIsSheetOpen(true)} groupName={groupName} onSeeAll={() => handleTabChange('feed')} onOpenNotifications={handleOpenNotifications} hasUnread={hasUnread} onOpenChallenge={handleOpenChallenge} onSwitchToPolls={() => handleTabChange('events')} onOpenTransaction={handleOpenTransaction} />
-          </div>
-          <div style={{ display: activeTab === 'feed' ? 'contents' : 'none' }}>
-            <FeedTab transactions={transactions} members={members} challenges={challenges} events={events} currentUserId={CURRENT_USER_ID} isAdmin={isAdmin} onOpenTransaction={handleOpenTransaction} onOpenEvent={handleOpenEvent} onOpenNotifications={handleOpenNotifications} hasUnread={hasUnread} />
-          </div>
-          <div style={{ display: activeTab === 'events' ? 'contents' : 'none' }}>
-            <EventsTab availability={calendarAvailability} members={members} currentUserId={CURRENT_USER_ID} onDayTap={handleDayTap} onToggleAvailability={handleToggleAvailability} events={events} transactions={transactions} onCreateEvent={() => setIsCreateEventOpen(true)} onOpenEvent={handleOpenEvent} onArchiveEvent={handleArchiveEvent} onUnarchiveEvent={handleUnarchiveEvent} onOpenNotifications={handleOpenNotifications} hasUnread={hasUnread} challenges={challenges} onOpenChallenge={handleOpenChallenge} onProposeChallenge={() => setIsCreatePollOpen(true)} polls={polls} onOpenPoll={handleOpenPoll} onVote={handleVote} onRsvp={handleRsvp} />
-          </div>
-          <div style={{ display: activeTab === 'splits' ? 'contents' : 'none' }}>
-            <SplitsTab />
-          </div>
-          <div style={{ display: activeTab === 'settings' ? 'contents' : 'none' }}>
-            <SettingsTab members={members} groupName={groupName} onGroupNameChange={setGroupName} isDark={isDark} onToggleDark={() => setIsDark((d) => !d)} isAdmin={isAdmin} onSignOut={signOut} />
-          </div>
+          <AnimatePresence mode="popLayout">
+            {activeTab === 'home' && <motion.div key="home" className="flex-1 flex flex-col" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15, ease: [0.2, 0.0, 0.0, 1.0] }}>
+              <HomeTab members={members} transactions={transactions} challenges={challenges} crunchFundBalance={crunchFundBalance} totalFinesCollected={totalFinesCollected} totalChallengeSpend={totalChallengeSpend} pendingFinesCount={pendingFines.length} onAddTransaction={() => setIsSheetOpen(true)} groupName={groupName} onSeeAll={() => handleTabChange('feed')} onOpenNotifications={handleOpenNotifications} hasUnread={hasUnread} onOpenChallenge={handleOpenChallenge} onSwitchToPolls={() => handleTabChange('events')} onOpenTransaction={handleOpenTransaction} />
+            </motion.div>}
+            {activeTab === 'feed' && <motion.div key="feed" className="flex-1 flex flex-col" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15, ease: [0.2, 0.0, 0.0, 1.0] }}>
+              <FeedTab transactions={transactions} members={members} challenges={challenges} events={events} currentUserId={CURRENT_USER_ID} isAdmin={isAdmin} onOpenTransaction={handleOpenTransaction} onOpenEvent={handleOpenEvent} onOpenNotifications={handleOpenNotifications} hasUnread={hasUnread} />
+            </motion.div>}
+            {activeTab === 'events' && <motion.div key="events" className="flex-1 flex flex-col" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15, ease: [0.2, 0.0, 0.0, 1.0] }}>
+              <EventsTab availability={calendarAvailability} members={members} currentUserId={CURRENT_USER_ID} onDayTap={handleDayTap} onToggleAvailability={handleToggleAvailability} events={events} transactions={transactions} onCreateEvent={() => setIsCreateEventOpen(true)} onOpenEvent={handleOpenEvent} onArchiveEvent={handleArchiveEvent} onUnarchiveEvent={handleUnarchiveEvent} onOpenNotifications={handleOpenNotifications} hasUnread={hasUnread} challenges={challenges} onOpenChallenge={handleOpenChallenge} onProposeChallenge={() => setIsCreatePollOpen(true)} polls={polls} onOpenPoll={handleOpenPoll} onVote={handleVote} onRsvp={handleRsvp} />
+            </motion.div>}
+            {activeTab === 'splits' && <motion.div key="splits" className="flex-1 flex flex-col" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15, ease: [0.2, 0.0, 0.0, 1.0] }}>
+              <SplitsTab />
+            </motion.div>}
+            {activeTab === 'settings' && <motion.div key="settings" className="flex-1 flex flex-col" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15, ease: [0.2, 0.0, 0.0, 1.0] }}>
+              <SettingsTab members={members} groupName={groupName} onGroupNameChange={setGroupName} isDark={isDark} onToggleDark={() => setIsDark((d) => !d)} isAdmin={isAdmin} onSignOut={signOut} />
+            </motion.div>}
+          </AnimatePresence>
         </main>
 
         <TabBar activeTab={activeTab} onTabChange={handleTabChange} />

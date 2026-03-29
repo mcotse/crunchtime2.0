@@ -5,7 +5,7 @@ export interface ChangelogEntry {
 }
 
 export const CHANGELOG: ChangelogEntry[] = [
-  { version: '1.2.7', date: 'Mar 28', note: 'Fix iOS screen flicker — keep tabs mounted, remove global opacity transition, use popLayout for sub-tab animations' },
+  { version: '1.2.7', date: 'Mar 28', note: 'Fix iOS screen flicker — AnimatePresence crossfade for tabs, remove global opacity transition, popLayout for sub-tabs' },
   { version: '1.2.6', date: 'Mar 8', note: 'Fix phantom scroll and header bleed on iOS PWA — lock viewport and reset scroll on tab switch' },
   { version: '1.2.5', date: 'Mar 8', note: 'Fix Events tab sticky header and remove min-h-screen for PWA scroll containment' },
   { version: '1.2.4', date: 'Mar 8', note: 'Restore staggered row animations on Activity and Splits tabs' },

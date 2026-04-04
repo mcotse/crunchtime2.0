@@ -71,7 +71,7 @@ export function CrunchTime() {
   useRealtimeSync();
 
   // Local UI state
-  const [activeTab, setActiveTab] = useState('events');
+  const [activeTab, setActiveTab] = useState('home');
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [groupName, setGroupName] = useState('Crunch Fund');
   const [isDark, setIsDark] = useState(true);

@@ -45,6 +45,9 @@
   --eqx-segment-active: var(--eqx-raised);
   --eqx-segment-text: var(--eqx-primary);
 }
+html {
+  min-height: calc(100% + env(safe-area-inset-top, 0px));
+}
 html,
 body {
   background-color: var(--eqx-base);

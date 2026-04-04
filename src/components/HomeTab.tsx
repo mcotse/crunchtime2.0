@@ -97,18 +97,6 @@ export function HomeTab({
   return <div className="flex-1 w-full flex flex-col justify-center pb-28 relative" style={{
     backgroundColor: 'var(--eqx-base)'
   }}>
-      {/* ── Full-bleed hero gradient — fixed to viewport top, bleeds to all edges ── */}
-      <div aria-hidden="true" style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      height: '85vh',
-      background: 'var(--eqx-hero-gradient)',
-      pointerEvents: 'none',
-      zIndex: 0
-    }} />
-
       {/* ── Hero Section ── */}
       <div className="relative flex flex-col items-center justify-center px-6 text-center pb-10" style={{
       zIndex: 1,

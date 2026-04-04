@@ -5,6 +5,7 @@ export interface ChangelogEntry {
 }
 
 export const CHANGELOG: ChangelogEntry[] = [
+  { version: '1.2.10', date: 'Apr 4', note: 'Fix PWA black border — move gradient outside Framer Motion, extend behind iOS status bar with safe-area offset' },
   { version: '1.2.9', date: 'Apr 4', note: 'Default to Home tab on first load instead of Events' },
   { version: '1.2.8', date: 'Mar 29', note: 'Fix PWA black border on iPhone — add web app manifest, extend body to full viewport, safe-area-inset on home hero' },
   { version: '1.2.7', date: 'Mar 28', note: 'Fix iOS screen flicker — AnimatePresence crossfade for tabs, remove global opacity transition, popLayout for sub-tabs' },

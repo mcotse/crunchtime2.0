@@ -338,6 +338,18 @@ export function CrunchTime() {
   }
 
   return <div className={`${isDark ? 'dark' : 'light'} fixed inset-0 overflow-hidden font-sans bg-eqx-base text-eqx-primary selection:bg-eqx-raised`}>
+      {/* ── Full-bleed hero gradient — must live outside max-w-md / motion.div to avoid
+           Framer Motion's transform containing block trapping position:fixed ── */}
+      {activeTab === 'home' && <div aria-hidden="true" style={{
+        position: 'fixed',
+        top: 'calc(-1 * env(safe-area-inset-top, 0px))',
+        left: 0,
+        right: 0,
+        height: 'calc(85vh + env(safe-area-inset-top, 0px))',
+        background: 'var(--eqx-hero-gradient)',
+        pointerEvents: 'none',
+        zIndex: 0
+      }} />}
       <div className="max-w-md mx-auto h-full relative flex flex-col">
         <main ref={mainRef} className="flex-1 flex flex-col overflow-y-auto" style={{ overscrollBehavior: 'none' }}>
           <AnimatePresence mode="popLayout">

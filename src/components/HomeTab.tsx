@@ -100,10 +100,10 @@ export function HomeTab({
       {/* ── Full-bleed hero gradient — fixed to viewport top, bleeds to all edges ── */}
       <div aria-hidden="true" style={{
       position: 'fixed',
-      top: 0,
+      top: 'calc(-1 * env(safe-area-inset-top, 0px))',
       left: 0,
       right: 0,
-      height: '85vh',
+      height: 'calc(85vh + env(safe-area-inset-top, 0px))',
       background: 'var(--eqx-hero-gradient)',
       pointerEvents: 'none',
       zIndex: 0
